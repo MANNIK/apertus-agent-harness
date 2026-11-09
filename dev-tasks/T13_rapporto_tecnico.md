@@ -1,5 +1,7 @@
 # T13 — Bozza del rapporto tecnico (inglese)
-Stato: fatto (bozza) · Priorità: alta
+Stato: fatto (bozza del vecchio progetto) · Priorità: —
+
+> **Storico (progetto precedente).** La bozza (`docs/technical_report.md`) descrive la suite agentica: **va riscritta in W12**. Restano riusabili la struttura, la tabella dei modelli generata dal comando (`--lang en`) e i test che la tengono sincronizzata.
 
 ## Obiettivo
 Preparare `docs/technical_report.md` in **inglese** con la struttura finale, in modo che all'hackathon basti inserire i risultati veri.

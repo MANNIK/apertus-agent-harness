@@ -1,5 +1,7 @@
 # T11 — AgentDojo e τ-bench con simulatore open-weights
-Stato: pronto dopo T10 · Priorità: bassa
+Stato: OBSOLETO (solo fattibilità scritta) · Priorità: —
+
+> **Storico (progetto precedente).** Benchmark agentici non rilevanti per il Text-to-SQL. Non eseguiti.
 
 ## Obiettivo
 Valutare la resistenza alle iniezioni (AgentDojo) e conversazioni agente-utente (τ-bench) con benchmark pubblici, rispettando le regole.
@@ -17,4 +19,4 @@ Valutare la resistenza alle iniezioni (AgentDojo) e conversazioni agente-utente 
 - Fattibilità scritta; se eseguito, riproducibile e con limiti dichiarati.
 
 ## Esito
-(da compilare)
+**Fatto:** stima di fattibilità in `docs/benchmark_esterni.md`: τ-bench richiede un simulatore utente (gpt-4o di default, chiuso; un secondo modello open-weights da 8B+ non sta in memoria insieme ad Apertus su 32 GB) → sconsigliato; AgentDojo (MIT) richiede lo stesso adattatore di formato e ore di esecuzione → rimandato. **Nulla installato né eseguito.**

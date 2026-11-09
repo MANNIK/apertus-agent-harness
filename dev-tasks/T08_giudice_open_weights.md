@@ -1,5 +1,7 @@
 # T08 — Giudice open-weights con un vero modello
-Stato: pronto · Priorità: media
+Stato: OBSOLETO · Priorità: —
+
+> **Storico (progetto precedente).** Il Text-to-SQL si valuta per esecuzione, senza giudice. Si riprende solo se in W13 o W10 servisse un giudice open-weights. Nulla è stato scaricato.
 
 ## Obiettivo
 `agentbench judge` è provato solo con un server finto. Provarlo con un vero modello open-weights e misurare l'accordo con i controlli deterministici.

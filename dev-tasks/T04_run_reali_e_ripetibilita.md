@@ -1,5 +1,7 @@
 # T04 — Rieseguire le prove reali con registrazione e misurare la ripetibilità
-Stato: pronto · Priorità: alta · Serve: server MLX acceso da Nikola (`scripts/serve_mlx.sh`)
+Stato: in corso, storico (3 run della suite agentica avviate il 10 nov; non verranno usate per il nuovo progetto)
+
+> **Storico (progetto precedente).** Misurano la **vecchia suite agentica**. Le tre run (`runs/base-default-a`, `base-default-b`, `base-persistent-a`) sono in esecuzione sul server MLX; restano come storico (ripetibilità del server a temperatura 0) e **non** sono confrontabili con le nuove. Per il nuovo progetto la stessa misura di ripetibilità si rifà in W05 su Text-to-SQL.
 
 ## Obiettivo
 Le due run reali del 6 nov (27/33 con il prompt normale, 30/33 con `prompts/persistent.txt`) non hanno `calls.jsonl`, quindi non si possono rigiocare. Rifarle con la registrazione e capire quanto è ripetibile il modello a temperatura 0.

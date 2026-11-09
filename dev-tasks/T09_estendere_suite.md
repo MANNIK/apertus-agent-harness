@@ -1,5 +1,7 @@
 # T09 — Estendere la suite
-Stato: fatto · Priorità: media
+Stato: fatto (storico) · Priorità: —
+
+> **Storico (progetto precedente).** Ha portato la suite agentica a 62 task; **la suite è in archiviazione (W01)**. Il lavoro resta come riferimento di metodo (task scritti prima di vedere risultati, test di risolvibilità).
 
 ## Obiettivo
 33 compiti vedono solo effetti grandi (intervallo di Wilson ampio). Portare la suite verso ~60 compiti, coprendo ciò che manca, senza abbassare la qualità.

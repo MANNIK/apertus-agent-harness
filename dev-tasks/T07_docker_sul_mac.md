@@ -1,5 +1,7 @@
 # T07 — Docker sul Mac e verifica "senza rete"
-Stato: fatto · Priorità: media
+Stato: fatto (riusabile) · Priorità: —
+
+> **Storico (progetto precedente).** Immagine e `airgap-check` restano utili per la regola 5 (W11); la demo contenuta è quella della vecchia suite.
 
 ## Obiettivo
 Il `Dockerfile` non è mai stato costruito. Provarlo, correggerlo, e dimostrare che la demo gira **senza rete**.

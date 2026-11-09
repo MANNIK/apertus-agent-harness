@@ -1,6 +1,8 @@
 # T01 — Repository git e pulizia della cartella
 Stato: fatto · Priorità: alta
 
+> **Storico (progetto precedente).** Repository git creato e pubblicato su GitHub (MANNIK/apertus-agent-harness). Resta valido per il nuovo progetto. Se W01 rinomina la cartella, aggiornare il remoto.
+
 ## Obiettivo
 Avere un repository git pulito per il progetto, senza pesi né dati pesanti, con una prima cronologia sensata.
 

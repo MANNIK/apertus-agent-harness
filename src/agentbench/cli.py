@@ -31,6 +31,9 @@ def _add_model_args(p: argparse.ArgumentParser) -> None:
     p.add_argument("--max-tokens", type=int, default=1024)
     p.add_argument("--seed", type=int, default=None)
     p.add_argument("--timeout", type=float, default=300.0)
+    p.add_argument("--thinking", choices=["on", "off"], default=None,
+                   help="ragionamento di Apertus: passa chat_template_kwargs.enable_thinking (il template legge proprio "
+                        "questa variabile). Se omesso non si invia nulla e vale il comportamento predefinito del server")
     p.add_argument("--extra-body", default="{}",
                    help='JSON unito al corpo della richiesta, es. \'{"chat_template_kwargs": {"enable_thinking": false}}\'')
 
@@ -42,6 +45,10 @@ def _client(args) -> ChatClient:
         extra = json.loads(args.extra_body)
     except json.JSONDecodeError as e:
         sys.exit(f"--extra-body non è JSON valido: {e}")
+    if args.thinking:
+        kwargs = dict(extra.get("chat_template_kwargs") or {})
+        kwargs["enable_thinking"] = args.thinking == "on"
+        extra = {**extra, "chat_template_kwargs": kwargs}  # finisce in meta.json (extra_body) e nel confronto tra run
     return ChatClient(args.base_url, args.model, args.api_key, args.temperature, args.max_tokens,
                       args.seed, extra, args.timeout)
 

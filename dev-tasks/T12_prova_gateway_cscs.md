@@ -1,5 +1,7 @@
 # T12 — Prova del gateway CSCS/Keera
-Stato: **bloccato fino al 27 nov 2026, ore 08:00** (la chiave di squadra si sblocca allora; si chiede a Sabine Wildemann sul posto o su Discord) · Priorità: alta il giorno dell'hackathon
+Stato: da rivalutare · bloccato fino al 27 nov 2026, ore 08:00 · Priorità: bassa
+
+> **Storico (progetto precedente).** Il gateway serve i pesi originali: può servire come condizione "originale ufficiale" o per il 70B, e per separare gli errori della conversione MLX di terzi da quelli di Apertus. Da decidere in W09/W11.
 
 ## Obiettivo
 Rifare la suite sul modello **ufficiale** servito da CSCS e confrontarla con la nostra copia MLX locale, per separare gli errori della conversione di terzi dal comportamento di Apertus.

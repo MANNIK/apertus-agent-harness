@@ -1,5 +1,7 @@
 # T03 — Correggere i difetti noti della suite
-Stato: fatto · Priorità: alta
+Stato: fatto (storico) · Priorità: —
+
+> **Storico (progetto precedente).** Riguarda la suite agentica, **in archiviazione (W01)**. Restano riusabili `outcome` `not_exercised`, i controlli `diagnostic` e le ablazioni.
 
 ## Obiettivo
 Tre difetti noti rendono alcuni risultati meno affidabili.

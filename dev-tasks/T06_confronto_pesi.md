@@ -1,5 +1,7 @@
 # T06 — Pipeline di confronto: pesi originali contro pesi modificati
-Stato: **bloccato** (aspettiamo il collega) · Priorità: alta
+Stato: SOSTITUITO da W09 (e W06–W08) · Priorità: —
+
+> **Storico (progetto precedente).** La pipeline di confronto pesi originali/modificati è ora il cuore del progetto: vedi **W09**. Il collega non serve più per la tecnica: il metodo WSP lo costruiamo noi (W06–W07).
 
 ## Cosa serve dal collega (Nikola le chiede)
 1. Tecnica di modifica. 2. Formato dei pesi (safetensors completi? adattatore LoRA?). 3. Intensità e strati modificati. 4. Hardware usato.

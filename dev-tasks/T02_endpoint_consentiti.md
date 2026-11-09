@@ -1,6 +1,8 @@
 # T02 — Dichiarare gli endpoint consentiti nella conformità
 Stato: fatto · Priorità: alta
 
+> **Storico (progetto precedente).** Valido anche per il nuovo progetto (gateway `gateway.keera.ch`, modelli ospitati in `models.yaml`). I checkpoint WSP/LoRA andranno dichiarati in W11.
+
 ## Obiettivo
 `agentbench compliance` avvisa oggi per ogni endpoint non locale. L'endpoint ufficiale CSCS/Keera (`https://gateway.keera.ch/api/v1`) è ammesso (cloud sovrano svizzero, regola 5): serve poterlo dichiarare in `models.yaml` e far sparire l'avviso solo per quello.
 

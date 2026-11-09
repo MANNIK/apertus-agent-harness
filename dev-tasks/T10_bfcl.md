@@ -1,5 +1,7 @@
 # T10 — Benchmark da paper: BFCL v4 tramite EvalScope
-Stato: pronto · Priorità: media
+Stato: OBSOLETO (solo fattibilità scritta) · Priorità: —
+
+> **Storico (progetto precedente).** BFCL misura il tool calling, non il Text-to-SQL. Non eseguito. Fattibilità, licenze e rischi: `docs/benchmark_esterni.md`.
 
 ## Obiettivo
 Avere almeno un numero comparabile con la letteratura sul tool calling (Berkeley Function Calling Leaderboard), accanto alla nostra suite, senza mescolare i due.
@@ -20,4 +22,4 @@ Avere almeno un numero comparabile con la letteratura sul tool calling (Berkeley
 - Dichiarazione chiara se non sei riuscito a farlo girare (e perché).
 
 ## Esito
-(da compilare)
+**Fatto:** solo la verifica di licenze/versioni e una stima di fattibilità in `docs/benchmark_esterni.md` (10 nov 2026). Licenze controllate con l'API di GitHub: EvalScope Apache-2.0, BFCL/gorilla Apache-2.0. **Nulla installato né eseguito.** Dichiarato non eseguito, con i motivi (formato delle tool call come testo con `mlx_lm.server`, tempi, ragionamento attivo di default).
