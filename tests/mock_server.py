@@ -67,6 +67,13 @@ def native(name: str, args: dict) -> dict:
         {"id": "c1", "type": "function", "function": {"name": name, "arguments": json.dumps(args)}}]}
 
 
+def native_many(calls: list[tuple[str, dict]]) -> dict:
+    """Più tool call strutturate nello stesso messaggio (chiamate parallele)."""
+    return {"role": "assistant", "content": None, "tool_calls": [
+        {"id": f"c{i}", "type": "function", "function": {"name": n, "arguments": json.dumps(a)}}
+        for i, (n, a) in enumerate(calls, 1)]}
+
+
 def prefix(name: str, args: dict) -> dict:
     """Tool call come testo grezzo con i marcatori di Apertus (server senza parser)."""
     return {"role": "assistant", "content": "<|tools_prefix|>" + json.dumps([{name: args}]) + "<|tools_suffix|>"}

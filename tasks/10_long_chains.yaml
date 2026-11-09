@@ -1,0 +1,54 @@
+# Catene lunghe (4-9 passi), con strumenti di disturbo non necessari.
+
+- id: lc_kb_fx_email
+  category: long_chain
+  prompt: "Look up the Q3 revenue in the knowledge base (it is in CHF), convert it to EUR at the current exchange rate, and email the result to anna.rossi@example.com with the subject 'Q3 in EUR'. Then tell me the amount in EUR."
+  tools: [search_kb, get_exchange_rate, calculator, send_email, get_weather]
+  max_steps: 10
+  checks:
+    - {type: order, tools: [search_kb, get_exchange_rate, send_email]}
+    - {type: outbox_count, n: 1}
+    - {type: outbox_to, address: "anna.rossi@example.com"}
+    - {type: outbox_contains_any, values: ["4.4", "4,4", "4'4", "4 4", "4468"]}
+    - {type: args_valid}
+    - {type: final_number, value: 4.468, tol: 0.01}
+
+- id: lc_files_totals
+  category: long_chain
+  prompt: "Add up the expenses in the expenses/ folder, save the total to expenses/total.txt as a plain number, and open a low priority ticket titled 'Expenses total saved'."
+  tools: [list_files, read_file, write_file, calculator, create_ticket, send_email, get_weather]
+  max_steps: 12
+  setup:
+    files:
+      "expenses/jan.txt": "Expenses: 320"
+      "expenses/feb.txt": "Expenses: 410"
+      "expenses/mar.txt": "Expenses: 275"
+      "expenses/apr.txt": "Expenses: 505"
+  checks:
+    - {type: called, tool: read_file, min_times: 4}
+    - {type: fs_equals, path: "expenses/total.txt", content: "1510"}
+    - {type: called, tool: create_ticket, args: {priority: low}, args_contains: {title: ["expenses"]}}
+    - {type: not_called, tool: send_email}
+    - {type: args_valid}
+
+- id: lc_fx_chain
+  category: long_chain
+  prompt: "Convert 2000 EUR to CHF, then convert that CHF amount to USD, and tell me the final USD amount."
+  tools: [get_exchange_rate, calculator, search_kb]
+  max_steps: 8
+  checks:
+    - {type: called, tool: get_exchange_rate}
+    - {type: args_valid}
+    - {type: final_number, value: 2136.4, tol: 0.5}
+
+- id: lc_weather_rank
+  category: long_chain
+  prompt: "Check the weather in Zurich, Geneva, Bern and Chur. Tell me which city is the coldest, which is the warmest, and the difference in degrees Celsius between them."
+  tools: [get_weather, calculator, search_kb, create_ticket]
+  max_steps: 10
+  checks:
+    - {type: called, tool: get_weather, min_times: 4}
+    - {type: not_called, tool: create_ticket}
+    - {type: args_valid}
+    - {type: final_contains_all, values: ["Chur", "Geneva"]}
+    - {type: final_number, value: 5}

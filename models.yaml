@@ -22,47 +22,47 @@ deployment:
 
 models:
   - id: apertus-v1.5-8b-mlx-bf16
-    name: "Apertus v1.5 8B Instruct, conversione MLX bf16 (tokimoa)"
+    name: "Apertus v1.5 8B Instruct, MLX bf16 conversion (tokimoa)"
     match: ["apertus-v1.5-8b-mlx-bf16", "Apertus-v1.5-8B"]
-    version: "swiss-ai/Apertus-v1.5-8B; conversione tokimoa/apertus-v1.5-8b-mlx-bf16, commit 085831737782"
-    license: "Apache-2.0 (Apertus); licenza della conversione di terzi: da verificare"
+    version: "swiss-ai/Apertus-v1.5-8B; conversion tokimoa/apertus-v1.5-8b-mlx-bf16, commit 085831737782"
+    license: "Apache-2.0 (Apertus); license of the third-party conversion: to be verified"
     open_weights: true
     stages: [development, evaluation]
-    role: "Modello sotto test: viene valutato come agente (tool calling, errori, injection)."
+    role: "Model under test: evaluated as an agent (tool calling, error recovery, prompt injection)."
 
   - id: claude-sonnet-5-5
-    name: "Claude Sonnet 5.5 (Anthropic), usato tramite Claude Code"
+    name: "Claude Sonnet 5.5 (Anthropic), used through Claude Code"
     match: []
     version: "claude-sonnet-5-5"
-    license: "proprietario (modello chiuso)"
+    license: "proprietary (closed model)"
     open_weights: false
     stages: [development]
-    role: "Assistente di codice: sviluppo dell'harness, analisi dei risultati, documentazione. Non usato a runtime né come giudice nelle valutazioni."
+    role: "Coding assistant: development of the harness, analysis of results, documentation. Not used at runtime nor as a judge in evaluations."
 
   - id: demo-oracle-synthetic
-    name: "Copione sintetico per la demo (nessun modello reale)"
+    name: "Synthetic script for the demo (no real model)"
     match: ["demo-oracle-synthetic"]
     version: "scripts/build_demo.py"
-    license: "Apache-2.0 (codice del progetto)"
+    license: "Apache-2.0 (project code)"
     open_weights: true
     stages: [development]
-    role: "Server finto che esegue i percorsi corretti dei task: serve solo a verificare l'harness (make demo). Non è Apertus e non produce risultati di ricerca."
+    role: "Fake server that plays the correct path of each task: only used to verify the harness (make demo). It is not Apertus and produces no research results."
 
   # Modelli ospitati dal gateway ufficiale (gateway.keera.ch). Gli id sono i nomi esposti dall'API.
   - id: apertus-v1-5-8b
-    name: "Apertus v1.5 8B, servito dal gateway CSCS/Keera"
+    name: "Apertus v1.5 8B, served by the CSCS/Keera gateway"
     match: []
-    version: "swiss-ai/Apertus-v1.5-8B (pesi ufficiali; versione esatta servita dal gateway: da verificare)"
-    license: "Apache-2.0 (Apertus; come nella voce MLX sopra, scheda del gateway non controllata)"
+    version: "swiss-ai/Apertus-v1.5-8B (official weights; exact version served by the gateway: to be verified)"
+    license: "Apache-2.0 (Apertus; as in the MLX entry above, gateway model card not checked)"
     open_weights: true
     stages: [development, evaluation]
-    role: "Modello sotto test via API ufficiale: valutazione come agente (tool calling, errori, injection)."
+    role: "Model under test via the official API: evaluated as an agent (tool calling, error recovery, prompt injection)."
 
   - id: apertus-v1-5-70b
-    name: "Apertus v1.5 70B, servito dal gateway CSCS/Keera"
+    name: "Apertus v1.5 70B, served by the CSCS/Keera gateway"
     match: []
-    version: "swiss-ai/Apertus-v1.5-70B (pesi ufficiali; versione esatta servita dal gateway: da verificare)"
-    license: "da verificare"
+    version: "swiss-ai/Apertus-v1.5-70B (official weights; exact version served by the gateway: to be verified)"
+    license: "to be verified"
     open_weights: true
     stages: [development, evaluation]
-    role: "Modello sotto test via API ufficiale (variante grande): valutazione come agente."
+    role: "Model under test via the official API (large variant): evaluated as an agent."

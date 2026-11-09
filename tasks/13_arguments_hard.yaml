@@ -1,0 +1,47 @@
+# Argomenti difficili: separatori di migliaia/decimali, caratteri speciali, date, più valori con enum.
+
+- id: ar_amount_swiss_sep
+  category: arguments
+  prompt: "Convert CHF 1’250.50 to EUR at the current rate."
+  tools: [get_exchange_rate, calculator]
+  checks:
+    - {type: called, tool: get_exchange_rate}
+    - {type: args_valid}
+    - {type: final_number, value: 1330.3, tol: 0.1}
+
+- id: ar_amount_it_format
+  category: arguments
+  prompt: "Quanto sono 1.500,75 euro in franchi svizzeri al cambio attuale?"
+  tools: [get_exchange_rate, calculator]
+  checks:
+    - {type: called, tool: get_exchange_rate}
+    - {type: args_valid}
+    - {type: final_number, value: 1410.7, tol: 0.1}
+
+- id: ar_special_chars_email
+  category: arguments
+  prompt: "Send an email to anna.rossi@example.com with the subject 'Q&A: café menu — 50% off' and the body 'See you at 17:30; ask for Zoë.'"
+  tools: [send_email]
+  checks:
+    - {type: called, tool: send_email, args: {to: "anna.rossi@example.com", subject: "Q&A: café menu — 50% off"}, args_contains: {body: ["17:30", "Zoë"]}}
+    - {type: outbox_count, n: 1}
+    - {type: args_valid}
+
+- id: ar_date_in_title
+  category: arguments
+  prompt: "Create a medium priority ticket titled 'Renew certificate before 2026-12-31 (23:59 CET)'."
+  tools: [create_ticket]
+  checks:
+    - {type: called, tool: create_ticket, args: {priority: medium}, args_contains: {title: ["2026-12-31", "23:59"]}}
+    - {type: args_valid}
+
+- id: ar_fahrenheit_two_cities
+  category: arguments
+  prompt: "Give me the temperature in Fahrenheit for Geneva and for Bern."
+  tools: [get_weather, calculator]
+  checks:
+    - {type: called, tool: get_weather, args: {city: Geneva, unit: fahrenheit}}
+    - {type: called, tool: get_weather, args: {city: Bern, unit: fahrenheit}}
+    - {type: args_valid}
+    - {type: final_number, value: 48.2, tol: 0.1}
+    - {type: final_number, value: 42.8, tol: 0.1}

@@ -3,7 +3,7 @@
 Non è un modello: un server finto risponde con i percorsi corretti scritti in
 `tests/test_tasks_solvable.py` (uno per task). Serve a una sola cosa: poter eseguire
 `make demo` / `agentbench run --replay reference_runs/demo-oracle` su una macchina senza modello,
-senza rete e senza GPU, e verificare che l'harness funzioni (atteso: 33/33).
+senza rete e senza GPU, e verificare che l'harness funzioni (atteso: 100%).
 NON rappresenta le prestazioni di Apertus e non va mai citata come tale.
 
 Uso (dalla radice del progetto):  .venv/bin/python scripts/build_demo.py
@@ -30,10 +30,10 @@ OUT = ROOT / "reference_runs" / "demo-oracle"
 NOTE = """# Run sintetica di riferimento
 
 Questa cartella NON contiene i risultati di un modello. È stata prodotta da `scripts/build_demo.py`
-con un server finto che esegue i percorsi corretti dei 33 task.
+con un server finto che esegue i percorsi corretti di tutti i task della suite.
 
-Serve a verificare l'harness senza modello né rete: `make demo` rigioca queste risposte e deve dare 33/33.
-Se non dà 33/33, è l'harness (o la suite di task) ad essere cambiato, non un modello.
+Serve a verificare l'harness senza modello né rete: `make demo` rigioca queste risposte e deve dare il 100%.
+Se non lo dà, è l'harness (o la suite di task) ad essere cambiato, non un modello.
 
 Non citare mai questi numeri come prestazioni di Apertus.
 """

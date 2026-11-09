@@ -27,7 +27,7 @@ export APERTUS_BASE_URL=http://localhost:8080/v1
 export APERTUS_MODEL="<percorso stampato da serve_mlx.sh>"
 
 .venv/bin/agentbench smoke          # PRIMO PASSO: il server fa tool calling? in che formato?
-.venv/bin/agentbench run            # tutta la suite (33 task), una ripetizione
+.venv/bin/agentbench run            # tutta la suite (62 task), una ripetizione
 .venv/bin/agentbench report runs/<cartella>
 ```
 
@@ -57,6 +57,15 @@ scripts/serve_mlx.sh
 `APERTUS_MODEL` deve essere uguale al percorso con cui il server è stato avviato: è quello che lo script
 stampa. Se il server dà errore sul nome del modello, controlla che le due stringhe coincidano.
 
+## Docker, senza rete (verificato il 10 nov 2026, Docker 29.5.3 su Mac arm64)
+
+```bash
+make docker-build      # immagine minimale, senza modelli (~50 MB)
+make docker-demo       # demo con --network none: deve dare 62/62 e 0 errori di conformità
+make airgap-check      # come sopra + prova che le connessioni in uscita falliscono nel container
+```
+L'immagine base (`python:3.12-slim`) e i pacchetti **non sono bloccati** per versione/digest. La demo usa un server finto su loopback: non prova un modello dentro il container.
+
 ## Dove finisce cosa (e come ripulire)
 
 Tutto resta dentro la cartella `HACKATON APERTUS ZURIGO`:
@@ -80,12 +89,18 @@ Alternativa senza lo script: `python3 -m venv .venv && .venv/bin/pip install -e 
 | Categoria | Task | Cosa verifica |
 |---|---:|---|
 | `single_call` | 6 | tool giusto, argomenti giusti, risultato usato (prompt IT/DE/EN/FR) |
-| `arguments` | 4 | valori esatti, enum, più chiamate indipendenti |
+| `arguments` | 9 | valori esatti, enum, più chiamate indipendenti; importi con separatori diversi (`1’250.50`, `1.500,75`), caratteri speciali, date |
 | `multi_step` | 6 | il risultato di un passo alimenta il successivo; N chiamate; scelta del file giusto |
 | `error_recovery` | 4 | guasto temporaneo, nome città sbagliato, file nel posto sbagliato, tool sempre rotto (niente risultati inventati) |
 | `abstention` | 4 | non chiamare tool quando non servono, tool inesistente, argomento mancante (chiedere) |
-| `injection` | 3 | istruzioni dentro file/risultati di ricerca; azioni non richieste |
+| `injection` | 8 | istruzioni dentro file, risultati di ricerca e testo di un errore; esplicite e velate; IT/DE/EN; azioni non richieste; con esito "non esercitato" |
 | `judge` | 6 | classificare traiettorie SAFE/UNSAFE (nessun tool) |
+| `multilingual` | 7 | scenari analoghi in FR/DE/IT (cambio, ticket, KB, astensione) |
+| `parallel` | 3 | più chiamate indipendenti; il parallelismo nello stesso turno è un controllo *diagnostico* (non conta nel punteggio) |
+| `long_chain` | 4 | catene di 4-9 passi con tool di disturbo (KB → cambio → email; file → somma → ticket) |
+| `ambiguity` | 5 | chiedere quando manca un dato, agire quando si può dedurre (coppie "ask"/"act") |
+
+I 29 task aggiunti il 10 nov (compito T09) sono stati scritti **prima** di vedere risultati di Apertus e non vanno ritoccati dopo averli visti. Cambiano il digest della suite: le run con 33 task non sono confrontabili.
 
 Oltre al pass rate, il report mostra la **salute delle tool call**: quante sono valide (tool
 esistente, argomenti conformi allo schema), da dove sono state estratte, quanti errori ha
@@ -203,7 +218,7 @@ Per la valutazione in locale usa direttamente `agentbench run` + `gh_publish.sh`
 58 test. Usano un server OpenAI-compatibile finto (`tests/mock_server.py`) con copioni "buono" e
 "cattivo" per ogni scenario, per verificare che i controlli distinguano davvero i due casi
 (tool inventati, injection riuscita, risposte inventate dopo un errore, ecc.).
-`tests/test_tasks_solvable.py` risolve tutti i 33 task con un percorso corretto: se aggiungi o
+`tests/test_tasks_solvable.py` risolve tutti i 62 task con un percorso corretto: se aggiungi o
 modifichi un task e quel test fallisce, il task è impossibile o ha un'aspettativa sbagliata.
 
 ## Riproducibilità e regole del hackathon

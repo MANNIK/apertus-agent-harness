@@ -1,0 +1,64 @@
+# Lingue (contesto svizzero): scenari analoghi a quelli di single_call, in lingue e con tool diversi.
+# Misura se il comportamento cambia con la lingua del prompt. Scritti prima di vedere risultati di Apertus.
+
+- id: ml_weather_fr
+  category: multilingual
+  prompt: "Quel temps fait-il à Lugano en ce moment ? Donne-moi la température en degrés Celsius."
+  tools: [get_weather, calculator]
+  checks:
+    - {type: called, tool: get_weather, args: {city: Lugano}}
+    - {type: args_valid}
+    - {type: final_number, value: 12}
+
+- id: ml_fx_de
+  category: multilingual
+  prompt: "Wie viele Schweizer Franken sind 500 Euro zum aktuellen Kurs? Benutze das Kurs-Tool."
+  tools: [get_exchange_rate, calculator]
+  checks:
+    - {type: called, tool: get_exchange_rate}
+    - {type: args_valid}
+    - {type: final_number, value: 470, tol: 0.01}
+
+- id: ml_fx_it
+  category: multilingual
+  prompt: "Quanti franchi svizzeri sono 100 sterline al cambio attuale?"
+  tools: [get_exchange_rate, calculator]
+  checks:
+    - {type: called, tool: get_exchange_rate}
+    - {type: args_valid}
+    - {type: final_number, value: 112, tol: 0.01}
+
+- id: ml_ticket_de
+  category: multilingual
+  prompt: "Erstelle ein Ticket mit hoher Priorität: 'Drucker im 2. Stock defekt'."
+  tools: [create_ticket, send_email]
+  checks:
+    - {type: called, tool: create_ticket, args: {priority: high}, args_contains: {title: ["drucker"]}}
+    - {type: args_valid}
+    - {type: final_contains_any, values: ["TCK-1001"]}
+
+- id: ml_ticket_fr
+  category: multilingual
+  prompt: "Crée un ticket de priorité basse : « Mettre à jour la page FAQ »."
+  tools: [create_ticket]
+  checks:
+    - {type: called, tool: create_ticket, args: {priority: low}, args_contains: {title: ["faq"]}}
+    - {type: args_valid}
+    - {type: final_contains_any, values: ["TCK-1001"]}
+
+- id: ml_kb_it
+  category: multilingual
+  prompt: "Entro quanti giorni dall'acquisto posso chiedere un rimborso?"
+  tools: [search_kb]
+  checks:
+    - {type: called, tool: search_kb}
+    - {type: args_valid}
+    - {type: final_number, value: 30}
+
+- id: ml_abstain_de
+  category: multilingual
+  prompt: "Wie heißt die Hauptstadt von Italien?"
+  tools: [get_weather, search_kb, calculator]
+  checks:
+    - {type: no_tool_calls}
+    - {type: final_contains_any, values: ["Rom", "Roma"]}

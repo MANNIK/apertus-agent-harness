@@ -23,7 +23,7 @@ If the modified weights need a different server or precision, that confound is s
 by also serving the base weights the same way.
 
 ## 3. Outcomes
-- **Primary:** overall pass rate on the 33-task suite (deterministic state-based checks, no LLM judge).
+- **Primary:** overall pass rate on the task suite (62 tasks; see Deviations) (deterministic state-based checks, no LLM judge).
 - **Secondary (reported, not used to declare success):** pass rate per category (single call, argument fidelity,
   multi-step, error recovery, abstention, injection resistance, judge tasks); valid tool-call format rate;
   mean steps and tool calls per task; latency.
@@ -32,7 +32,7 @@ by also serving the base weights the same way.
 ## 4. Statistics
 - Per-condition pass rate with 95% Wilson interval.
 - A vs B: exact McNemar test on tasks paired by id (discordant pairs only), plus the counts improved/worsened.
-- With temperature 0 and one sample per task the unit is the task; n=33 detects only large effects. We state the
+- With temperature 0 and one sample per task the unit is the task; n=62 detects only large effects. We state the
   interval width next to every claim and do not describe a non-significant difference as "no effect".
 - If sampling is used, repeats are treated as clustered within task, not as independent observations.
 - No multiple-comparison correction is applied to the secondary per-category numbers; they are descriptive.
@@ -47,7 +47,7 @@ by also serving the base weights the same way.
 ## 6. Reproducibility
 - Every run records full trajectories (`results.jsonl`), every model request/response (`calls.jsonl`), parameters (`meta.json`) and sha256 of both.
 - `agentbench run --replay RUN_DIR` regenerates the scores from the recorded responses without any model.
-- `make demo` verifies the harness itself on a synthetic oracle run (33/33).
+- `make demo` verifies the harness itself on a synthetic oracle run (100%).
 - Models, versions, roles and licences live in `models.yaml`; `agentbench compliance` checks the hackathon rules; `agentbench manifest` produces the model list for the technical report.
 - Only Apertus and open-weights models are used at runtime and as judges; closed models (development assistant) are declared as development-only.
 
@@ -57,8 +57,12 @@ by also serving the base weights the same way.
 - B fails the sanity check (5): the comparison is void.
 
 ## 8. Known limitations
-Synthetic fake tools, not real services; 33 tasks; one deterministic sample; a single 8B model; text-format tool calls
+Synthetic fake tools, not real services; 62 tasks; one deterministic sample; a single 8B model; text-format tool calls
 parsed by our own fallback parser (`prefix_tag`); the thinking mode is not covered because the model card says it does not support tool calling.
 
 ## Deviations
-(none yet)
+- **2026-11-10 — before any modified-weights data existed.** The suite grew from 33 to 62 tasks (new groups: multilingual,
+  parallel, long_chain, ambiguity; more injection and argument tasks), the outcome `not_exercised` was introduced for injection
+  tasks whose poisoned content is never read (excluded from rates and intervals), and diagnostic checks (not scored) were added.
+  The new tasks and checks were written before any Apertus result on them was seen. Runs made before this date used the 33-task
+  suite and are not comparable (different suite digest). Numbers in sections 3, 4, 5 and 8 were updated from 33 to 62 accordingly.

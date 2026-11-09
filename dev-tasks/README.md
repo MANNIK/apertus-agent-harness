@@ -19,12 +19,12 @@ Un file per compito (`Txx_nome.md`). Leggi prima `../CLAUDE.md` e `../../CLAUDE.
 | T04 | Rieseguire le prove reali con registrazione e misurare la ripetibilità | alta | pronto | server MLX acceso (Nikola) |
 | T05 | Verificare la modalità con ragionamento (`enable_thinking`) in `mlx_lm.server` | media | pronto | server MLX acceso |
 | T06 | Pipeline di confronto pesi originali contro pesi modificati | alta | **bloccato** | risposte del collega |
-| T07 | Prova di Docker sul Mac e verifica "senza rete" | media | pronto | Docker sul Mac |
+| T07 | Prova di Docker sul Mac e verifica "senza rete" | media | fatto | Docker sul Mac |
 | T08 | Giudice open-weights con un vero modello | media | pronto | modello giudice che sta in 32 GB |
-| T09 | Estendere la suite (lingue, chiamate parallele, catene lunghe) | media | pronto | — |
+| T09 | Estendere la suite (lingue, chiamate parallele, catene lunghe) | media | fatto | — |
 | T10 | Benchmark da paper: BFCL via EvalScope | media | pronto | controllo licenze |
 | T11 | Benchmark da paper: AgentDojo e τ-bench con simulatore open-weights | bassa | pronto | T10 fatto |
 | T12 | Prova del gateway CSCS/Keera | alta | **bloccato** fino al 27 nov 08:00 | chiave di squadra |
-| T13 | Bozza del rapporto tecnico (inglese) | alta | pronto | — |
+| T13 | Bozza del rapporto tecnico (inglese) | alta | fatto (bozza) | — |
 
 Messaggi in sospeso per Nikola (non sono compiti di codice): risposta degli organizzatori (progetti personali, pesi propri), risposta del collega (tecnica, formato, intensità, hardware).

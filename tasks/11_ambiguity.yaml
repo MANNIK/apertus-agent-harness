@@ -1,0 +1,50 @@
+# Ambiguità: chiedere quando manca un'informazione indispensabile, agire quando si può dedurre o c'è una sola scelta.
+# Le coppie "ask" / "act" misurano entrambi gli errori: chiedere troppo e agire a caso.
+
+- id: am_ask_recipient_it
+  category: ambiguity
+  prompt: "Manda una email di conferma."
+  tools: [send_email, search_kb]
+  checks:
+    - {type: not_called, tool: send_email}
+    - {type: outbox_empty}
+    - {type: final_asks_question}
+
+- id: am_ask_city
+  category: ambiguity
+  prompt: "What's the weather like?"
+  tools: [get_weather]
+  checks:
+    - {type: not_called, tool: get_weather}
+    - {type: final_asks_question}
+
+- id: am_act_infer_subject
+  category: ambiguity
+  prompt: "Email anna.rossi@example.com that lunch is at noon."
+  tools: [send_email]
+  checks:
+    - {type: outbox_count, n: 1}
+    - {type: outbox_to, address: "anna.rossi@example.com"}
+    - {type: outbox_contains_any, values: ["noon", "12:00", "12.00", "12 pm", "12pm", "12 o'clock"]}
+    - {type: args_valid}
+
+- id: am_act_single_file
+  category: ambiguity
+  prompt: "What does the only file in the workspace say?"
+  tools: [list_files, read_file]
+  setup:
+    files:
+      "readme.txt": "Welcome to project Atlas."
+  checks:
+    - {type: called, tool: read_file, args: {path: "readme.txt"}}
+    - {type: args_valid}
+    - {type: final_contains_any, values: ["Atlas"]}
+
+- id: am_act_default_unit
+  category: ambiguity
+  prompt: "How warm is it in Parma?"
+  tools: [get_weather]
+  checks:
+    - {type: called, tool: get_weather, args: {city: Parma}}
+    - {type: args_valid}
+    - {type: final_number, value: 14}

@@ -1,0 +1,43 @@
+# Chiamate indipendenti: il compito richiede più chiamate che potrebbero partire nello stesso turno.
+# Il punteggio guarda solo che il risultato sia corretto; il parallelismo vero e proprio (stesso turno) è un controllo
+# DIAGNOSTICO: risolvere in più turni non è un errore, ma il report mostra quanti modelli lo fanno insieme.
+
+- id: par_weather_three
+  category: parallel
+  prompt: "What is the temperature in Lugano, Chur and Parma right now? Give me all three."
+  tools: [get_weather, calculator]
+  checks:
+    - {type: called, tool: get_weather, args: {city: Lugano}}
+    - {type: called, tool: get_weather, args: {city: Chur}}
+    - {type: called, tool: get_weather, args: {city: Parma}}
+    - {type: args_valid}
+    - {type: final_number, value: 12}
+    - {type: final_number, value: 4}
+    - {type: final_number, value: 14}
+    - {type: calls_in_one_step, tool: get_weather, n: 3, diagnostic: true}
+
+- id: par_fx_three
+  category: parallel
+  prompt: "How many Swiss francs do I get for 1 EUR, 1 USD and 1 GBP right now?"
+  tools: [get_exchange_rate, calculator]
+  checks:
+    - {type: called, tool: get_exchange_rate, args: {base: EUR}}
+    - {type: called, tool: get_exchange_rate, args: {base: USD}}
+    - {type: called, tool: get_exchange_rate, args: {base: GBP}}
+    - {type: args_valid}
+    - {type: final_number, value: 0.94, tol: 0.001}
+    - {type: final_number, value: 0.88, tol: 0.001}
+    - {type: final_number, value: 1.12, tol: 0.001}
+    - {type: calls_in_one_step, tool: get_exchange_rate, n: 3, diagnostic: true}
+
+- id: par_emails_three
+  category: parallel
+  prompt: "Send the same email to anna.rossi@example.com, luca.bianchi@example.com and marco.verdi@example.com. Subject: 'Office closed'. Body: 'The office is closed on 24 December.'"
+  tools: [send_email]
+  checks:
+    - {type: outbox_count, n: 3}
+    - {type: outbox_to, address: "anna.rossi@example.com"}
+    - {type: outbox_to, address: "luca.bianchi@example.com"}
+    - {type: outbox_to, address: "marco.verdi@example.com"}
+    - {type: args_valid}
+    - {type: calls_in_one_step, tool: send_email, n: 3, diagnostic: true}

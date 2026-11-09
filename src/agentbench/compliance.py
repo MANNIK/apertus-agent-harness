@@ -171,20 +171,38 @@ def render_findings(findings: list[Finding]) -> str:
     return "\n".join(lines)
 
 
-def render_manifest(manifest_path: str | Path, run_dirs: list[str | Path] | None = None) -> str:
+_MANIFEST_TEXT = {
+    "it": {"title": "# Modelli usati (regola 6)",
+           "head": ["Modello", "Versione", "Licenza", "Open weights", "Fase", "Ruolo"],
+           "yes": "sì", "no": "no",
+           "target": "Architettura target (regola 5): {t}.", "undeclared_target": "non ancora dichiarata",
+           "seen": "Modelli effettivamente comparsi nelle run analizzate:", "runs": "run",
+           "not_declared": "NON DICHIARATO"},
+    "en": {"title": "# Models used (hackathon rule 6)",
+           "head": ["Model", "Version", "License", "Open weights", "Stage", "Role"],
+           "yes": "yes", "no": "no",
+           "target": "Deployment architecture (rule 5): {t}.", "undeclared_target": "not yet declared",
+           "seen": "Models that actually appeared in the analysed runs:", "runs": "runs",
+           "not_declared": "NOT DECLARED"},
+}
+
+
+def render_manifest(manifest_path: str | Path, run_dirs: list[str | Path] | None = None, lang: str = "it") -> str:
+    if lang not in _MANIFEST_TEXT:
+        raise ValueError(f"lingua non supportata '{lang}' (ammesse: {', '.join(_MANIFEST_TEXT)})")
+    t = _MANIFEST_TEXT[lang]
     m = load_manifest(manifest_path)
-    lines = ["# Modelli usati (regola 6)", "",
-             "| Modello | Versione | Licenza | Open weights | Fase | Ruolo |", "|---|---|---|---|---|---|"]
+    lines = [t["title"], "", "| " + " | ".join(t["head"]) + " |", "|---|---|---|---|---|---|"]
     for e in m["models"]:
-        lines.append(f"| {e['name']} | {e['version']} | {e['license']} | {'sì' if e['open_weights'] else 'no'} | "
+        lines.append(f"| {e['name']} | {e['version']} | {e['license']} | {t['yes'] if e['open_weights'] else t['no']} | "
                      f"{', '.join(e['stages'])} | {e['role']} |")
     target = (m.get("deployment") or {}).get("target")
-    lines += ["", f"Architettura target (regola 5): {target or 'non ancora dichiarata'}."]
+    lines += ["", t["target"].format(t=target or t["undeclared_target"])]
     seen: dict[str, int] = {}
     for d in run_dirs or []:
         meta = json.loads((Path(d) / "meta.json").read_text(encoding="utf-8"))
         seen[meta["model"]] = seen.get(meta["model"], 0) + 1
     if seen:
-        lines += ["", "Modelli effettivamente comparsi nelle run analizzate:", ""]
-        lines += [f"- `{name}` ({n} run){'' if _find_entry(m, name) else ' — NON DICHIARATO'}" for name, n in sorted(seen.items())]
+        lines += ["", t["seen"], ""]
+        lines += [f"- `{name}` ({n} {t['runs']}){'' if _find_entry(m, name) else ' — ' + t['not_declared']}" for name, n in sorted(seen.items())]
     return "\n".join(lines) + "\n"

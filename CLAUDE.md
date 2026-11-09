@@ -10,7 +10,7 @@ Nato per Apertus v1.5 8B in locale (MLX). Contesto del hackathon e regole: vedi 
   http.client, urllib.request, websockets`; `httpx` è ammesso **solo** in `client.py`. Non aggirarlo.
 - **Riproducibilità.** Ogni run salva `results.jsonl`, `calls.jsonl`, `meta.json` con sha256. `agentbench run --replay RUN` deve rigiocare gli stessi punteggi senza modello.
 - **Ogni task deve essere risolvibile**: `tests/test_tasks_solvable.py` ha un percorso corretto per ciascuno (set di id identico a quello dei task).
-- **Onestà dei risultati.** Intervalli di Wilson e McNemar sono già nel report: non scrivere "migliora" senza guardarli (con 33 task si vedono solo effetti grandi).
+- **Onestà dei risultati.** Intervalli di Wilson e McNemar sono già nel report: non scrivere "migliora" senza guardarli (con 62 task si vedono solo effetti grandi).
 
 ## Mappa del codice (`src/agentbench/`)
 | File | Ruolo |
@@ -31,7 +31,7 @@ Nato per Apertus v1.5 8B in locale (MLX). Contesto del hackathon e regole: vedi 
 ```
 scripts/bootstrap.sh              # una volta: uv, Python, dipendenze (tutto dentro .uv/ e .venv/)
 .venv/bin/python -m pytest -q     # test (nessun modello): oggi 98 passati
-make help                         # elenco comandi; make demo = replay sintetico, deve dare 33/33
+make help                         # elenco comandi; make demo = replay sintetico, deve dare 62/62
 scripts/serve_mlx.sh              # server del modello locale (porta 8080), stampa le variabili da esportare
 .venv/bin/agentbench smoke        # primo test contro il modello (LLM_BASE_URL, LLM_NAME, LLM_API_KEY, oppure APERTUS_*)
 make run | make compare A=… B=… | make compliance | make manifest | make judge RUN=…

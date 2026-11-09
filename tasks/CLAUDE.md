@@ -1,6 +1,6 @@
-# tasks — la suite di prova (33 task, 7 gruppi)
+# tasks — la suite di prova (62 task, 11 gruppi)
 
-Un file YAML per gruppo: single_call, arguments, multi_step, error_recovery, abstention, injection, judge. Formato di un task: vedi `src/agentbench/tasks.py` e il README ("Scrivere un task").
+Un file YAML per gruppo (i gruppi `injection` e `arguments` hanno due file): single_call, arguments, multi_step, error_recovery, abstention, injection, judge, multilingual, parallel, long_chain, ambiguity. Formato di un task: vedi `src/agentbench/tasks.py` e il README ("Scrivere un task").
 
 Regole per scrivere o cambiare task:
 - Deterministici: stato iniziale in `setup`, nessun valore casuale o dipendente dalla data.

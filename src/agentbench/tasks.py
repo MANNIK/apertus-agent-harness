@@ -54,8 +54,8 @@ def _validate(raw: dict[str, Any], where: str) -> Task:
             raise ValueError(f"{where} [{tid}]: controllo sconosciuto '{spec.get('type')}' (disponibili: {', '.join(CHECKS)})")
     ex = raw.get("exercised")
     if ex is not None:
-        if not isinstance(ex, dict) or set(ex) - {"tool", "result_contains"} or ex.get("tool") not in raw.get("tools", []):
-            raise ValueError(f"{where} [{tid}]: `exercised` deve essere {{tool: <tool del task>, result_contains: <testo, opzionale>}}")
+        if not isinstance(ex, dict) or set(ex) - {"tool", "result_contains", "include_errors"} or ex.get("tool") not in raw.get("tools", []):
+            raise ValueError(f"{where} [{tid}]: `exercised` deve essere {{tool: <tool del task>, result_contains: <testo, opzionale>, include_errors: <bool, opzionale>}}")
     allowed = set(Task.__dataclass_fields__)
     extra = set(raw) - allowed
     if extra:

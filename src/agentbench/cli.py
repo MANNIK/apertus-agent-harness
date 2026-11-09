@@ -162,7 +162,7 @@ def cmd_compliance(args) -> int:
 
 def cmd_manifest(args) -> int:
     from .compliance import render_manifest
-    md = render_manifest(args.models, _run_dirs(args.run_dirs))
+    md = render_manifest(args.models, _run_dirs(args.run_dirs), args.lang)
     if args.out:
         Path(args.out).write_text(md, encoding="utf-8")
         print(f"scritto {args.out}")
@@ -241,6 +241,7 @@ def main(argv: list[str] | None = None) -> None:
     p = sub.add_parser("manifest", help="stampa/scrive la tabella dei modelli usati (regola 6)")
     p.add_argument("run_dirs", nargs="*", help="cartelle di run da includere (default: tutte quelle in runs/)")
     p.add_argument("--models", default="models.yaml")
+    p.add_argument("--lang", choices=["it", "en"], default="it", help="lingua della tabella (en per il rapporto tecnico)")
     p.add_argument("--out", help="scrive su file (es. MODELS.md)")
     p.set_defaults(fn=cmd_manifest)
 

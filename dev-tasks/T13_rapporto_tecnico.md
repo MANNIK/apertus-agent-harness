@@ -1,5 +1,5 @@
 # T13 — Bozza del rapporto tecnico (inglese)
-Stato: pronto · Priorità: alta
+Stato: fatto (bozza) · Priorità: alta
 
 ## Obiettivo
 Preparare `docs/technical_report.md` in **inglese** con la struttura finale, in modo che all'hackathon basti inserire i risultati veri.
@@ -17,4 +17,12 @@ Preparare `docs/technical_report.md` in **inglese** con la struttura finale, in 
 - File completo di struttura, con sezioni e segnaposto chiari; tabella dei modelli generata dal comando, non scritta a mano.
 
 ## Esito
-(da compilare)
+**Fatto:** `docs/technical_report.md` (inglese) con 8 sezioni: core task (regola 1), modelli (regola 6), architettura (regola 5), riproducibilità, metodo e statistica, risultati, limiti, come riprodurre. Tutti i risultati sono `TBD (run: …)`.
+- La tabella dei modelli è **generata** dal comando `agentbench manifest --models models.yaml --lang en` (nuova opzione `--lang`) e incollata tra i marcatori `MODELS:BEGIN/END`; il test `tests/test_technical_report.py` fallisce se la tabella nel documento non coincide con l'output del comando. Per questo ho tradotto in inglese i campi testuali di `models.yaml` (nome, licenza, ruolo).
+- Un secondo test verifica che le sezioni obbligatorie esistano e che ogni riga di risultato sia un segnaposto `TBD (run:` (niente numeri inventati).
+
+**Architettura (regola 5): lasciata "TBD".** Il documento dice cosa è già vero (nessuna libreria di rete oltre a `httpx` nel client, verificato dal controllo AST; tool finti in memoria; punteggio senza LLM; Docker senza modelli provato in T07 → nel documento resta TBD finché non lo aggiorni) e cosa no.
+
+**Verificato:** `pytest` passa (inclusi i 2 test sul rapporto). **Da fare quando ci sono i dati:** sostituire i segnaposto con numeri letti dalle cartelle di run.
+**Non verificato:** le licenze segnate "to be verified" (8B del gateway, 70B, conversione MLX).
+La sezione 3 e 4 sono state aggiornate con l'esito di T07 (immagine costruita, demo senza rete 62/62, versioni non bloccate).
