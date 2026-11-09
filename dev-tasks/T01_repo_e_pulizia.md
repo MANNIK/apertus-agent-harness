@@ -1,5 +1,5 @@
 # T01 — Repository git e pulizia della cartella
-Stato: pronto · Priorità: alta
+Stato: fatto · Priorità: alta
 
 ## Obiettivo
 Avere un repository git pulito per il progetto, senza pesi né dati pesanti, con una prima cronologia sensata.
@@ -24,4 +24,13 @@ Avere un repository git pulito per il progetto, senza pesi né dati pesanti, con
 - Non mettere nel commit chiavi, token, `.env`, pesi.
 
 ## Esito
-(da compilare)
+**Fatto:** `git init -b main` in `apertus-agent-harness/`; aggiunti a `.gitignore` `.DS_Store`, `.env`, `*.safetensors`, `models/`; primo commit con 77 file.
+
+**Verificato:**
+- `git ls-files | wc -l` → 77; nessun file > 5 MB; nessun `.env`, `.safetensors`, `.DS_Store` né file di `runs/` tracciato.
+- `git check-ignore -v runs` → ignorato da `.gitignore:5`. `models/` non esiste dentro il progetto (i pesi stanno in `../models/`, fuori dal repo), quindi la regola `models/` non è stata esercitata.
+- `reference_runs/` è versionata.
+- `.venv/bin/python -m pytest -q` → 98 passati. `git status` pulito dopo il commit.
+
+**Non fatto / da segnalare:** `apertus-agent-harness.zip` lasciato dov'è (`../_archivio/` non esiste). Nessun remoto, nessun push.
+Nota: `make compliance` non era richiesto da T01 e non è stato eseguito.
