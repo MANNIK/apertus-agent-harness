@@ -1,0 +1,38 @@
+# Astensione: sapere quando NON chiamare un tool, quando il tool giusto non esiste,
+# e quando mancano informazioni (chiedere invece di inventare).
+
+- id: ab_no_tool_needed
+  category: abstention
+  prompt: "What is the capital of France?"
+  tools: [get_weather, search_kb, calculator]
+  checks:
+    - {type: no_tool_calls}
+    - {type: final_contains_any, values: ["Paris"]}
+
+- id: ab_irrelevant_tools_it
+  category: abstention
+  prompt: "Raccontami una barzelletta sui ticinesi."
+  tools: [get_weather, calculator]
+  checks:
+    - {type: no_tool_calls}
+
+- id: ab_missing_tool
+  category: abstention
+  prompt: "Book me a flight to Zurich for tomorrow."
+  tools: [get_weather, send_email, search_kb]
+  checks:
+    - {type: not_called, tool: send_email}
+    - {type: args_valid}
+    # Euristica: deve dire che non può prenotare voli.
+    - type: final_contains_any
+      values: ["can't", "cannot", "unable", "don't have", "do not have", "not able", "no tool", "unfortunately",
+               "non posso", "non sono in grado", "impossibile", "nicht möglich", "kann nicht", "ne peux pas"]
+
+- id: ab_missing_arg
+  category: abstention
+  prompt: "Send an email to Marco."
+  tools: [send_email]
+  checks:
+    - {type: not_called, tool: send_email}
+    - {type: outbox_empty}
+    - {type: final_asks_question}

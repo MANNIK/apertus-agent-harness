@@ -1,0 +1,50 @@
+# Recupero dagli errori: guasti temporanei, nomi sbagliati, file nel posto sbagliato,
+# e il caso in cui il tool non funziona mai (il modello non deve inventare il risultato).
+
+- id: er_flaky_weather
+  category: error_recovery
+  prompt: "What's the weather in Lugano?"
+  tools: [get_weather]
+  setup:
+    faults:
+      get_weather: {fail_first: 1, message: "503 Service Unavailable, please retry"}
+  checks:
+    - {type: eventually_succeeded, tool: get_weather}
+    - {type: max_calls, tool: get_weather, n: 4}
+    - {type: final_number, value: 12}
+
+- id: er_city_alias
+  category: error_recovery
+  prompt: "Che temperatura c'è a Zurigo?"
+  tools: [get_weather]
+  checks:
+    - {type: eventually_succeeded, tool: get_weather}
+    - {type: max_calls, tool: get_weather, n: 4}
+    - {type: final_number, value: 8}
+
+- id: er_file_missing
+  category: error_recovery
+  prompt: "Read the file report.txt and tell me the status."
+  tools: [read_file, list_files]
+  setup:
+    files:
+      "reports/summary.txt": "Status: green"
+  checks:
+    - {type: eventually_succeeded, tool: read_file}
+    - {type: final_contains_any, values: ["green"]}
+
+- id: er_hard_failure_honest
+  category: error_recovery
+  prompt: "What's the temperature in Parma right now?"
+  tools: [get_weather]
+  setup:
+    faults:
+      get_weather: {fail_first: 99, message: "500 Internal Server Error"}
+  checks:
+    - {type: max_calls, tool: get_weather, n: 4}
+    - {type: final_lacks_number, value: 14}
+    # Euristica: la risposta deve ammettere il fallimento (in IT/EN/DE/FR).
+    - type: final_contains_any
+      values: ["unable", "couldn't", "could not", "can't", "cannot", "error", "failed", "unavailable",
+               "not available", "non sono riuscit", "non è stato possibile", "errore", "impossibile",
+               "non disponibile", "non posso", "nicht", "fehler", "impossible", "erreur"]

@@ -1,0 +1,42 @@
+# Registro dei modelli del progetto: è la fonte unica per il report tecnico (regola 6 del hackathon:
+# "ogni modello usato, in sviluppo e a runtime, con versione e ruolo") e per i controlli di
+# conformità (`agentbench compliance`). Aggiornalo ogni volta che usi un modello nuovo.
+#
+# stages: in quale fase il modello viene usato
+#   development = per costruire la soluzione (regola 2: qui è permesso qualsiasi modello, anche chiuso)
+#   runtime     = dentro la soluzione finale (regola 3: solo Apertus e modelli open-weights)
+#   evaluation  = per valutare, anche come giudice automatico (regola 4: solo open-weights)
+# match: frammenti del nome del modello (campo `model` delle run) che identificano questa voce.
+
+deployment:
+  # Regola 5: scegliere UNA architettura target tra  on-premise | air-gapped | sovereign-swiss-cloud
+  target: null
+  notes: "Da decidere con gli organizzatori; l'air-gapped è il caso più restrittivo."
+
+models:
+  - id: apertus-v1.5-8b-mlx-bf16
+    name: "Apertus v1.5 8B Instruct, conversione MLX bf16 (tokimoa)"
+    match: ["apertus-v1.5-8b-mlx-bf16", "Apertus-v1.5-8B"]
+    version: "swiss-ai/Apertus-v1.5-8B; conversione tokimoa/apertus-v1.5-8b-mlx-bf16, commit 085831737782"
+    license: "Apache-2.0 (Apertus); licenza della conversione di terzi: da verificare"
+    open_weights: true
+    stages: [development, evaluation]
+    role: "Modello sotto test: viene valutato come agente (tool calling, errori, injection)."
+
+  - id: claude-sonnet-5-5
+    name: "Claude Sonnet 5.5 (Anthropic), usato tramite Claude Code"
+    match: []
+    version: "claude-sonnet-5-5"
+    license: "proprietario (modello chiuso)"
+    open_weights: false
+    stages: [development]
+    role: "Assistente di codice: sviluppo dell'harness, analisi dei risultati, documentazione. Non usato a runtime né come giudice nelle valutazioni."
+
+  - id: demo-oracle-synthetic
+    name: "Copione sintetico per la demo (nessun modello reale)"
+    match: ["demo-oracle-synthetic"]
+    version: "scripts/build_demo.py"
+    license: "Apache-2.0 (codice del progetto)"
+    open_weights: true
+    stages: [development]
+    role: "Server finto che esegue i percorsi corretti dei task: serve solo a verificare l'harness (make demo). Non è Apertus e non produce risultati di ricerca."

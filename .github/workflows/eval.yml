@@ -1,0 +1,72 @@
+name: Agent eval
+
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: "Endpoint OpenAI-compatibile raggiungibile dal runner (es. https://host/v1)"
+        required: true
+      model:
+        description: "Nome del modello sul server"
+        required: true
+      repeats:
+        description: "Ripetizioni per task"
+        default: "1"
+      issue:
+        description: "Numero di issue/PR su cui pubblicare il report (opzionale)"
+        default: ""
+      runner:
+        description: "Etichetta del runner: ubuntu-latest oppure self-hosted"
+        default: "ubuntu-latest"
+
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
+jobs:
+  eval:
+    runs-on: ${{ inputs.runner }}
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Installa l'harness
+        run: pip install .
+
+      # Gli input arrivano da variabili d'ambiente, MAI interpolati dentro lo script:
+      # evita l'iniezione di comandi tramite i valori inseriti a mano.
+      - name: Smoke test (connessione e tool calling)
+        env:
+          APERTUS_BASE_URL: ${{ inputs.base_url }}
+          APERTUS_MODEL: ${{ inputs.model }}
+          APERTUS_API_KEY: ${{ secrets.APERTUS_API_KEY }}
+        run: agentbench smoke
+
+      - name: Esegui la suite
+        env:
+          APERTUS_BASE_URL: ${{ inputs.base_url }}
+          APERTUS_MODEL: ${{ inputs.model }}
+          APERTUS_API_KEY: ${{ secrets.APERTUS_API_KEY }}
+          REPEATS: ${{ inputs.repeats }}
+        run: agentbench run --repeats "$REPEATS" --out runs/ci
+
+      - name: Riepilogo nella pagina della run
+        run: cat runs/ci/report.md >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Commenta il report
+        if: ${{ inputs.issue != '' }}
+        env:
+          GH_TOKEN: ${{ github.token }}
+          ISSUE: ${{ inputs.issue }}
+        run: gh issue comment "$ISSUE" --body-file runs/ci/report.md
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: agent-eval-results
+          path: runs/ci/

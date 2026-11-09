@@ -1,0 +1,37 @@
+# Fedeltà degli argomenti: valori esatti, enum, più chiamate indipendenti.
+
+- id: ar_email_exact
+  category: arguments
+  prompt: "Send an email to anna.rossi@example.com with the subject 'Meeting moved' and the body 'The meeting is now at 15:30 on Friday.'"
+  tools: [send_email, create_ticket]
+  checks:
+    - {type: called, tool: send_email, args: {to: "anna.rossi@example.com", subject: "Meeting moved"}, args_contains: {body: ["15:30", "Friday"]}}
+    - {type: outbox_count, n: 1}
+    - {type: args_valid}
+
+- id: ar_fahrenheit_value
+  category: arguments
+  prompt: "What's the temperature in Chur in Fahrenheit?"
+  tools: [get_weather, calculator]
+  checks:
+    - {type: called, tool: get_weather, args: {city: Chur}}
+    - {type: args_valid}
+    - {type: final_number, value: 39.2, tol: 0.1}
+
+- id: ar_enum_priority
+  category: arguments
+  prompt: "Create a ticket with low priority: 'Update footer copyright year'."
+  tools: [create_ticket]
+  checks:
+    - {type: called, tool: create_ticket, args: {priority: low}, args_contains: {title: ["footer"]}}
+    - {type: args_valid}
+
+- id: ar_two_emails
+  category: arguments
+  prompt: "Email both anna.rossi@example.com and luca.bianchi@example.com with the subject 'Release 2.4 is out' and the body 'Release 2.4 shipped today.'"
+  tools: [send_email]
+  checks:
+    - {type: outbox_count, n: 2}
+    - {type: outbox_to, address: "anna.rossi@example.com"}
+    - {type: outbox_to, address: "luca.bianchi@example.com"}
+    - {type: args_valid}

@@ -1,0 +1,68 @@
+# Catene di più chiamate: il risultato di un passo serve al successivo, oppure servono N chiamate.
+
+- id: ms_weather_diff
+  category: multi_step
+  prompt: "Which is warmer right now, Lugano or Zurich, and by how many degrees Celsius?"
+  tools: [get_weather, calculator]
+  checks:
+    - {type: called, tool: get_weather, args: {city: Lugano}}
+    - {type: called, tool: get_weather, args_in: {city: ["Zurich", "Zürich"]}}
+    - {type: args_valid}
+    - {type: final_contains_any, values: ["Lugano"]}
+    - {type: final_number, value: 4}
+
+- id: ms_fx_total
+  category: multi_step
+  prompt: "How many CHF is 1200 USD at the current rate? Then add a 3% fee on top and give me the final total."
+  tools: [get_exchange_rate, calculator]
+  checks:
+    - {type: called, tool: get_exchange_rate}
+    - {type: args_valid}
+    - {type: final_number, value: 1087.68, tol: 0.01}
+
+- id: ms_file_sum
+  category: multi_step
+  prompt: "Sum the revenue from all files in the sales/ folder and save the total to sales/total.txt as just the number."
+  tools: [list_files, read_file, write_file, calculator]
+  setup:
+    files:
+      "sales/q1.txt": "Revenue: 1200"
+      "sales/q2.txt": "Revenue: 1500"
+      "sales/q3.txt": "Revenue: 1800"
+  checks:
+    - {type: called, tool: read_file, min_times: 3}
+    - {type: fs_equals, path: "sales/total.txt", content: "4500"}
+    - {type: args_valid}
+
+- id: ms_kb_email
+  category: multi_step
+  prompt: "Find our support email in the knowledge base and send them a message with the subject 'Feature request' asking when dark mode will be available."
+  tools: [search_kb, send_email]
+  checks:
+    - {type: order, tools: [search_kb, send_email]}
+    - {type: outbox_to, address: "help@helvetia-labs.example"}
+    - {type: called, tool: send_email, args: {subject: "Feature request"}, args_contains: {body: ["dark mode"]}}
+    - {type: args_valid}
+
+- id: ms_find_file
+  category: multi_step
+  prompt: "What launch date was decided in the meeting notes from November 3rd?"
+  tools: [list_files, read_file]
+  setup:
+    files:
+      "notes/todo.txt": "buy milk"
+      "notes/meeting_2026-11-03.txt": "Decision: launch date moved to 14 December."
+      "notes/ideas.txt": "robot lawnmower"
+  checks:
+    - {type: called, tool: read_file, args: {path: "notes/meeting_2026-11-03.txt"}}
+    - {type: args_valid}
+    - {type: final_contains_any, values: ["14 December", "December 14", "14 dicembre", "14. Dezember", "14 décembre", "14/12", "14.12"]}
+
+- id: ms_three_cities
+  category: multi_step
+  prompt: "Give me the average temperature in Celsius across Zurich, Geneva and Bern right now."
+  tools: [get_weather, calculator]
+  checks:
+    - {type: called, tool: get_weather, min_times: 3}
+    - {type: args_valid}
+    - {type: final_number, value: 7.67, tol: 0.05}

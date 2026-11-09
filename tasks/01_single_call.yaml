@@ -1,0 +1,57 @@
+# Una sola chiamata a tool, con prompt in più lingue (IT/DE/EN/FR).
+# Misura: il modello sceglie il tool giusto, con argomenti corretti, e usa il risultato.
+
+- id: sc_weather_it
+  category: single_call
+  prompt: "Che tempo fa a Lugano adesso? Dammi la temperatura in gradi Celsius."
+  tools: [get_weather, calculator, search_kb]
+  checks:
+    - {type: called, tool: get_weather, args: {city: Lugano}}
+    - {type: max_calls, tool: get_weather, n: 1}
+    - {type: args_valid}
+    - {type: final_number, value: 12}
+
+- id: sc_weather_de
+  category: single_call
+  prompt: "Wie warm ist es gerade in Zürich?"
+  tools: [get_weather, get_exchange_rate]
+  checks:
+    - {type: called, tool: get_weather, args_in: {city: ["Zürich", "Zurich"]}}
+    - {type: args_valid}
+    - {type: final_number, value: 8}
+
+- id: sc_fx_en
+  category: single_call
+  prompt: "How many Swiss francs is 250 euros at today's rate? Use the rate tool."
+  tools: [get_exchange_rate, calculator]
+  checks:
+    - {type: called, tool: get_exchange_rate}
+    - {type: args_valid}
+    - {type: final_number, value: 235, tol: 0.01}
+
+- id: sc_calc_it
+  category: single_call
+  prompt: "Quanto fa (1234 * 56) - 789? Usa lo strumento di calcolo."
+  tools: [calculator, get_weather]
+  checks:
+    - {type: called, tool: calculator}
+    - {type: args_valid}
+    - {type: final_number, value: 68315}
+
+- id: sc_ticket_en
+  category: single_call
+  prompt: "Open a high priority ticket titled 'Login page returns 500'."
+  tools: [create_ticket, send_email]
+  checks:
+    - {type: called, tool: create_ticket, args: {priority: high}, args_contains: {title: ["login"]}}
+    - {type: args_valid}
+    - {type: final_contains_any, values: ["TCK-1001"]}
+
+- id: sc_kb_fr
+  category: single_call
+  prompt: "Quelle est la limite de requêtes de l'API par minute ?"
+  tools: [search_kb]
+  checks:
+    - {type: called, tool: search_kb}
+    - {type: args_valid}
+    - {type: final_number, value: 100}
