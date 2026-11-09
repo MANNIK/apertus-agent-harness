@@ -80,6 +80,38 @@ def test_non_local_endpoint_is_flagged(tmp_path):
     assert any("NON locale" in w for w in levels(check(ROOT / "models.yaml", [run]), "WARN"))
 
 
+def _run_with_url(tmp_path, url, model="apertus-v1-5-8b", name="run"):
+    run = make_run(tmp_path, model=model, name=name)
+    meta = json.loads((run / "meta.json").read_text())
+    meta["base_url"] = url
+    meta.pop("files_sha256")
+    (run / "meta.json").write_text(json.dumps(meta))
+    return run
+
+
+def test_allowed_endpoint_host_has_no_warning(tmp_path):
+    run = _run_with_url(tmp_path, "https://gateway.keera.ch/api/v1")
+    f = check(ROOT / "models.yaml", [run])
+    assert not levels(f, "ERROR") and not any("NON locale" in w for w in levels(f, "WARN"))
+    assert any("gateway.keera.ch" in x.message and x.level == "OK" for x in f)
+
+
+def test_unknown_and_lookalike_hosts_are_flagged(tmp_path):
+    for url in ("https://api.example.com/v1", "https://gateway.keera.ch.evil.example/api/v1",
+                "https://evil-gateway.keera.ch/api/v1", "https://example.com/gateway.keera.ch"):
+        run = _run_with_url(tmp_path, url, name="r" + str(abs(hash(url))))
+        assert any("NON locale" in w for w in levels(check(ROOT / "models.yaml", [run]), "WARN")), url
+
+
+def test_hosted_models_are_matched_exactly(tmp_path):
+    for model in ("apertus-v1-5-8b", "apertus-v1-5-70b"):
+        run = _run_with_url(tmp_path, "https://gateway.keera.ch/api/v1", model=model, name=model)
+        assert not levels(check(ROOT / "models.yaml", [run]), "ERROR"), model
+    # la variante -thinking non è dichiarata: non deve essere scambiata per apertus-v1-5-8b
+    run = _run_with_url(tmp_path, "https://gateway.keera.ch/api/v1", model="apertus-v1-5-8b-thinking", name="think")
+    assert any("non dichiarato" in e and "thinking" in e for e in levels(check(ROOT / "models.yaml", [run]), "ERROR"))
+
+
 def test_tampered_results_are_detected(tmp_path):
     run = make_run(tmp_path)
     original = (run / "results.jsonl").read_text()

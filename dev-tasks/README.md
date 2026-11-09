@@ -14,7 +14,7 @@ Un file per compito (`Txx_nome.md`). Leggi prima `../CLAUDE.md` e `../../CLAUDE.
 | ID | Compito | Priorità | Stato | Serve |
 | --- | --- | --- | --- | --- |
 | T01 | Repository git e pulizia della cartella | alta | fatto | — |
-| T02 | Dichiarare gli endpoint consentiti (gateway CSCS/Keera) nella conformità | alta | pronto | — |
+| T02 | Dichiarare gli endpoint consentiti (gateway CSCS/Keera) nella conformità | alta | fatto | — |
 | T03 | Correggere i difetti noti della suite | alta | pronto | — |
 | T04 | Rieseguire le prove reali con registrazione e misurare la ripetibilità | alta | pronto | server MLX acceso (Nikola) |
 | T05 | Verificare la modalità con ragionamento (`enable_thinking`) in `mlx_lm.server` | media | pronto | server MLX acceso |

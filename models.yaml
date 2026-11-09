@@ -6,12 +6,19 @@
 #   development = per costruire la soluzione (regola 2: qui è permesso qualsiasi modello, anche chiuso)
 #   runtime     = dentro la soluzione finale (regola 3: solo Apertus e modelli open-weights)
 #   evaluation  = per valutare, anche come giudice automatico (regola 4: solo open-weights)
-# match: frammenti del nome del modello (campo `model` delle run) che identificano questa voce.
+# match: frammenti del nome del modello (campo `model` delle run) che identificano questa voce (per sottostringa).
+#   Il campo `id` vale invece solo per corrispondenza esatta: le voci dei modelli ospitati (es. apertus-v1-5-8b)
+#   non usano `match`, così `apertus-v1-5-8b-thinking` NON viene scambiato per `apertus-v1-5-8b`.
 
 deployment:
   # Regola 5: scegliere UNA architettura target tra  on-premise | air-gapped | sovereign-swiss-cloud
   target: null
   notes: "Da decidere con gli organizzatori; l'air-gapped è il caso più restrittivo."
+  # Host non locali ammessi come endpoint (corrispondenza ESATTA del nome host, non per sottostringa).
+  # gateway.keera.ch = gateway ufficiale dell'hackathon (CSCS tramite Keera), cloud sovrano svizzero (regola 5),
+  # indicato nella pagina "Resources & Tools". Questo elenco non sceglie l'architettura target.
+  allowed_endpoint_hosts:
+    - gateway.keera.ch
 
 models:
   - id: apertus-v1.5-8b-mlx-bf16
@@ -40,3 +47,22 @@ models:
     open_weights: true
     stages: [development]
     role: "Server finto che esegue i percorsi corretti dei task: serve solo a verificare l'harness (make demo). Non è Apertus e non produce risultati di ricerca."
+
+  # Modelli ospitati dal gateway ufficiale (gateway.keera.ch). Gli id sono i nomi esposti dall'API.
+  - id: apertus-v1-5-8b
+    name: "Apertus v1.5 8B, servito dal gateway CSCS/Keera"
+    match: []
+    version: "swiss-ai/Apertus-v1.5-8B (pesi ufficiali; versione esatta servita dal gateway: da verificare)"
+    license: "Apache-2.0 (Apertus; come nella voce MLX sopra, scheda del gateway non controllata)"
+    open_weights: true
+    stages: [development, evaluation]
+    role: "Modello sotto test via API ufficiale: valutazione come agente (tool calling, errori, injection)."
+
+  - id: apertus-v1-5-70b
+    name: "Apertus v1.5 70B, servito dal gateway CSCS/Keera"
+    match: []
+    version: "swiss-ai/Apertus-v1.5-70B (pesi ufficiali; versione esatta servita dal gateway: da verificare)"
+    license: "da verificare"
+    open_weights: true
+    stages: [development, evaluation]
+    role: "Modello sotto test via API ufficiale (variante grande): valutazione come agente."

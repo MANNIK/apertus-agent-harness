@@ -219,7 +219,7 @@ Tutto passa da `make` (`make help` elenca i comandi).
   rigioca quelle risposte senza modello e deve riprodurre gli stessi punteggi. Le chiavi ignorano il nome del modello e gli id casuali delle tool call.
 - **Statistiche.** `report` e `compare` mostrano intervalli di Wilson al 95% e, nel confronto, il test esatto di McNemar.
 - **Conformità.** `models.yaml` è il registro dei modelli; `agentbench compliance` esce con codice 1 se un modello chiuso compare a runtime
-  o come giudice, se un endpoint non è locale (avviso) o se i file di una run non corrispondono ai sha256 registrati.
+  o come giudice, se un endpoint non è locale (avviso, tranne gli host dichiarati in `deployment.allowed_endpoint_hosts` di `models.yaml`, a corrispondenza esatta; oggi `gateway.keera.ch`) o se i file di una run non corrispondono ai sha256 registrati.
 - **Giudice.** `agentbench judge` usa il rubric `rubrics/agentic_v1.md`, temperatura 0, e salva `judge.jsonl` e `judge_meta.json`.
   Non sostituisce i controlli deterministici: serve a trovare i controlli troppo severi o troppo indulgenti.
 - **Piano di analisi.** `docs/analysis_plan.md` (in inglese) fissa in anticipo domande, statistiche e controlli per il confronto base vs modificato.

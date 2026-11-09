@@ -1,5 +1,5 @@
 # T02 — Dichiarare gli endpoint consentiti nella conformità
-Stato: pronto · Priorità: alta
+Stato: fatto · Priorità: alta
 
 ## Obiettivo
 `agentbench compliance` avvisa oggi per ogni endpoint non locale. L'endpoint ufficiale CSCS/Keera (`https://gateway.keera.ch/api/v1`) è ammesso (cloud sovrano svizzero, regola 5): serve poterlo dichiarare in `models.yaml` e far sparire l'avviso solo per quello.
@@ -20,4 +20,19 @@ Stato: pronto · Priorità: alta
 - Non mettere chiavi o credenziali in `models.yaml`.
 
 ## Esito
-(da compilare)
+**Fatto:**
+- `models.yaml`: `deployment.allowed_endpoint_hosts: [gateway.keera.ch]` con commento; aggiunte le voci `apertus-v1-5-8b` e `apertus-v1-5-70b` (`stages: [development, evaluation]`, `open_weights: true`).
+- `compliance.py`: nuova `is_allowed_host` (nome host esatto, senza maiuscole); un host in elenco dà ✓, gli altri host non locali restano avviso.
+- Caso `-thinking`: le nuove voci non usano `match` (solo `id`, che è esatto), quindi `apertus-v1-5-8b-thinking` risulta "non dichiarato" (errore), come voluto finché non lo dichiariamo.
+- 3 test nuovi in `tests/test_compliance.py`: host ammesso senza avviso; host sconosciuto e host ingannevoli (`gateway.keera.ch.evil.example`, `evil-gateway.keera.ch`, host diverso con il nome nel percorso) con avviso; modelli ospitati a corrispondenza esatta e `-thinking` non dichiarato.
+- README (sezione conformità) aggiornato.
+
+**Verificato:**
+- `.venv/bin/python -m pytest -q` → 101 passati (98 + 3).
+- `make compliance` → 0 errori, 1 avviso (architettura target non dichiarata, voluto).
+- `agentbench compliance reference_runs/demo-oracle` → 0 errori.
+
+**Non verificato / da sapere:**
+- Licenza del 70B: "da verificare" (non ho controllato la scheda su Hugging Face, senza accesso alla rete in questa sessione). Nella voce 8B ho riusato Apache-2.0 dalla voce MLX esistente, anch'essa non ricontrollata sulla scheda.
+- Versione esatta servita dal gateway: da verificare (si saprà solo con T12, dal 27 nov).
+- Non ho scelto `deployment.target`: resta a Nikola.

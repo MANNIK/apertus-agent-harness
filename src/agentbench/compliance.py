@@ -89,6 +89,13 @@ def is_local_url(url: str) -> bool:
         return "." not in host  # nome di servizio interno (es. un container "vllm")
 
 
+def is_allowed_host(m: dict[str, Any], url: str) -> str | None:
+    """Nome host se è in `deployment.allowed_endpoint_hosts` (corrispondenza esatta, senza maiuscole)."""
+    host = (urlparse(url).hostname or "").lower()
+    allowed = {str(h).lower() for h in ((m.get("deployment") or {}).get("allowed_endpoint_hosts") or [])}
+    return host if host and host in allowed else None
+
+
 def _run_findings(m: dict[str, Any], run_dir: Path) -> list[Finding]:
     out: list[Finding] = []
     tag = f"[{run_dir.name}]"
@@ -100,6 +107,8 @@ def _run_findings(m: dict[str, Any], run_dir: Path) -> list[Finding]:
         out.append(Finding("OK", "6", f"{tag} modello dichiarato: {entry['id']}"))
     if is_local_url(meta["base_url"]):
         out.append(Finding("OK", "3/5", f"{tag} endpoint locale: {meta['base_url']}"))
+    elif (allowed := is_allowed_host(m, meta["base_url"])):
+        out.append(Finding("OK", "3/5", f"{tag} endpoint ammesso dichiarato in models.yaml: {allowed}"))
     else:
         out.append(Finding("WARN", "3/5", f"{tag} endpoint NON locale ({meta['base_url']}): va dichiarato come "
                                           "cloud sovrano svizzero o simile e deve essere un servizio ammesso"))
