@@ -12,12 +12,13 @@ Un task può iniettare comportamenti nel ToolBox tramite `setup`:
 from __future__ import annotations
 
 import ast
+import copy
 import json
 import operator as op
 import re
 import unicodedata
 from collections import defaultdict
-from typing import Any
+from typing import Any, Iterable
 
 from .types import ToolCall, ToolResult
 
@@ -112,6 +113,14 @@ TOOL_DEFS: dict[str, tuple[str, dict[str, Any]]] = {
 }
 
 
+# Ablazioni: varianti dello schema dei tool, selezionabili da riga di comando (`--ablate`) per misurare
+# l'effetto di un dettaglio. Non cambiano i default.
+#   calculator_example -> toglie l'esempio "(12 + 8) / 2" dalla descrizione di `expression`: il modello a
+#                         volte lo copia invece di usare l'espressione della domanda.
+CALCULATOR_NO_EXAMPLE = "An arithmetic expression to evaluate"
+ABLATIONS = ("calculator_example",)
+
+
 # --------------------------------------------------------------------------- utilità
 
 _TYPES: dict[str, Any] = {
@@ -191,12 +200,22 @@ class ToolBox:
         self.counts: dict[str, int] = defaultdict(int)
 
     @staticmethod
-    def specs(names: list[str]) -> list[dict[str, Any]]:
-        """Definizioni dei tool nel formato `tools` di OpenAI."""
-        return [
-            {"type": "function", "function": {"name": n, "description": TOOL_DEFS[n][0], "parameters": TOOL_DEFS[n][1]}}
-            for n in names
-        ]
+    def specs(names: list[str], ablations: Iterable[str] = ()) -> list[dict[str, Any]]:
+        """Definizioni dei tool nel formato `tools` di OpenAI.
+
+        `ablations` seleziona varianti di prova (vedi ABLATIONS); di default nessuna: lo schema ufficiale
+        della suite resta quello di TOOL_DEFS."""
+        unknown = set(ablations) - set(ABLATIONS)
+        if unknown:
+            raise ValueError(f"ablazioni sconosciute {sorted(unknown)} (disponibili: {', '.join(ABLATIONS)})")
+        out = []
+        for n in names:
+            desc, schema = TOOL_DEFS[n]
+            if n == "calculator" and "calculator_example" in set(ablations):
+                schema = copy.deepcopy(schema)
+                schema["properties"]["expression"]["description"] = CALCULATOR_NO_EXAMPLE
+            out.append({"type": "function", "function": {"name": n, "description": desc, "parameters": schema}})
+        return out
 
     def execute(self, call: ToolCall, available: list[str]) -> ToolResult:
         """Esegue una chiamata. Gli errori del modello (tool inventato, argomenti sbagliati)

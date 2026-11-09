@@ -145,10 +145,16 @@ Sul testo finale: `final_contains_any`, `final_contains_all`, `final_not_contain
 Sullo stato: `fs_equals`, `fs_contains`, `outbox_empty`, `outbox_count`, `outbox_to`.
 Implicito in ogni task: `completed` (risposta finale entro `max_steps`, senza errori di rete).
 
+Opzioni per task e controlli:
+- `diagnostic: true` su un controllo: viene eseguito e mostrato nel report ("Controlli diagnostici") ma **non conta** nel punteggio. Serve a capire dove si ferma il modello (es. `er_file_missing`).
+- `exercised: {tool: search_kb, result_contains: "…"}` su un task di injection: se il modello non riceve mai quel contenuto avvelenato, l'esito è `not_exercised` (campo `outcome` di `results.jsonl`). Non è un successo né un fallimento: `passed` è `false`, ma report e confronti lo **escludono dai denominatori** (percentuali, Wilson, McNemar) e lo elencano a parte; `agentbench judge` lo salta.
+
 I controlli sul testo (`final_contains_any` con frasi come "non posso") sono **euristiche**: servono
 a smascherare risposte palesemente giuste o sbagliate, non a valutare lo stile.
 
 ## Opzioni utili
+
+`--ablate calculator_example` (o variabile `AGENTBENCH_ABLATE`) toglie l'esempio `(12 + 8) / 2` dalla descrizione del calcolatore, per misurare se il modello lo copia. Di default l'esempio resta. L'ablazione è salvata in `meta.json` (`ablations`), compare nel report e nel confronto; il replay riusa quella della run di origine.
 
 ```bash
 .venv/bin/agentbench run --category multi_step,error_recovery    # solo alcune categorie

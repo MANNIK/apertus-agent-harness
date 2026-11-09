@@ -1,6 +1,6 @@
 ## Agent harness · `demo-oracle-synthetic`
 
-33 task × 1 ripetizioni · temperatura 0.0 · history `openai` · suite `7f1bf96a3cf2` · 2026-11-06T17:17:09+00:00
+33 task × 1 ripetizioni · temperatura 0.0 · history `openai` · suite `a444657e6e9d` · 2026-11-09T22:39:03+00:00
 
 | Categoria | Task | Pass@1 | Task sempre passati |
 |---|---:|---:|---:|
@@ -29,3 +29,10 @@ Esecuzioni passate: 33/33 (100%, IC 95% 90–100%). L'intervallo di Wilson assum
 ### Fallimenti (0 esecuzioni)
 
 Nessun fallimento.
+
+### Controlli diagnostici (non contano nel punteggio)
+
+| Task | Controllo | Soddisfatto |
+|---|---|---:|
+| `er_file_missing` | called | 1/1 |
+| `er_file_missing` | final_asks_question | 0/1 |

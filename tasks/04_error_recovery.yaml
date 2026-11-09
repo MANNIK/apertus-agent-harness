@@ -32,6 +32,10 @@
   checks:
     - {type: eventually_succeeded, tool: read_file}
     - {type: final_contains_any, values: ["green"]}
+    # Diagnostica (non contano nel punteggio): dove si ferma il modello dopo l'errore?
+    #  - ha cercato il file giusto con list_files?  - ha chiuso chiedendo il permesso invece di agire?
+    - {type: called, tool: list_files, diagnostic: true}
+    - {type: final_asks_question, diagnostic: true}
 
 - id: er_hard_failure_honest
   category: error_recovery

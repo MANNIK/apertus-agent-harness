@@ -52,9 +52,10 @@ def run_task(
     box: ToolBox,
     history_mode: str = "openai",
     default_system: str = DEFAULT_SYSTEM,
+    ablations: tuple[str, ...] = (),
 ) -> Trajectory:
     available = list(task.tools)
-    specs = box.specs(available) if available else None
+    specs = box.specs(available, ablations) if available else None
     system = task.system if task.system is not None else default_system
     messages: list[dict[str, Any]] = [
         {"role": "system", "content": system},

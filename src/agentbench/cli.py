@@ -80,6 +80,16 @@ def cmd_smoke(args) -> int:
     return 0 if ok else 1
 
 
+def _parse_ablations(raw: str | None) -> tuple[str, ...]:
+    """Ablazioni da --ablate o dalla variabile AGENTBENCH_ABLATE (separate da virgola)."""
+    from .tools import ABLATIONS
+    names = tuple(x.strip() for x in (raw or os.environ.get("AGENTBENCH_ABLATE", "")).split(",") if x.strip())
+    unknown = set(names) - set(ABLATIONS)
+    if unknown:
+        sys.exit(f"ablazioni sconosciute {sorted(unknown)} (disponibili: {', '.join(ABLATIONS)})")
+    return names
+
+
 def cmd_run(args) -> int:
     replay = ReplayClient(args.replay) if args.replay else None
     client = replay if replay else _client(args)
@@ -97,23 +107,30 @@ def cmd_run(args) -> int:
         system = replay.source_meta["system_prompt"]
     else:
         system = DEFAULT_SYSTEM
+    if args.ablate and replay:
+        sys.exit("--ablate non si combina con --replay: il replay usa le ablazioni della run di origine")
+    ablations = _parse_ablations(args.ablate) if not replay else tuple(replay.source_meta.get("ablations") or ())
     history_mode = args.history_mode or (replay.source_meta["history_mode"] if replay else "openai")
     print(f"{len(tasks)} task × {args.repeats} ripetizioni → {out}\n")
 
     def show(rec) -> None:
-        mark = "PASS" if rec["passed"] else "FAIL"
+        mark = {"passed": "PASS", "not_exercised": "N/EX"}.get(rec.get("outcome"), "FAIL")
         print(f"[{mark}] {rec['task_id']:<28} #{rec['repeat'] + 1}  {rec['n_steps']} step, "
               f"{rec['n_tool_calls']} tool call, {rec['latency_s']:.1f}s")
-        if not rec["passed"]:
+        if rec.get("outcome") == "not_exercised":
+            print("         · attacco mai letto dal modello: non conta né come passato né come fallito")
+        elif not rec["passed"]:
             for c in rec["checks"]:
-                if not c["ok"]:
+                if not c["ok"] and not c.get("diagnostic"):
                     print(f"         ✗ {c['type']}: {c['detail'][:160]}")
 
     records = run_suite(client, tasks, args.repeats, out, history_mode, system, tasks_digest(args.tasks), show,
-                        record=not args.no_record)
+                        record=not args.no_record, ablations=ablations)
     (out / "report.md").write_text(render_markdown(out), encoding="utf-8")
     passed = sum(r["passed"] for r in records)
-    print(f"\n{passed}/{len(records)} esecuzioni passate. Report: {out / 'report.md'}")
+    noex = sum(r.get("outcome") == "not_exercised" for r in records)
+    extra = f" ({noex} non esercitate, escluse dal conteggio dei fallimenti)" if noex else ""
+    print(f"\n{passed}/{len(records)} esecuzioni passate{extra}. Report: {out / 'report.md'}")
     return 0
 
 
@@ -199,6 +216,9 @@ def main(argv: list[str] | None = None) -> None:
                    help="default: openai (nel replay: quello della run di origine)")
     p.add_argument("--replay", metavar="RUN_DIR",
                    help="non usa nessun modello: ripropone le risposte registrate in RUN_DIR/calls.jsonl e ri-valuta")
+    p.add_argument("--ablate", metavar="NOMI",
+                   help="varianti di prova dello schema dei tool, separate da virgola (env AGENTBENCH_ABLATE); "
+                        "oggi: calculator_example = senza l'esempio '(12 + 8) / 2' nel calcolatore")
     p.add_argument("--no-record", action="store_true", help="non salvare calls.jsonl (di default ogni run lo salva)")
     p.add_argument("--system-prompt-file", help="sostituisce il system prompt di default")
     p.add_argument("--out", help="cartella di output (default runs/<modello>-<data>)")

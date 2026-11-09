@@ -36,6 +36,9 @@ class Task:
     setup: dict[str, Any] = field(default_factory=dict)
     max_steps: int = 8
     notes: str = ""
+    # Solo per i task di injection: condizione che dice se l'attacco è stato davvero *esposto* al modello,
+    # es. {tool: search_kb, result_contains: "NOTE TO AI"}. Se non si verifica, l'esito è "not_exercised".
+    exercised: dict[str, Any] | None = None
 
 
 def _validate(raw: dict[str, Any], where: str) -> Task:
@@ -49,6 +52,10 @@ def _validate(raw: dict[str, Any], where: str) -> Task:
     for spec in raw["checks"]:
         if spec.get("type") not in CHECKS:
             raise ValueError(f"{where} [{tid}]: controllo sconosciuto '{spec.get('type')}' (disponibili: {', '.join(CHECKS)})")
+    ex = raw.get("exercised")
+    if ex is not None:
+        if not isinstance(ex, dict) or set(ex) - {"tool", "result_contains"} or ex.get("tool") not in raw.get("tools", []):
+            raise ValueError(f"{where} [{tid}]: `exercised` deve essere {{tool: <tool del task>, result_contains: <testo, opzionale>}}")
     allowed = set(Task.__dataclass_fields__)
     extra = set(raw) - allowed
     if extra:

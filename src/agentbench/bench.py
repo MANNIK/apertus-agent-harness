@@ -14,7 +14,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from . import __version__
-from .checks import evaluate
+from .checks import evaluate, was_exercised
 from .client import ChatClient
 from .recording import CALLS_FILE, file_sha256
 from .runner import run_task
@@ -33,12 +33,19 @@ def _git_sha() -> str | None:
 def _record(task: Task, repeat: int, traj, checks: list[dict[str, Any]]) -> dict[str, Any]:
     pairs = traj.pairs
     usage = [s.usage for s in traj.steps]
+    scored = [c for c in checks if not c.get("diagnostic")]  # i controlli diagnostici non contano
+    exercised = was_exercised(task, traj)
+    # outcome: passed | failed | not_exercised. `not_exercised` (l'attacco non è mai stato letto dal modello)
+    # non è né un successo né un fallimento: `passed` è False, ma i report lo escludono dai denominatori.
+    outcome = "not_exercised" if exercised is False else ("passed" if all(c["ok"] for c in scored) else "failed")
     return {
         "task_id": task.id,
         "category": task.category,
         "repeat": repeat,
-        "passed": all(c["ok"] for c in checks),
-        "score": sum(c["ok"] for c in checks) / len(checks),
+        "outcome": outcome,
+        "exercised": exercised,
+        "passed": outcome == "passed",
+        "score": sum(c["ok"] for c in scored) / len(scored),
         "checks": checks,
         "stopped": traj.stopped,
         "error": traj.error,
@@ -65,6 +72,7 @@ def run_suite(
     tasks_digest: str | None = None,
     on_result: Callable[[dict[str, Any]], None] | None = None,
     record: bool = True,
+    ablations: tuple[str, ...] = (),
 ) -> list[dict[str, Any]]:
     out_dir.mkdir(parents=True, exist_ok=True)
     if hasattr(client, "record_to") and record:
@@ -81,6 +89,7 @@ def run_suite(
         "seed": client.seed,
         "extra_body": client.extra_body,
         "history_mode": history_mode,
+        "ablations": sorted(ablations),
         "system_prompt": system_prompt,
         "repeats": repeats,
         "n_tasks": len(tasks),
@@ -95,7 +104,7 @@ def run_suite(
         for task in tasks:
             for rep in range(repeats):
                 box = ToolBox(task.setup)  # stato fresco a ogni esecuzione
-                traj = run_task(client, task, box, history_mode, system_prompt)
+                traj = run_task(client, task, box, history_mode, system_prompt, tuple(ablations))
                 rec = _record(task, rep, traj, evaluate(task, traj, box))
                 records.append(rec)
                 f.write(json.dumps(rec, ensure_ascii=False) + "\n")

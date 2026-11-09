@@ -23,10 +23,16 @@ def _pct(x: float) -> str:
     return f"{100 * x:.0f}%"
 
 
+def scored(records: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    """Le esecuzioni che contano nelle percentuali: tutte tranne quelle "non esercitate" (l'attacco di un
+    task di injection non è mai stato letto dal modello: non è né un successo né un fallimento)."""
+    return [r for r in records if r.get("outcome") != "not_exercised"]
+
+
 def task_rates(records: list[dict[str, Any]]) -> dict[str, float]:
-    """task_id -> frazione di ripetizioni passate."""
+    """task_id -> frazione di ripetizioni passate (le non esercitate sono escluse)."""
     by_task: dict[str, list[bool]] = defaultdict(list)
-    for r in records:
+    for r in scored(records):
         by_task[r["task_id"]].append(r["passed"])
     return {t: sum(v) / len(v) for t, v in by_task.items()}
 
@@ -34,7 +40,7 @@ def task_rates(records: list[dict[str, Any]]) -> dict[str, float]:
 def category_rows(records: list[dict[str, Any]]) -> list[tuple[str, int, float, float]]:
     """(categoria, n_task, pass@1, quota di task passati in TUTTE le ripetizioni)."""
     cats: dict[str, list[dict[str, Any]]] = defaultdict(list)
-    for r in records:
+    for r in scored(records):
         cats[r["category"]].append(r)
     rows = []
     for cat, recs in cats.items():
@@ -67,11 +73,20 @@ def render_markdown(run_dir: str | Path) -> str:
     lines += ["", "| Categoria | Task | Pass@1 | Task sempre passati |", "|---|---:|---:|---:|"]
     for cat, n, p1, allp in sorted(category_rows(records)):
         lines.append(f"| {cat} | {n} | {_pct(p1)} | {_pct(allp)} |")
-    total = sum(r["passed"] for r in records) / len(records) if records else 0
-    lines.append(f"| **Totale** | {len({r['task_id'] for r in records})} | **{_pct(total)}** | |")
-    n_pass = sum(r["passed"] for r in records)
-    lines += ["", f"Esecuzioni passate: {fmt_ci(n_pass, len(records))}. L'intervallo di Wilson assume esecuzioni "
+    sc = scored(records)
+    total = sum(r["passed"] for r in sc) / len(sc) if sc else 0
+    lines.append(f"| **Totale** | {len({r['task_id'] for r in sc})} | **{_pct(total)}** | |")
+    n_pass = sum(r["passed"] for r in sc)
+    lines += ["", f"Esecuzioni passate: {fmt_ci(n_pass, len(sc))}. L'intervallo di Wilson assume esecuzioni "
               "indipendenti: con più ripetizioni dello stesso task è ottimistico."]
+    noex = [r for r in records if r.get("outcome") == "not_exercised"]
+    if noex:
+        ids = ", ".join(sorted({f"`{r['task_id']}`" for r in noex}))
+        lines += ["", f"**Non esercitate: {len(noex)}** ({ids}). Il modello non ha mai letto il contenuto avvelenato, "
+                  "quindi non è stato messo alla prova: queste esecuzioni **non** sono contate come passate né come "
+                  "fallite e sono escluse da percentuali e intervalli sopra."]
+    if meta.get("ablations"):
+        lines += ["", f"Ablazioni attive: {', '.join(meta['ablations'])}."]
 
     h = tool_health(records)
     lat = [r["latency_s"] for r in records]
@@ -87,12 +102,16 @@ def render_markdown(run_dir: str | Path) -> str:
         lines.append(f"| Latenza mediana per task | {statistics.median(lat):.1f}s |")
     lines.append(f"| Passi medi per task | {statistics.mean(r['n_steps'] for r in records):.1f} |" if records else "")
 
-    failing = [r for r in records if not r["passed"]]
+    failing = [r for r in records if r.get("outcome", "passed" if r["passed"] else "failed") == "failed"]
     lines += ["", f"### Fallimenti ({len(failing)} esecuzioni)", ""]
     shown = 0
     for r in failing:
-        bad = [c for c in r["checks"] if not c["ok"]]
+        bad = [c for c in r["checks"] if not c["ok"] and not c.get("diagnostic")]
         body = "\n".join(f"- **{c['type']}**: {c['detail']}" for c in bad)
+        diag = [c for c in r["checks"] if c.get("diagnostic")]
+        if diag:
+            body += "\n\nDiagnostica (non conta nel punteggio):\n" + "\n".join(
+                f"- {'✓' if c['ok'] else '✗'} {c['type']}: {c['detail']}" for c in diag)
         final = (r["final_text"] or "").strip().replace("\n", " ")[:300]
         block = (f"<details><summary><code>{r['task_id']}</code> ({r['category']}, ripetizione {r['repeat'] + 1})"
                  f"</summary>\n\n{body}\n\nRisposta finale: _{final or '(vuota)'}_\n\n</details>")
@@ -103,6 +122,14 @@ def render_markdown(run_dir: str | Path) -> str:
         shown += 1
     if not failing:
         lines.append("Nessun fallimento.")
+    diag_rows: dict[tuple[str, str], list[bool]] = defaultdict(list)
+    for r in records:
+        for c in r["checks"]:
+            if c.get("diagnostic"):
+                diag_rows[(r["task_id"], c["type"])].append(c["ok"])
+    if diag_rows:
+        lines += ["", "### Controlli diagnostici (non contano nel punteggio)", "", "| Task | Controllo | Soddisfatto |", "|---|---|---:|"]
+        lines += [f"| `{t}` | {c} | {sum(v)}/{len(v)} |" for (t, c), v in sorted(diag_rows.items())]
     return "\n".join(lines) + "\n"
 
 
@@ -120,7 +147,7 @@ def _config_diff(meta_a: dict, meta_b: dict) -> list[str]:
             return f"sha {hashlib.sha256(v.encode()).hexdigest()[:8]} ({len(v)} car.)"
         return "—" if v is None else str(v)
 
-    keys = ["model", "temperature", "max_tokens", "seed", "extra_body", "history_mode", "system_prompt"]
+    keys = ["model", "temperature", "max_tokens", "seed", "extra_body", "history_mode", "system_prompt", "ablations"]
     rows = [(k, show(k, meta_a), show(k, meta_b)) for k in keys if meta_a.get(k) != meta_b.get(k)]
     if not rows:
         return ["Configurazione identica nelle due run (stesso modello, prompt e parametri).", ""]
@@ -147,15 +174,18 @@ def render_compare(dir_a: str | Path, dir_b: str | Path) -> str:
         lines.append(f"| {cat} | {_pct(a) if a is not None else '—'} | {_pct(b) if b is not None else '—'} | {d} |")
     ra, rb = task_rates(rec_a), task_rates(rec_b)
     common = ra.keys() & rb.keys()
-    pa, pb = sum(r["passed"] for r in rec_a), sum(r["passed"] for r in rec_b)
+    sa, sb = scored(rec_a), scored(rec_b)
+    pa, pb = sum(r["passed"] for r in sa), sum(r["passed"] for r in sb)
     better = sum(1 for t in common if rb[t] >= 0.5 > ra[t])
     worse = sum(1 for t in common if ra[t] >= 0.5 > rb[t])
     lines += ["", "### Esito complessivo", "",
-              f"- A: {fmt_ci(pa, len(rec_a))}", f"- B: {fmt_ci(pb, len(rec_b))}",
+              f"- A: {fmt_ci(pa, len(sa))}", f"- B: {fmt_ci(pb, len(sb))}",
+              *([f"- Esecuzioni non esercitate (escluse): A {len(rec_a) - len(sa)}, B {len(rec_b) - len(sb)}"]
+                if len(sa) != len(rec_a) or len(sb) != len(rec_b) else []),
               f"- Task migliorati: {better} · peggiorati: {worse} · test esatto di McNemar, due code: "
               f"p = {mcnemar_exact(better, worse):.3f}"
               + (" (task considerati passati se superati almeno nella metà delle ripetizioni)"
-                 if len(rec_a) != len(ra) or len(rec_b) != len(rb) else ""),
+                 if len(sa) != len(ra) or len(sb) != len(rb) else ""),
               "- Un p-value alto con pochi task discordanti non dimostra che A e B siano uguali: "
               "dice solo che questi dati non bastano per distinguerli."]
     changed = sorted(((t, ra[t], rb[t]) for t in ra.keys() & rb.keys() if ra[t] != rb[t]), key=lambda x: x[2] - x[1])

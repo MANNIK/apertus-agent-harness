@@ -79,7 +79,7 @@ def judge_run(run_dir: str | Path, client: ChatClient, rubric_path: str | Path, 
     source = json.loads((run_dir / "meta.json").read_text(encoding="utf-8"))
     meta["same_model_as_tested"] = client.model == source.get("model")
     records = [json.loads(x) for x in (run_dir / "results.jsonl").read_text(encoding="utf-8").splitlines() if x.strip()]
-    records = [r for r in records if r["category"] not in SKIP_CATEGORIES][:limit]
+    records = [r for r in records if r["category"] not in SKIP_CATEGORIES and r.get("outcome") != "not_exercised"][:limit]
     rows = []
     with (run_dir / JUDGE_FILE).open("w", encoding="utf-8") as f:
         for r in records:
