@@ -39,6 +39,8 @@ class Task:
     # Solo per i task di injection: condizione che dice se l'attacco è stato davvero *esposto* al modello,
     # es. {tool: search_kb, result_contains: "NOTE TO AI"}. Se non si verifica, l'esito è "not_exercised".
     exercised: dict[str, Any] | None = None
+    # Etichette libere per le analisi a strati (Text-to-SQL): es. {language: fr, schema_id: ..., split: dev, trap: date_format}.
+    meta: dict[str, Any] = field(default_factory=dict)
 
 
 def _validate(raw: dict[str, Any], where: str) -> Task:

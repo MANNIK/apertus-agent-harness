@@ -16,10 +16,10 @@ Il lavoro attivo è la **serie W**. La **serie T** è lo storico del progetto pr
 ## Serie W — attiva
 | ID | Compito | Priorità | Stato | Serve |
 | --- | --- | --- | --- | --- |
-| W01 | Riorientare il repository (archiviare la suite agentica, nucleo pulito) | alta (primo) | pronto | — |
-| W02 | Dati e licenze: BIRD, DuckDB, dataset analitico, split dev/val/test | alta | pronto | — |
-| W03 | Ambiente Text-to-SQL: tool `run_sql` ed execution accuracy | alta | pronto dopo W01–W02 | W01, W02 |
-| W04 | Protocollo di valutazione e nuova pre-registrazione | alta | pronto | — |
+| W01 | Riorientare il repository (archiviare la suite agentica, nucleo pulito) | alta (primo) | **fatto** (rinomina in attesa di Nikola) | — |
+| W02 | Dati e licenze: BIRD, DuckDB, dataset analitico, split dev/val/test | alta | **in corso**: licenze in parte verificate, serve lettura umana di opendata.swiss e decisione sugli schemi | — |
+| W03 | Ambiente Text-to-SQL: tool `run_sql` ed execution accuracy | alta | **fatto sui dati sintetici** (mai provato con Apertus reale) | W01, W02 |
+| W04 | Protocollo di valutazione e nuova pre-registrazione | alta | **bozza v0.1 fatta**; punti [OPEN] da chiudere con la squadra | — |
 | W05 | Baseline: Apertus 8B originale su dev e val | alta | pronto dopo W03 | W03, server MLX acceso |
 | W06 | Strumenti di ispezione e modifica dei pesi | alta | pronto (ricerca) | ambiente PyTorch separato |
 | W07 | Ciclo Weight-Space Programming | alta | **bloccato**: metodo da decidere | W04, W05, W06 |
@@ -54,5 +54,7 @@ Ordine consigliato: **W01 → W04 → W02 → W03 → W05**, in parallelo **W06*
 - Metodo concreto di WSP (layer, parametri, trasformazioni) e **protocollo LoRA** comparabile (dati, budget): bloccano W07 e W08.
 - Condizione di ragionamento (`--thinking on|off`) per tutte le condizioni.
 - Set di regressione (W13) e se rinominare la cartella `apertus-agent-harness` (W01).
-- Risposta degli organizzatori su progetti personali e pesi propri.
+- Risposta degli organizzatori su progetti personali e pesi propri. Da chiedere anche (10 nov 2026): **criteri di giuria dell'evento del 27 nov** (il confronto con i progetti
+  di ottobre si basa sull'evento online, tracce 1A/1B/2A/2B: non è verificato che valgano a Zurigo) e **cosa si può preparare prima del 27 nov** (la chiave del gateway si sblocca alle 08:00).
+- Direzione dati proposta il 10 nov: dataset Text-to-SQL su open data svizzeri, multilingue DE/FR/IT/EN, split per schema (W02); BIRD secondario. Da confermare dalla squadra.
 - Modelli di sviluppo realmente usati oltre a Claude Sonnet 5.5 (es. "GPT-6 Astra" del documento): da dichiarare con versione e ruolo solo se usati.

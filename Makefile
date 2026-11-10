@@ -14,14 +14,14 @@ setup:  ## installa tutto in locale (uv, Python, dipendenze) senza toccare il re
 test:  ## esegue i test (nessun modello necessario)
 	$(PY) -m pytest -q
 
-demo:  ## rigioca la run sintetica di riferimento: deve dare il 100% (62/62), senza modello né rete
-	$(AB) run --replay reference_runs/demo-oracle --out runs/demo-replay
+demo:  ## rigioca la run sintetica Text-to-SQL (oracolo che esegue le query gold): deve dare il 100%, senza modello né rete; serve l'extra sql
+	$(AB) run --replay reference_runs/demo-oracle-sql --out runs/demo-replay --tasks tasks
 
 smoke:  ## prova veloce contro il modello configurato (LLM_BASE_URL, LLM_NAME)
 	$(AB) smoke
 
-run:  ## suite completa contro il modello configurato; opzioni: PROMPT=prompts/persistent.txt REPEATS=1
-	$(AB) run --repeats $(or $(REPEATS),1) $(if $(PROMPT),--system-prompt-file $(PROMPT),)
+run:  ## run contro il modello configurato; finché non c'è il set Text-to-SQL (W03) serve --tasks: make run TASKS=cartella REPEATS=1
+	$(AB) run --repeats $(or $(REPEATS),1) $(if $(TASKS),--tasks $(TASKS),)
 
 compare:  ## confronta due run: make compare A=runs/base B=runs/modificato
 	$(AB) compare $(A) $(B)
@@ -38,12 +38,12 @@ judge:  ## giudice open-weights opzionale: make judge RUN=runs/xxx JUDGE_MODEL=.
 docker-build:  ## costruisce l'immagine (serve Docker)
 	docker build -t apertus-agent-harness .
 
-docker-demo:  ## esegue la demo dentro l'immagine
+docker-demo:  ## esegue il comando predefinito dell'immagine (oggi: controllo di conformità, senza rete)
 	docker run --rm --network none apertus-agent-harness
 
-airgap-check:  ## demo senza rete nel container + prova che la rete è davvero bloccata (fallisce se la demo non passa o se la rete risponde)
+airgap-check:  ## comando predefinito senza rete nel container + prova che la rete è davvero bloccata (fallisce se il comando non passa o se la rete risponde)
 	docker run --rm --network none apertus-agent-harness
-	@if docker run --rm --network none --entrypoint python apertus-agent-harness -c "import urllib.request; urllib.request.urlopen('http://example.com', timeout=3)" >/dev/null 2>&1; then echo "✗ la rete NON è bloccata nel container"; exit 1; else echo "✓ demo passata e connessioni in uscita bloccate (--network none)"; fi
+	@if docker run --rm --network none --entrypoint python apertus-agent-harness -c "import urllib.request; urllib.request.urlopen('http://example.com', timeout=3)" >/dev/null 2>&1; then echo "✗ la rete NON è bloccata nel container"; exit 1; else echo "✓ comando passato e connessioni in uscita bloccate (--network none)"; fi
 
 clean:  ## cancella solo i file temporanei di Python
 	find . -name __pycache__ -type d -prune -exec rm -rf {} + ; rm -rf .pytest_cache

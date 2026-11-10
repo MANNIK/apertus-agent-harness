@@ -5,9 +5,14 @@
 - Ogni bug trovato in una run reale diventa un test con un caso minimo che lo riproduce.
 - I test non devono mai richiedere Internet, un modello vero, GPU o token (Hugging Face compreso).
 
-## Test del vecchio progetto (in archiviazione, W01)
-`test_tasks_solvable.py` (`SOLUTIONS` = id dei task YAML), `test_demo.py` (demo-oracle, integrità sha256 e replay al 100%), `test_t03_suite_defects.py`, `test_t09_suite_extension.py`,
-`test_thinking_flag.py` e quelli sulle tool finte vengono spostati o adattati con la suite. Non aggiungere test a quella suite.
+## Test del vecchio progetto (W01 fatto il 10 nov 2026)
+`test_tasks_solvable.py`, `test_demo.py`, `test_t03_suite_defects.py`, `test_t09_suite_extension.py` sono in `archive/agent-suite/tests/` (non eseguibili così come sono; pytest raccoglie solo `tests/`).
+`test_e2e`, `test_replay`, `test_judge`, `test_compliance`, `test_thinking_flag` restano perché provano il nucleo, ma **leggono `archive/agent-suite/tasks/` come dati di prova**; `test_tools_checks.py`
+prova `tools.py`/`checks.py`, ancora nel pacchetto. W03 sostituirà questi dati e moduli: quando lo fai, riadatta i test, non toglierli. Non aggiungere test alla vecchia suite.
+
+## Test del nuovo progetto (W03, 10 nov 2026)
+`test_sql_eval.py` (regole di confronto, senza DuckDB), `test_sql_env.py` (sola lettura, file/rete bloccati, timeout, limiti, schema), `test_sql_tasks.py` (ogni task risolvibile col gold, varianti sbagliate che falliscono, testo della query irrilevante, ciclo completo contro il server finto),
+`test_demo_sql.py` (integrità e replay al 100% della demo sintetica). Richiedono l'extra `sql` (si saltano con `importorskip` se manca DuckDB).
 
 ## Regole per il nuovo progetto (da W03 in poi)
 - **Text-to-SQL:** DuckDB **in memoria** con dati sintetici piccoli; ogni task ha la query gold in un test di risolvibilità (analogo a `test_tasks_solvable.py`).

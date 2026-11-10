@@ -14,7 +14,7 @@ from agentbench.tasks import load_tasks
 from mock_server import MockServer, final, native, prefix, scripted
 
 ROOT = Path(__file__).resolve().parent.parent
-TASKS = {t.id: t for t in load_tasks(ROOT / "tasks")}
+TASKS = {t.id: t for t in load_tasks(ROOT / "archive" / "agent-suite" / "tasks")}
 P = {tid: t.prompt for tid, t in TASKS.items()}
 IDS = ["sc_weather_it", "ms_weather_diff", "er_flaky_weather"]
 SCRIPTS = {
@@ -102,7 +102,7 @@ def test_cli_replay_needs_no_model_and_reuses_recorded_prompt(tmp_path, capsys, 
     monkeypatch.delenv("LLM_NAME", raising=False)
     live_run(tmp_path / "a")
     with pytest.raises(SystemExit) as e:
-        main(["run", "--replay", str(tmp_path / "a"), "--tasks", str(ROOT / "tasks"),
+        main(["run", "--replay", str(tmp_path / "a"), "--tasks", str(ROOT / "archive" / "agent-suite" / "tasks"),
               "--only", ",".join(IDS), "--out", str(tmp_path / "b")])
     assert e.value.code == 0
     assert "2/3 esecuzioni passate" in capsys.readouterr().out  # er_flaky_weather era un FAIL anche nell'originale

@@ -10,3 +10,4 @@ dist/
 .env
 *.safetensors
 models/
+data/raw/

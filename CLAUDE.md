@@ -5,9 +5,11 @@ l'originale e con LoRA su **Text-to-SQL (DuckDB)**, con valutazione per esecuzio
 
 ## Stato del repo (leggi prima di toccare)
 - **Nucleo riusabile oggi:** client OpenAI-compatibile, registrazione/replay, statistiche, report, conformità, parser delle tool call, CLI.
-- **Vecchio progetto (suite agentica con tool finti, 62 task, `tasks/`, `reference_runs/demo-oracle`, test collegati):** presente ma **in archiviazione (compito W01)**.
-  Non estenderlo e non citarlo come risultato del nuovo progetto. Finché W01 non è fatto, `make test` / `make demo` lo usano ancora.
-- **Da costruire (serie W):** tool `run_sql` su DuckDB e controlli di execution accuracy; dataset Text-to-SQL con split dev/val/test; strumenti di
+- **Vecchio progetto (suite agentica con tool finti, 62 task, `demo-oracle`, test collegati):** **archiviato con W01** in `archive/agent-suite/` (leggi il suo `LEGGIMI.md`).
+  Non estenderlo e non citarlo come risultato del nuovo progetto. `make demo` ora rigioca la demo **Text-to-SQL** sintetica. I moduli `tools.py`, `checks.py`, `tasks.py` restano nel pacchetto
+  (`runner`, `bench` e `cli` li usano come infrastruttura: W03 vi ha innestato `run_sql` e `sql_result_match`), ma i **tool finti e i controlli agentici sono legacy**. Alcuni test del nucleo leggono `archive/agent-suite/tasks/` solo come dati di prova.
+- **Fatto con W03 (10 nov 2026):** tool `run_sql` su DuckDB in sola lettura (`sql_env.py`), execution accuracy (`sql_eval.py` + controllo `sql_result_match`), 8 task **sintetici** di prova in `tasks/demo_sales.yaml`, demo con oracolo (`make demo`).
+- **Da costruire (serie W):** dataset Text-to-SQL reale con split dev/val/test (W02); strumenti di
   ispezione dei pesi; ciclo WSP; baseline LoRA; valutazione a tre condizioni; applicazione dimostrativa.
 Tutto ciò che è elencato come "da costruire" **non esiste ancora**: non descriverlo come funzionante.
 
@@ -37,14 +39,16 @@ Tutto ciò che è elencato come "da costruire" **non esiste ancora**: non descri
 | `report.py` / `stats.py` | Report Markdown, confronto, Wilson, McNemar, kappa | riusato; confronto a 3 condizioni da aggiungere |
 | `compliance.py` | Registro modelli (`models.yaml`), controlli delle regole 3/4/5/6, manifest (`--lang en`) | riusato; checkpoint modificati da dichiarare |
 | `judge.py` | Giudice open-weights opzionale e accordo con i controlli | riusato solo se serve |
-| `tools.py` | Tool finti (meteo, calcolatrice, KB, file, email, ticket) | **vecchio progetto, in archiviazione (W01)** |
-| `checks.py` / `tasks.py` | Controlli sulle chiamate/testo/stato e caricamento dei task YAML | **vecchio progetto**: da adattare o sostituire con execution accuracy (W03) |
+| `sql_env.py` | `SqlBox`: DuckDB in sola lettura, tool `run_sql`, schema nel prompt, `SQL_SYSTEM` | **nuovo (W03)**, extra `sql` |
+| `sql_eval.py` | Regole del confronto dei risultati (execution accuracy), funzioni pure | **nuovo (W03)** |
+| `tools.py` | Tool finti (meteo, calcolatrice, KB, file, email, ticket) | **legacy del vecchio progetto**, ancora importato da `runner`/`bench`/`cli`; il nuovo progetto non lo usa (pulizia futura da proporre a Nikola) |
+| `checks.py` / `tasks.py` | Controlli sulle chiamate/testo/stato e caricamento dei task YAML | infrastruttura riusata (W03 vi ha aggiunto `sql_result_match` e `Task.meta`); i controlli agentici sono **legacy** |
 
-## Comandi (dalla cartella `apertus-agent-harness/`) — validi finché W01 non cambia il repo
+## Comandi (dalla cartella `apertus-agent-harness/`)
 ```
 scripts/bootstrap.sh              # una volta: uv, Python, dipendenze (tutto dentro .uv/ e .venv/)
-.venv/bin/python -m pytest -q     # test (nessun modello): oggi 126+ passati
-make help                         # elenco comandi; make demo = replay della demo sintetica (vecchia suite, deve dare il 100%)
+.venv/bin/python -m pytest -q     # test (nessun modello): 170 passati il 10 nov 2026 (dopo W03)
+make help                         # elenco comandi; make demo = replay della demo sintetica Text-to-SQL (oracolo, deve dare il 100%)
 scripts/serve_mlx.sh              # server del modello locale (porta 8080), stampa le variabili da esportare
 .venv/bin/agentbench smoke        # primo test contro il modello (LLM_BASE_URL, LLM_NAME, LLM_API_KEY, oppure APERTUS_*)
 make run | make compare A=… B=… | make compliance | make manifest | make judge RUN=… | make docker-build docker-demo airgap-check
@@ -60,12 +64,12 @@ Il server MLX con il chat template di Apertus **ragiona per impostazione predefi
 5. README e documenti allineati; segna chiaramente cosa è verificato e cosa no.
 
 ## Cosa NON fare
-- Non modificare né cancellare `runs/` e `reference_runs/` a mano (sono dati).
-- Non citare `reference_runs/demo-oracle` come risultato di Apertus: è un copione sintetico della vecchia suite.
+- Non modificare né cancellare `runs/` e `archive/agent-suite/reference_runs/` a mano (sono dati).
+- Non citare `archive/agent-suite/reference_runs/demo-oracle` come risultato di Apertus: è un copione sintetico della vecchia suite.
 - Non chiamare modelli chiusi dal codice della soluzione o dalle valutazioni; non aggiungere chiamate di rete fuori da `client.py`.
 - Non usare il test set per decidere cosa modificare nei pesi.
 - Non usare `--force`/azioni distruttive su git senza chiedere; non toccare `../models/`; non committare pesi, `.env` o token.
 - Non fidarti di quello che "dovrebbe" fare `mlx_lm.server`: se non l'hai provato, scrivilo come non verificato.
 
 ## Compiti da svolgere
-Cartella `dev-tasks/`: parti da `dev-tasks/README.md`. **Serie W = lavoro attivo** (W01 per primo); serie T = storico.
+Cartella `dev-tasks/`: parti da `dev-tasks/README.md`. **Serie W = lavoro attivo** (W01 fatto il 10 nov 2026; ordine consigliato: W04 → W02 → W03 → W05); serie T = storico.

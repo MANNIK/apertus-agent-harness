@@ -1,15 +1,16 @@
-# Apertus agent harness
+# Apertus Weight-Space Lab (nome provvisorio della cartella: `apertus-agent-harness`)
 
-Harness per misurare il comportamento **agentico** di un modello (tool calling, catene di
-chiamate, recupero dagli errori, resistenza alle prompt injection) servito tramite un endpoint
-OpenAI-compatibile. Nato per Apertus 1.5 8B in locale su Mac, ma funziona con qualunque server
-che esponga `/v1/chat/completions` (mlx-lm, llama.cpp, vLLM, LM Studio, Ollama…).
+Sistema riproducibile per migliorare una capacità specifica di **Apertus v1.5 8B** con **Weight-Space Programming (WSP)** e misurare il risultato contro
+l'originale e contro un fine-tuning LoRA. Task centrale: **Text-to-SQL su DuckDB**, valutato **per esecuzione** delle query (nessun LLM nel punteggio).
+Contesto e regole del hackathon: `../CLAUDE.md`; compiti: `dev-tasks/README.md` (serie W).
 
-Idea di fondo: il modello parla con **tool finti e deterministici** (meteo, calcolatrice,
-knowledge base, file virtuali, email finta). Nessun tool tocca la rete o il disco, quindi ogni
-run è riproducibile e i controlli possono guardare lo *stato finale* ("è partita un'email?",
-"il file totale contiene 4500?") oltre al testo della risposta. Nessun LLM-as-judge: tutti i
-controlli sono codice deterministico.
+**Stato (10 nov 2026, dopo W01):** esiste solo il **nucleo** (client OpenAI-compatibile, registrazione/replay, statistiche, report, conformità, parser delle tool call, CLI).
+Con **W03** esistono anche il tool `run_sql` (DuckDB in sola lettura), l'execution accuracy e 8 task **sintetici** di prova (`tasks/demo_sales.yaml`, non sono il dataset di valutazione). **Non esistono ancora** il dataset reale, gli strumenti sui pesi, WSP, LoRA, l'applicazione: sono i compiti W02 (in corso), W05–W10. WSP è un'ipotesi, non un risultato.
+La suite agentica del vecchio progetto è in `archive/agent-suite/` (vedi il suo `LEGGIMI.md`); **le sezioni di questo README sui task, i tool finti e i controlli la descrivono e sono storiche**
+finché W03 non le sostituisce. Il nucleo funziona con qualunque server che esponga `/v1/chat/completions` (mlx-lm, llama.cpp, vLLM, LM Studio, Ollama…).
+
+Il vecchio progetto era un banco di prova **agentico**: il modello parlava con tool finti e deterministici (meteo, calcolatrice, knowledge base, file virtuali, email finta) e
+i controlli guardavano lo stato finale oltre al testo. L'idea dei controlli deterministici, senza giudice AI, resta il principio anche nel nuovo progetto.
 
 ## Avvio rapido (Mac)
 
@@ -27,7 +28,7 @@ export APERTUS_BASE_URL=http://localhost:8080/v1
 export APERTUS_MODEL="<percorso stampato da serve_mlx.sh>"
 
 .venv/bin/agentbench smoke          # PRIMO PASSO: il server fa tool calling? in che formato?
-.venv/bin/agentbench run            # tutta la suite (62 task), una ripetizione
+.venv/bin/agentbench run            # task Text-to-SQL in tasks/ (oggi 8 sintetici di prova; il dataset reale arriva con W02)
 .venv/bin/agentbench report runs/<cartella>
 ```
 
@@ -126,9 +127,9 @@ causato il modello e quanti il tool.
 - `text`: l'assistant resta testo e i risultati tornano in un messaggio `user` che inizia con
   `[tool results]`. Usalo se il chat template del server non gestisce il ruolo `tool`.
 
-## Scrivere un task
+## Scrivere un task (STORICO: formato della vecchia suite agentica, sostituito da W03)
 
-I task sono liste in `tasks/*.yaml`:
+I task della vecchia suite stavano in `archive/agent-suite/tasks/*.yaml`:
 
 ```yaml
 - id: ms_file_sum
@@ -201,9 +202,8 @@ scripts/gh_publish.sh runs/<dir> release v0.1         # allega results.jsonl e r
 scripts/gh_trigger.sh https://mio-server/v1 swiss-ai/Apertus-v1.5-8B 3 12
 ```
 
-La workflow `.github/workflows/eval.yml` (avvio manuale) fa smoke test, esegue la suite, scrive il
-riepilogo nella pagina della run, commenta l'issue/PR indicata e salva `results.jsonl` come
-artefatto. Le chiavi API vanno nel segreto `APERTUS_API_KEY`.
+La workflow `.github/workflows/eval.yml` (avvio manuale) fa smoke test, poi **si ferma con un errore esplicito** perché non c'è più un set di task attivo (da rifare in W03);
+a regime scriverà il riepilogo nella pagina della run, commenterà l'issue/PR indicata e salverà `results.jsonl` come artefatto. Le chiavi API vanno nel segreto `APERTUS_API_KEY`.
 
 **Attenzione:** i runner ospitati da GitHub non vedono il `localhost` del tuo Mac. Per usare la
 workflow serve un endpoint raggiungibile da Internet o un runner self-hosted (`RUNNER=self-hosted`).
@@ -215,11 +215,9 @@ Per la valutazione in locale usa direttamente `agentbench run` + `gh_publish.sh`
 .venv/bin/python -m pytest -q
 ```
 
-58 test. Usano un server OpenAI-compatibile finto (`tests/mock_server.py`) con copioni "buono" e
-"cattivo" per ogni scenario, per verificare che i controlli distinguano davvero i due casi
-(tool inventati, injection riuscita, risposte inventate dopo un errore, ecc.).
-`tests/test_tasks_solvable.py` risolve tutti i 62 task con un percorso corretto: se aggiungi o
-modifichi un task e quel test fallisce, il task è impossibile o ha un'aspettativa sbagliata.
+170 test passati il 10 nov 2026 dopo W03 (101 dopo W01, più 69 nuovi per l'ambiente SQL; 28 test della vecchia suite sono in `archive/agent-suite/tests/`). Nessun modello né rete: usano un server
+OpenAI-compatibile finto (`tests/mock_server.py`). Alcuni test del nucleo leggono `archive/agent-suite/tasks/` solo come **dati di prova** del meccanismo (finché W03 non li sostituisce).
+Il nuovo progetto aggiungerà test di risolvibilità delle query gold (vedi `tests/CLAUDE.md`).
 
 ## Riproducibilità e regole del hackathon
 
@@ -229,8 +227,8 @@ Tutto passa da `make` (`make help` elenca i comandi).
 |---|---|
 | `make setup` | installa uv, Python e dipendenze dentro la cartella (`.uv/`, `.venv/`) |
 | `make test` | esegue i test, nessun modello |
-| `make demo` | rigioca la run sintetica `reference_runs/demo-oracle`: deve dare 33/33, senza modello né rete |
-| `make run` | suite completa contro `LLM_BASE_URL` / `LLM_NAME` / `LLM_API_KEY` |
+| `make demo` | rigioca la run sintetica `reference_runs/demo-oracle-sql` (oracolo che esegue le query gold): deve dare 8/8, senza modello né rete; serve l'extra `sql` |
+| `make run` | run dei task in `tasks/` contro `LLM_BASE_URL` / `LLM_NAME` / `LLM_API_KEY` (opzioni: `TASKS=<cartella>`, `REPEATS=n`) |
 | `make compare A=… B=…` | confronto con intervalli di Wilson, test di McNemar e differenze di configurazione |
 | `make compliance` | controlla le regole (modelli dichiarati, open-weights, endpoint locali, integrità dei file) |
 | `make manifest` | elenco modelli per il rapporto tecnico (regola 6) |
@@ -241,7 +239,7 @@ Tutto passa da `make` (`make help` elenca i comandi).
 - **Statistiche.** `report` e `compare` mostrano intervalli di Wilson al 95% e, nel confronto, il test esatto di McNemar.
 - **Conformità.** `models.yaml` è il registro dei modelli; `agentbench compliance` esce con codice 1 se un modello chiuso compare a runtime
   o come giudice, se un endpoint non è locale (avviso, tranne gli host dichiarati in `deployment.allowed_endpoint_hosts` di `models.yaml`, a corrispondenza esatta; oggi `gateway.keera.ch`) o se i file di una run non corrispondono ai sha256 registrati.
-- **Giudice.** `agentbench judge` usa il rubric `rubrics/agentic_v1.md`, temperatura 0, e salva `judge.jsonl` e `judge_meta.json`.
+- **Giudice (storico, solo se serve).** `agentbench judge` usa il rubric `archive/agent-suite/rubrics/agentic_v1.md` (passalo con `--rubric`; il valore predefinito punta ancora al vecchio percorso), temperatura 0, e salva `judge.jsonl` e `judge_meta.json`.
   Non sostituisce i controlli deterministici: serve a trovare i controlli troppo severi o troppo indulgenti.
 - **Piano di analisi.** `docs/analysis_plan.md` (in inglese) fissa in anticipo domande, statistiche e controlli per il confronto base vs modificato.
 - **Docker.** `Dockerfile` e `make docker-build` / `make docker-demo`. Non è stato possibile costruire l'immagine nell'ambiente di sviluppo (Docker assente): da provare sul Mac o sulla macchina dell'hackathon.

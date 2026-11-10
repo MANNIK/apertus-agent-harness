@@ -16,6 +16,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8"]  # MIT
 mlx = ["mlx-lm>=0.27; sys_platform == 'darwin'"]  # MIT; serve solo per avviare il server in locale su Mac
+sql = ["duckdb>=1.0"]  # MIT (da riconfermare dal METADATA installato, vedi docs/dati.md); motore SQL locale per il Text-to-SQL
 
 [project.scripts]
 agentbench = "agentbench.cli:main"

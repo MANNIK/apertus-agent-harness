@@ -47,13 +47,17 @@ jobs:
           APERTUS_API_KEY: ${{ secrets.APERTUS_API_KEY }}
         run: agentbench smoke
 
-      - name: Esegui la suite
+      # DA RIFARE IN W03: la suite agentica è archiviata (archive/agent-suite/) e non esiste ancora il set Text-to-SQL.
+      # Il passo fallisce di proposito invece di eseguire un set di task non più valido.
+      - name: Esegui la suite (non disponibile)
         env:
           APERTUS_BASE_URL: ${{ inputs.base_url }}
           APERTUS_MODEL: ${{ inputs.model }}
           APERTUS_API_KEY: ${{ secrets.APERTUS_API_KEY }}
           REPEATS: ${{ inputs.repeats }}
-        run: agentbench run --repeats "$REPEATS" --out runs/ci
+        run: |
+          echo "Nessun set di task attivo: la suite agentica è archiviata, il set Text-to-SQL arriva con W03." >&2
+          exit 1
 
       - name: Riepilogo nella pagina della run
         run: cat runs/ci/report.md >> "$GITHUB_STEP_SUMMARY"

@@ -9,6 +9,8 @@ Un semplice benchmark potrebbe non bastare per il requisito del core AI task. L'
 
 ## Passi
 1. Definisci con Nikola interfaccia e workflow (es. CLI o piccola web app locale): domanda in linguaggio naturale → schema → SQL generato da Apertus → esecuzione DuckDB → risposta.
+   **Proposta del 10 nov 2026 (da confermare):** "analista dei dati aperti svizzeri": l'utente chiede in DE/FR/IT/EN, l'app mostra la query generata, la esegue in locale su DuckDB e
+   **spiega il risultato**; opzione per confrontare la risposta del modello originale e di quello modificato (un solo modello caricato alla volta sul Mac). Deve rendere il valore chiaro in circa 2 minuti.
 2. Dataset di esempio con licenza verificata (W02).
 3. Gira senza rete verso l'esterno (solo l'endpoint del modello locale); prova con `--network none` per tutto tranne il modello.
 4. Elenca nel rapporto cosa fa Apertus e cosa fa il codice deterministico.

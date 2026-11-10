@@ -110,6 +110,13 @@ TOOL_DEFS: dict[str, tuple[str, dict[str, Any]]] = {
             "title": {"type": "string"},
             "priority": {"type": "string", "enum": ["low", "medium", "high"]}}},
     ),
+    # Progetto WSP / Text-to-SQL (W03): la logica sta in `sql_env.SqlBox` (DuckDB in sola lettura); qui solo la definizione.
+    "run_sql": (
+        "Run one read-only SQL query (DuckDB dialect) on the database and return the result as a table. Only SELECT queries "
+        "(including WITH) are allowed; long results are truncated, so aggregate or filter in SQL.",
+        {"type": "object", "required": ["query"], "properties": {
+            "query": {"type": "string", "description": "A single SQL SELECT statement"}}},
+    ),
 }
 
 
