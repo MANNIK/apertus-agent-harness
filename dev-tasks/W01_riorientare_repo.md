@@ -1,5 +1,5 @@
 # W01 — Riorientare il repository sul progetto WSP / Text-to-SQL
-Stato: fatto (commit e rinomina in attesa di Nikola) · Priorità: alta (primo) · Serve: —
+Stato: fatto (rinomina in attesa di Nikola) · Priorità: alta (primo) · Serve: —
 
 ## Obiettivo
 Togliere dal percorso principale la suite agentica del vecchio progetto e lasciare un nucleo pulito su cui costruire il Text-to-SQL, senza perdere la storia né i test del nucleo riusabile.
@@ -25,7 +25,7 @@ Decisione di Nikola (10 nov 2026): la suite agentica (62 task, tool finti) viene
 - Non rinominare la cartella né fare push senza chiedere.
 
 ## Esito
-Stato: **fatto, tranne commit e rinomina** (10 nov 2026, ramo `riorientamento`).
+Stato: **fatto, tranne la rinomina della cartella** (10 nov 2026, ramo `riorientamento`, pubblicato su GitHub).
 
 **Dipendenze trovate (passo 2).** `runner.py`, `bench.py`, `cli.py` e `checks.py` importano `tools.py`; `bench.py`/`cli.py` importano `tasks.py` e `checks.py`. Quindi questi tre moduli **non sono
 spostabili senza rompere il nucleo**: restano in `src/agentbench/` e li sostituisce W03 (il compito non chiedeva di spostarli). Cinque test del nucleo (`e2e`, `replay`, `judge`, `compliance`,
@@ -48,6 +48,7 @@ spostabili senza rompere il nucleo**: restano in `src/agentbench/` e li sostitui
 - **Docker non è attivo su questo Mac**: né il `Dockerfile` modificato né `make airgap-check` sono stati provati. Da rifare quando Docker è disponibile.
 - La workflow GitHub non è stata eseguita.
 - `agentbench judge` ha ancora come predefinito `rubrics/agentic_v1.md` (percorso vecchio): serve `--rubric archive/agent-suite/rubrics/agentic_v1.md`. Il giudice è comunque "solo se serve" (T08 obsoleto).
-- **Nessun commit fatto**: le modifiche sono nel working tree del ramo `riorientamento` (rinomine già in index). Il criterio "`git log` mostra gli spostamenti come rinomine" si soddisfa solo dopo il commit, che spetta a Nikola autorizzare.
+- **Commit fatti e pubblicati** (Nikola ha autorizzato): commit `36d271b` (W01) e `379701e` (aggiornamenti W02–W11) sul ramo `riorientamento`, push su `origin`. `git show -M --summary HEAD~1` mostra 27 rinomine: criterio soddisfatto.
+  Il ramo **non è stato unito a `main`** (decisione di Nikola).
 - Rinomina della cartella `apertus-agent-harness`: **non fatta, serve l'ok di Nikola** (proposta: `apertus-weight-space-lab`; implica `CLAUDE.md`, remoto GitHub, percorsi `../models`).
-- `docs/analysis_plan.md` (vecchio piano) è ancora al suo posto: lo sposta W04.
+- `docs/analysis_plan.md` (vecchio piano) era ancora al suo posto: l'ha spostato W04 in `docs/archive/`.
