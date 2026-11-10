@@ -14,6 +14,7 @@ import re
 from dataclasses import dataclass
 from typing import Any, Callable
 
+from .sql_eval import compare_results
 from .tools import ToolBox
 from .types import Trajectory
 
@@ -208,6 +209,18 @@ def _verdict(spec, ctx):
 
 
 # --------------------------------------------------------------------------- stato finale
+
+@check("sql_result_match")
+def _sql_result_match(spec, ctx):
+    """Execution accuracy: l'ultima `run_sql` riuscita deve dare lo stesso risultato della query `gold` (regole in `sql_eval.py`)."""
+    box = ctx.box
+    if not hasattr(box, "gold_result"):
+        return False, "il task non ha un database SQL (manca il tool run_sql)"
+    if box.last_result is None:
+        return False, "nessuna query run_sql riuscita"
+    m = compare_results(box.last_result, box.gold_result(spec["gold"]), order_matters=bool(spec.get("order_matters")))
+    return m.ok, m.reason
+
 
 @check("fs_equals")
 def _fs_equals(spec, ctx):

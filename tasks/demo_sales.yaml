@@ -1,0 +1,101 @@
+# Task SINTETICI di prova per l'ambiente Text-to-SQL (W03): schema e dati inventati, 8 task.
+# Servono ai test e alla demo con "oracolo": NON sono il dataset di valutazione (quello arriva con W02) e NON sono risultati di Apertus.
+# Tutti usano lo stesso piccolo database (ancora YAML). Nomi di colonna in tedesco, domande in più lingue: schema-linking tra lingue.
+# Formato di un task SQL: `tools: [run_sql]`, `setup.sql_init` (istruzioni che costruiscono il DB), un controllo `sql_result_match`
+# con la query `gold` (+ `order_matters: true` solo se la domanda chiede un ordinamento; il gold deve avere un ordinamento totale).
+# `meta`: lingua della domanda, id dello schema, split e tipo di trappola (per le analisi a strati).
+
+- id: demo_count_en
+  category: aggregation
+  prompt: "How many sales are there in total?"
+  tools: [run_sql]
+  setup: &demo_db
+    sql_init:
+      - "CREATE TABLE kanton(kuerzel VARCHAR, name VARCHAR, einwohner INTEGER)"
+      - "INSERT INTO kanton VALUES ('ZH','Zürich',1550000),('BE','Bern',1050000),('TI','Ticino',350000),('GE','Genève',510000)"
+      - "CREATE TABLE verkauf(id INTEGER, kanton VARCHAR, datum VARCHAR, betrag_chf DOUBLE, produkt VARCHAR)"
+      - "INSERT INTO verkauf VALUES
+          (1,'ZH','05.03.2024',120.50,'Käse'),(2,'ZH','17.03.2024',80.00,'Uhr'),(3,'BE','02.04.2024',45.25,'Käse'),
+          (4,'TI','11.03.2024',200.00,'Wein'),(5,'TI','28.05.2024',NULL,'Wein'),(6,'GE','09.01.2024',310.00,'Uhr'),
+          (7,'GE','14.03.2024',60.00,'Schokolade'),(8,'ZH','21.06.2024',95.00,'Schokolade'),(9,'BE','30.03.2024',150.00,'Wein'),
+          (10,'TI','15.02.2024',75.00,'Käse')"
+  max_steps: 6
+  meta: {language: en, schema_id: demo_sales, split: demo}
+  checks:
+    - {type: sql_result_match, gold: "SELECT COUNT(*) FROM verkauf"}
+    - {type: final_number, value: 10}
+
+- id: demo_ti_total_fr
+  category: cross_lingual
+  prompt: "Quel est le montant total des ventes (en CHF) dans le canton du Tessin (code TI) ?"
+  tools: [run_sql]
+  setup: *demo_db
+  max_steps: 6
+  meta: {language: fr, schema_id: demo_sales, split: demo, trap: cross_lingual_schema}
+  checks:
+    - {type: sql_result_match, gold: "SELECT SUM(betrag_chf) FROM verkauf WHERE kanton = 'TI'"}
+    - {type: final_number, value: 275}
+
+- id: demo_big_cantons_it
+  category: join
+  prompt: "Quali sono i nomi dei cantoni con almeno 3 vendite? Ordinali alfabeticamente."
+  tools: [run_sql]
+  setup: *demo_db
+  max_steps: 6
+  meta: {language: it, schema_id: demo_sales, split: demo, trap: cross_lingual_schema}
+  checks:
+    - {type: sql_result_match, order_matters: true,
+       gold: "SELECT k.name FROM kanton k JOIN verkauf v ON v.kanton = k.kuerzel GROUP BY k.name HAVING COUNT(*) >= 3 ORDER BY k.name"}
+
+- id: demo_top_product_de
+  category: aggregation
+  prompt: "Welches Produkt hat den höchsten Gesamtumsatz?"
+  tools: [run_sql]
+  setup: *demo_db
+  max_steps: 6
+  meta: {language: de, schema_id: demo_sales, split: demo}
+  checks:
+    - {type: sql_result_match, gold: "SELECT produkt FROM verkauf GROUP BY produkt ORDER BY SUM(betrag_chf) DESC LIMIT 1"}
+
+- id: demo_march_sales_en
+  category: format_trap
+  prompt: "How many sales happened in March 2024?"
+  tools: [run_sql]
+  setup: *demo_db
+  max_steps: 6
+  meta: {language: en, schema_id: demo_sales, split: demo, trap: date_format_dd_mm_yyyy}
+  checks:
+    - {type: sql_result_match, gold: "SELECT COUNT(*) FROM verkauf WHERE datum LIKE '%.03.2024'"}
+    - {type: final_number, value: 5}
+
+- id: demo_avg_amount_en
+  category: null_trap
+  prompt: "What is the average sale amount in CHF? Ignore sales without an amount."
+  tools: [run_sql]
+  setup: *demo_db
+  max_steps: 6
+  meta: {language: en, schema_id: demo_sales, split: demo, trap: null_values}
+  checks:
+    - {type: sql_result_match, gold: "SELECT AVG(betrag_chf) FROM verkauf"}
+    - {type: final_number, value: 126.19, tol: 0.01}
+
+- id: demo_distinct_products_en
+  category: aggregation
+  prompt: "How many different products were sold?"
+  tools: [run_sql]
+  setup: *demo_db
+  max_steps: 6
+  meta: {language: en, schema_id: demo_sales, split: demo}
+  checks:
+    - {type: sql_result_match, gold: "SELECT COUNT(DISTINCT produkt) FROM verkauf"}
+    - {type: final_number, value: 4}
+
+- id: demo_ge_sales_de
+  category: cross_lingual
+  prompt: "Zeige alle Verkäufe im Kanton Genf: Nummer und Betrag in CHF."
+  tools: [run_sql]
+  setup: *demo_db
+  max_steps: 6
+  meta: {language: de, schema_id: demo_sales, split: demo, trap: cross_lingual_schema}
+  checks:
+    - {type: sql_result_match, gold: "SELECT id, betrag_chf FROM verkauf WHERE kanton = 'GE'"}

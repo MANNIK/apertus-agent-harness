@@ -14,6 +14,7 @@ from .client import ChatClient, ChatError
 from .parser import extract_tool_calls
 from .replay import ReplayClient
 from .report import render_compare, render_markdown
+from .sql_env import SQL_SYSTEM
 from .tasks import DEFAULT_SYSTEM, load_tasks, tasks_digest
 from .tools import ToolBox
 
@@ -112,6 +113,8 @@ def cmd_run(args) -> int:
         system = Path(args.system_prompt_file).read_text(encoding="utf-8")
     elif replay:  # nel replay il prompt deve essere quello della run di origine, altrimenti le chiavi non coincidono
         system = replay.source_meta["system_prompt"]
+    elif all("run_sql" in t.tools for t in tasks):  # set Text-to-SQL: prompt di sistema dedicato (registrato in meta.json)
+        system = SQL_SYSTEM
     else:
         system = DEFAULT_SYSTEM
     if args.ablate and replay:

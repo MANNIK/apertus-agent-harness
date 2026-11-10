@@ -5,7 +5,7 @@ l'originale e contro un fine-tuning LoRA. Task centrale: **Text-to-SQL su DuckDB
 Contesto e regole del hackathon: `../CLAUDE.md`; compiti: `dev-tasks/README.md` (serie W).
 
 **Stato (10 nov 2026, dopo W01):** esiste solo il **nucleo** (client OpenAI-compatibile, registrazione/replay, statistiche, report, conformità, parser delle tool call, CLI).
-**Non esistono ancora** dati Text-to-SQL, tool `run_sql`, execution accuracy, strumenti sui pesi, WSP, LoRA, applicazione: sono i compiti W02–W10. WSP è un'ipotesi, non un risultato.
+Con **W03** esistono anche il tool `run_sql` (DuckDB in sola lettura), l'execution accuracy e 8 task **sintetici** di prova (`tasks/demo_sales.yaml`, non sono il dataset di valutazione). **Non esistono ancora** il dataset reale, gli strumenti sui pesi, WSP, LoRA, l'applicazione: sono i compiti W02 (in corso), W05–W10. WSP è un'ipotesi, non un risultato.
 La suite agentica del vecchio progetto è in `archive/agent-suite/` (vedi il suo `LEGGIMI.md`); **le sezioni di questo README sui task, i tool finti e i controlli la descrivono e sono storiche**
 finché W03 non le sostituisce. Il nucleo funziona con qualunque server che esponga `/v1/chat/completions` (mlx-lm, llama.cpp, vLLM, LM Studio, Ollama…).
 
@@ -28,7 +28,7 @@ export APERTUS_BASE_URL=http://localhost:8080/v1
 export APERTUS_MODEL="<percorso stampato da serve_mlx.sh>"
 
 .venv/bin/agentbench smoke          # PRIMO PASSO: il server fa tool calling? in che formato?
-.venv/bin/agentbench run --tasks <cartella>   # richiede una cartella di task: il set Text-to-SQL arriva con W03 (la vecchia suite è archiviata)
+.venv/bin/agentbench run            # task Text-to-SQL in tasks/ (oggi 8 sintetici di prova; il dataset reale arriva con W02)
 .venv/bin/agentbench report runs/<cartella>
 ```
 
@@ -215,7 +215,7 @@ Per la valutazione in locale usa direttamente `agentbench run` + `gh_publish.sh`
 .venv/bin/python -m pytest -q
 ```
 
-101 test passati il 10 nov 2026 dopo W01 (129 prima: 28 sono stati spostati con la suite in `archive/agent-suite/tests/`). Nessun modello né rete: usano un server
+170 test passati il 10 nov 2026 dopo W03 (101 dopo W01, più 69 nuovi per l'ambiente SQL; 28 test della vecchia suite sono in `archive/agent-suite/tests/`). Nessun modello né rete: usano un server
 OpenAI-compatibile finto (`tests/mock_server.py`). Alcuni test del nucleo leggono `archive/agent-suite/tasks/` solo come **dati di prova** del meccanismo (finché W03 non li sostituisce).
 Il nuovo progetto aggiungerà test di risolvibilità delle query gold (vedi `tests/CLAUDE.md`).
 
@@ -227,8 +227,8 @@ Tutto passa da `make` (`make help` elenca i comandi).
 |---|---|
 | `make setup` | installa uv, Python e dipendenze dentro la cartella (`.uv/`, `.venv/`) |
 | `make test` | esegue i test, nessun modello |
-| `make demo` | **non disponibile** finché non c'è la demo Text-to-SQL (W03); la vecchia demo è archiviata |
-| `make run` | run contro `LLM_BASE_URL` / `LLM_NAME` / `LLM_API_KEY`; oggi richiede `TASKS=<cartella>` (nessun set attivo fino a W03) |
+| `make demo` | rigioca la run sintetica `reference_runs/demo-oracle-sql` (oracolo che esegue le query gold): deve dare 8/8, senza modello né rete; serve l'extra `sql` |
+| `make run` | run dei task in `tasks/` contro `LLM_BASE_URL` / `LLM_NAME` / `LLM_API_KEY` (opzioni: `TASKS=<cartella>`, `REPEATS=n`) |
 | `make compare A=… B=…` | confronto con intervalli di Wilson, test di McNemar e differenze di configurazione |
 | `make compliance` | controlla le regole (modelli dichiarati, open-weights, endpoint locali, integrità dei file) |
 | `make manifest` | elenco modelli per il rapporto tecnico (regola 6) |

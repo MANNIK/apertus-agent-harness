@@ -57,9 +57,13 @@ def run_task(
     available = list(task.tools)
     specs = box.specs(available, ablations) if available else None
     system = task.system if task.system is not None else default_system
+    prompt = task.prompt
+    schema_text = getattr(box, "schema_text", None)  # Text-to-SQL: lo schema entra nel messaggio dell'utente, uguale per ogni condizione
+    if callable(schema_text):
+        prompt = f"{schema_text()}\n\nQuestion: {task.prompt}"
     messages: list[dict[str, Any]] = [
         {"role": "system", "content": system},
-        {"role": "user", "content": task.prompt},
+        {"role": "user", "content": prompt},
     ]
     traj = Trajectory(messages=messages)
     known = set(available)

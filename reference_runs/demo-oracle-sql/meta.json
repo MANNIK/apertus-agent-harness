@@ -1,0 +1,23 @@
+{
+  "harness_version": "0.1.0",
+  "git_sha": "67e4dd8",
+  "started_utc": "2026-11-10T14:12:26+00:00",
+  "python": "3.11.15",
+  "model": "demo-oracle-synthetic",
+  "base_url": "http://127.0.0.1:51346/v1",
+  "temperature": 0.0,
+  "max_tokens": 1024,
+  "seed": null,
+  "extra_body": {},
+  "history_mode": "openai",
+  "ablations": [],
+  "system_prompt": "You are a data analyst with access to a read-only SQL database (DuckDB dialect). Answer the user's question by running SQL with the run_sql tool. Read the schema you are given, and use only the tables and columns it lists. If a query fails, read the error, fix the query and retry. Do not invent data: base the answer on query results. When you are done, give the final answer in the same language as the question, and state the values you found. Your last successful run_sql query should be the one that answers the question.",
+  "repeats": 1,
+  "n_tasks": 8,
+  "tasks_digest": "de824b76433d",
+  "recorded_calls": true,
+  "files_sha256": {
+    "results.jsonl": "fc37181514956fda91ec9c3d1a6ab808919e9f04a538398163294e6890ce61c0",
+    "calls.jsonl": "6b14a83acf3c37bcda48d30d38b71b310dd9234b886cc5e28beff10c3c560eb1"
+  }
+}

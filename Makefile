@@ -14,8 +14,8 @@ setup:  ## installa tutto in locale (uv, Python, dipendenze) senza toccare il re
 test:  ## esegue i test (nessun modello necessario)
 	$(PY) -m pytest -q
 
-demo:  ## NON disponibile finché non c'è la demo Text-to-SQL (W03); la vecchia demo è in archive/agent-suite/
-	@echo "make demo: non disponibile. La demo sintetica della vecchia suite agentica è archiviata (archive/agent-suite/LEGGIMI.md); la nuova arriva con W03."; exit 1
+demo:  ## rigioca la run sintetica Text-to-SQL (oracolo che esegue le query gold): deve dare il 100%, senza modello né rete; serve l'extra sql
+	$(AB) run --replay reference_runs/demo-oracle-sql --out runs/demo-replay --tasks tasks
 
 smoke:  ## prova veloce contro il modello configurato (LLM_BASE_URL, LLM_NAME)
 	$(AB) smoke

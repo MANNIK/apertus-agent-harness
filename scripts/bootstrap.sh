@@ -4,7 +4,7 @@
 # Cosa fa:
 #   1. Se `uv` non c'è, lo scarica (installer ufficiale astral.sh) dentro  .uv/bin  del progetto.
 #   2. Cache di uv e, se serve, Python stesso vanno dentro  .uv/  (non in ~/.cache, non in ~/.local).
-#   3. Crea  .venv/  nel progetto e ci installa harness, pytest e mlx-lm.
+#   3. Crea  .venv/  nel progetto e ci installa harness, pytest, mlx-lm e duckdb.
 #
 # Cosa NON fa: non modifica .zshrc / .zprofile / PATH, non usa sudo, non installa nulla a
 # livello globale. Per disinstallare tutto basta cancellare le cartelle  .venv  e  .uv.
@@ -43,7 +43,7 @@ fi
 echo "uv: $("$UV" --version)"
 
 # Crea .venv e installa le dipendenze del progetto (se serve scarica un Python >= 3.10 in .uv/python).
-"$UV" sync --extra dev --extra mlx
+"$UV" sync --extra dev --extra mlx --extra sql
 
 cat <<MSG
 

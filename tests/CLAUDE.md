@@ -10,6 +10,10 @@
 `test_e2e`, `test_replay`, `test_judge`, `test_compliance`, `test_thinking_flag` restano perché provano il nucleo, ma **leggono `archive/agent-suite/tasks/` come dati di prova**; `test_tools_checks.py`
 prova `tools.py`/`checks.py`, ancora nel pacchetto. W03 sostituirà questi dati e moduli: quando lo fai, riadatta i test, non toglierli. Non aggiungere test alla vecchia suite.
 
+## Test del nuovo progetto (W03, 10 nov 2026)
+`test_sql_eval.py` (regole di confronto, senza DuckDB), `test_sql_env.py` (sola lettura, file/rete bloccati, timeout, limiti, schema), `test_sql_tasks.py` (ogni task risolvibile col gold, varianti sbagliate che falliscono, testo della query irrilevante, ciclo completo contro il server finto),
+`test_demo_sql.py` (integrità e replay al 100% della demo sintetica). Richiedono l'extra `sql` (si saltano con `importorskip` se manca DuckDB).
+
 ## Regole per il nuovo progetto (da W03 in poi)
 - **Text-to-SQL:** DuckDB **in memoria** con dati sintetici piccoli; ogni task ha la query gold in un test di risolvibilità (analogo a `test_tasks_solvable.py`).
   Test dedicati: una query sbagliata deve far fallire il controllo (colonne in più, righe duplicate, ordine, NULL, tipi); l'execution accuracy non deve dipendere dal testo della query.

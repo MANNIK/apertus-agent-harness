@@ -18,8 +18,8 @@ from .checks import evaluate, was_exercised
 from .client import ChatClient
 from .recording import CALLS_FILE, file_sha256
 from .runner import run_task
+from .sql_env import make_box
 from .tasks import DEFAULT_SYSTEM, Task
-from .tools import ToolBox
 
 
 def _git_sha() -> str | None:
@@ -41,6 +41,7 @@ def _record(task: Task, repeat: int, traj, checks: list[dict[str, Any]]) -> dict
     return {
         "task_id": task.id,
         "category": task.category,
+        **({"meta": task.meta} if task.meta else {}),  # lingua della domanda, schema, split, trappole: per le analisi a strati
         "repeat": repeat,
         "outcome": outcome,
         "exercised": exercised,
@@ -103,9 +104,12 @@ def run_suite(
     with (out_dir / "results.jsonl").open("w", encoding="utf-8") as f:
         for task in tasks:
             for rep in range(repeats):
-                box = ToolBox(task.setup)  # stato fresco a ogni esecuzione
-                traj = run_task(client, task, box, history_mode, system_prompt, tuple(ablations))
-                rec = _record(task, rep, traj, evaluate(task, traj, box))
+                box = make_box(task.setup, task.tools)  # stato fresco a ogni esecuzione
+                try:
+                    traj = run_task(client, task, box, history_mode, system_prompt, tuple(ablations))
+                    rec = _record(task, rep, traj, evaluate(task, traj, box))
+                finally:
+                    getattr(box, "close", lambda: None)()  # chiude il database SQL e cancella il file temporaneo
                 records.append(rec)
                 f.write(json.dumps(rec, ensure_ascii=False) + "\n")
                 f.flush()
