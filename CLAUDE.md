@@ -9,6 +9,7 @@ l'originale e con LoRA su **Text-to-SQL (DuckDB)**, con valutazione per esecuzio
   Non estenderlo e non citarlo come risultato del nuovo progetto. `make demo` ora rigioca la demo **Text-to-SQL** sintetica. I moduli `tools.py`, `checks.py`, `tasks.py` restano nel pacchetto
   (`runner`, `bench` e `cli` li usano come infrastruttura: W03 vi ha innestato `run_sql` e `sql_result_match`), ma i **tool finti e i controlli agentici sono legacy**. Alcuni test del nucleo leggono `archive/agent-suite/tasks/` solo come dati di prova.
 - **Fatto con W03 (10 nov 2026):** tool `run_sql` su DuckDB in sola lettura (`sql_env.py`), execution accuracy (`sql_eval.py` + controllo `sql_result_match`), 8 task **sintetici** di prova in `tasks/demo_sales.yaml`, demo con oracolo (`make demo`).
+- **Fatto con W06 (10 nov 2026, parziale):** `src/agentbench/wsp.py` — strumenti sui pesi indipendenti dal metodo (modifica reversibile, conteggio esatto, impronte, registro, safetensors); solo tensori sintetici nei test. Mai eseguito sui pesi veri.
 - **Fatto con W10 (10 nov 2026, parziale):** `app/analyst.py`, applicazione dimostrativa locale (solo localhost, nessuna risorsa esterna), testata con modello finto (`tests/test_app.py`); mai provata con Apertus reale.
 - **Fatto con W02 (10 nov 2026):** dataset reale `zurich-sql` v0.1: 210 task su 15 dataset CC0 della Città di Zurigo, split per schema (dev 96 / val 30 / test 84), in `tasks/zurich/`; dati in `data/zurich/`. Le domande **non sono riviste da madrelingua**.
 - **Da costruire (serie W):** revisione umana delle domande; strumenti di

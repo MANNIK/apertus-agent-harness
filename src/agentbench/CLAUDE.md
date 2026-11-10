@@ -3,7 +3,8 @@
 - Python >= 3.10, dipendenze runtime del pacchetto principale solo `httpx` e `pyyaml`. Ogni nuova dipendenza: licenza permissiva + motivo scritto in `pyproject.toml`.
 - **Rete solo in `client.py`.** Il controllo `compliance.scan_network_imports` fallisce altrimenti (vedi la lista dei moduli vietati lì).
 - **Moduli del nuovo progetto (serie W):** fatti con W03: `sql_env.py` (`SqlBox`: DuckDB in sola lettura, tool `run_sql`, schema nel prompt, `make_box`, `SQL_SYSTEM`) e `sql_eval.py` (regole del confronto / execution accuracy, funzioni pure).
-  Da creare: `wsp` (ispezione e modifica dei pesi) e `lora`.
+  Fatto (W06, parte indipendente dal metodo): `wsp.py` (extra `wsp`: numpy, ml_dtypes): impronte, ispezione, modifica **reversibile** con conteggio esatto dei parametri, registro JSONL, lettore/scrittore safetensors con bf16; testato solo su tensori sintetici. **Non è importato dal resto del pacchetto.**
+  Da creare: l'addestramento LoRA e il ciclo WSP vero e proprio (dipendono dalla scelta del metodo).
   - DuckDB: extra opzionale `sql` (MIT, verificata sul pacchetto, vedi `docs/dati.md`); `import duckdb` solo dentro `SqlBox` (il pacchetto si importa anche senza). Database costruito da `setup.sql_init` e **riaperto in sola lettura**, accesso a file/rete disabilitato, una sola istruzione SELECT per chiamata, timeout con `interrupt`: non allentare queste protezioni.
   - PyTorch / transformers / peft: solo in un **extra o ambiente separato** (`external/` o simile), mai importati dal pacchetto principale; il controllo di rete deve restare verde.
   - Le modifiche ai pesi sono **reversibili** e producono sempre un registro: tensori toccati, Δθ (norma, rango), numero e % di parametri modificati, hash prima/dopo.

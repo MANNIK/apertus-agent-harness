@@ -16,6 +16,7 @@ dependencies = [
 [project.optional-dependencies]
 dev = ["pytest>=8"]  # MIT
 mlx = ["mlx-lm>=0.27; sys_platform == 'darwin'"]  # MIT; serve solo per avviare il server in locale su Mac
+wsp = ["numpy>=1.26", "ml_dtypes>=0.4", "safetensors>=0.4"]  # BSD-3 / Apache-2.0 / Apache-2.0 (letti dai METADATA installati); strumenti sui pesi (wsp.py), mai importati dal resto del pacchetto
 sql = ["duckdb>=1.0"]  # MIT (da riconfermare dal METADATA installato, vedi docs/dati.md); motore SQL locale per il Text-to-SQL
 
 [project.scripts]
