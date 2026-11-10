@@ -3,7 +3,7 @@
 AB = .venv/bin/agentbench
 PY = .venv/bin/python
 .DEFAULT_GOAL := help
-.PHONY: help setup test demo smoke run compare compliance manifest judge docker-build docker-demo airgap-check clean data zurich-tasks
+.PHONY: help setup test demo smoke run compare compliance manifest judge docker-build docker-demo airgap-check clean data zurich-tasks app
 
 help:  ## mostra questa guida
 	@grep -E '^[a-z-]+:.*##' Makefile | sed 's/:.*##/ —/'
@@ -50,6 +50,9 @@ data:  ## riscarica i CSV CC0 della Città di Zurigo (rilegge la licenza dall'AP
 
 zurich-tasks:  ## rigenera i task zurich-sql da data/zurich/ e scripts/zurich_spec.py (deterministico)
 	$(PY) scripts/build_zurich_tasks.py
+
+app:  ## applicazione dimostrativa (http://127.0.0.1:8765): serve il server del modello acceso e APERTUS_BASE_URL / APERTUS_MODEL
+	$(PY) app/analyst.py
 
 clean:  ## cancella solo i file temporanei di Python
 	find . -name __pycache__ -type d -prune -exec rm -rf {} + ; rm -rf .pytest_cache

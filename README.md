@@ -209,6 +209,13 @@ a regime scriverà il riepilogo nella pagina della run, commenterà l'issue/PR i
 workflow serve un endpoint raggiungibile da Internet o un runner self-hosted (`RUNNER=self-hosted`).
 Per la valutazione in locale usa direttamente `agentbench run` + `gh_publish.sh`.
 
+## Applicazione dimostrativa (W10)
+
+`app/analyst.py`: «Analista dei dati aperti svizzeri». Scegli un dataset della Città di Zurigo (CC0), scrivi una domanda in DE/FR/IT/EN: **Apertus** (endpoint locale) scrive la query SQL,
+il codice la esegue su DuckDB **in sola lettura** e la pagina mostra query, tabella e risposta. Si avvia con `make app` (server del modello acceso, `APERTUS_BASE_URL` e `APERTUS_MODEL` impostati) su `http://127.0.0.1:8765`.
+Ascolta solo su localhost, non carica nulla dall'esterno e inserisce il testo del modello come testo (mai HTML). Chi fa cosa: Apertus capisce la domanda, sceglie tabelle e colonne, scrive la SQL e spiega il risultato;
+il codice costruisce il database, esegue la query con timeout e limiti, e mostra i risultati. **Provata con un modello finto nei test (6 test); non ancora provata con Apertus reale né in una finestra del browser.**
+
 ## Test
 
 ```bash
