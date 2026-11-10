@@ -298,6 +298,10 @@ def evaluate(task, traj: Trajectory, box: ToolBox) -> list[dict[str, Any]]:
         "ok": traj.stopped == "final",
         "detail": f"stopped={traj.stopped}" + (f" ({traj.error})" if traj.error else ""),
     }]
+    # Text-to-SQL: il punteggio primario è l'execution accuracy della query, non il fatto di aver scritto una risposta finale.
+    # `completed` resta registrato (tasso di conclusione) ma non conta: un modello che ottiene il risultato giusto e poi ripete la query non è «sbagliato» per la SQL.
+    if any(spec.get("type") == "sql_result_match" for spec in task.checks):
+        results[0]["diagnostic"] = True
     for spec in task.checks:
         try:
             ok, detail = CHECKS[spec["type"]](spec, ctx)

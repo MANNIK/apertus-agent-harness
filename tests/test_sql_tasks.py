@@ -162,3 +162,17 @@ def test_cli_run_uses_the_sql_system_prompt_and_saves_task_labels(tmp_path, caps
     assert meta["system_prompt"].startswith("You are a data analyst")
     rec = json.loads((out / "results.jsonl").read_text(encoding="utf-8").splitlines()[0])
     assert rec["meta"]["language"] == "en" and rec["passed"]
+
+
+
+def test_primary_score_ignores_whether_the_model_wrote_a_final_answer(tmp_path):
+    """Caso reale visto con Apertus: risultato giusto, poi la stessa query ripetuta fino a max_steps senza risposta finale."""
+    t = next(x for x in load_tasks(ROOT / "tasks" / "zurich" / "dev") if x.id == "bevq_total_1")
+    gold = next(c for c in t.checks if c["type"] == "sql_result_match")["gold"]
+    with MockServer(policy_for({t.prompt: [native("run_sql", {"query": gold})] * 8})) as srv:
+        recs = run_suite(ChatClient(srv.url, "mock", retries=0, timeout=10), [t], 1, tmp_path / "out")
+    r = recs[0]
+    by = {c["type"]: c for c in r["checks"]}
+    assert r["stopped"] == "max_steps" and not by["completed"]["ok"] and by["completed"]["diagnostic"]
+    assert by["sql_result_match"]["ok"] and r["passed"], "la query è giusta: il punteggio primario deve passare"
+    assert not by["final_number"]["ok"] and by["final_number"]["diagnostic"]  # senza testo finale la risposta non c'è, ma non conta
