@@ -1,0 +1,136 @@
+{
+  "dev": {
+    "n_tasks": 96,
+    "schemas": [
+      "bevc",
+      "bevk",
+      "bevq",
+      "miet",
+      "motg",
+      "sozh",
+      "whgz"
+    ],
+    "by_language": {
+      "de": 24,
+      "en": 24,
+      "fr": 24,
+      "it": 24
+    },
+    "by_category": {
+      "aggregation": 18,
+      "argmax": 21,
+      "argmin": 3,
+      "arithmetic": 12,
+      "filter_count": 15,
+      "lookup": 21,
+      "ranking": 3,
+      "subquery": 3
+    },
+    "by_trap": {
+      "cross_lingual_schema": 9,
+      "domain_codes": 12,
+      "missing_value_marker": 3,
+      "none": 66,
+      "text_numbers": 6
+    },
+    "files": {
+      "dev/bevc.yaml": "40e8131a795facbaac344ca7535f6d0ee0fe1bf6fe5f52960f1e0e04fa53ce41",
+      "dev/bevk.yaml": "e48fc053059146006d63b84e7b167b4c5321490d402c7bd67308259e13a9cb01",
+      "dev/bevq.yaml": "7e93ea6ae39c1a80c98e6603307f02f686858dd6ad38086274ab05e5766af5a0",
+      "dev/miet.yaml": "86f969aaa42be1088850e802220f4ecc9ba253065f6fffb1d10252effb533c08",
+      "dev/motg.yaml": "bf748a4203b5fa8476cfdee73086d67c5aaee77028d92741982809ebe43346c3",
+      "dev/sozh.yaml": "d302d11468afe95c41af1bc3291b01c33c895741e7ac74a0c917651ef9b4c7ac",
+      "dev/whgz.yaml": "b72ca9d87336234a2099bf9996d775768fb496448de467fb1ca71ee3c27aecb3"
+    },
+    "data_sha256": {
+      "bev_bestand_jahr_konfession_od3160": "2f874444ed86b2fe591702eee0c265ae66fb6a28ab27fc69a9d223f783ec21d7",
+      "bev_bestand_jahr_kreis_od3242": "15b9677360385569f8f43376c42b4b3a9daf4d70a7ab337d0bd221567e938a17",
+      "bev_bestand_jahr_quartier_od3240": "2a6d62202e51264bf466914b8a30f12f24eeae3e8b26e81ebd57a6db4b568b31",
+      "bau_whg_mpe_mietpreis_raum_zizahl_gn_jahr_od5161": "eab74746cd01216ca80296ab1371bc1e545a09709e0c8df441299cc644d25476",
+      "prd_ssz_fz_motorisierungsgrad_jahr_quartier_od2005": "dc1777f7e258ac0c68b91e5121860390f7a62001063cc416bafc1f7f55a60db1",
+      "sd_sod_sozialhilfequote_stadtquartier": "d4b9ba0c863455f4ba80941989cf1c7e29721c0fd9651e735ce368f59301136e",
+      "bau_best_whg_zizahl_jahr_od5062": "98bf3733e0c3f2f5dc3580c3bc8d7561f121228a97db52524d99e532e5df3ba6"
+    }
+  },
+  "val": {
+    "n_tasks": 30,
+    "schemas": [
+      "abfl",
+      "eink"
+    ],
+    "by_language": {
+      "de": 8,
+      "en": 7,
+      "fr": 8,
+      "it": 7
+    },
+    "by_category": {
+      "aggregation": 6,
+      "argmax": 6,
+      "arithmetic": 6,
+      "filter_count": 3,
+      "lookup": 9
+    },
+    "by_trap": {
+      "cross_lingual_schema": 3,
+      "none": 15,
+      "trailing_whitespace": 12
+    },
+    "files": {
+      "val/abfl.yaml": "4e9033a659d2f24af4122570df8acb1365997ea787eee4f625cbd350bed4cfb7",
+      "val/eink.yaml": "31531d898f0130b522c6747dac2341a2d7f51c6a2b6b2b8a9e00e53775875dc5"
+    },
+    "data_sha256": {
+      "erz_sr_kennzahlen": "97c1fca26a5086f162a3d8f61c6cb9fdf83c46782351e4ccafedd4906cb7592b",
+      "fd_median_einkommen_quartier_od1003": "986fd099b9794c6723050652ad35c3f223e1b94e5f8dbd2e2330161bc2028ceb"
+    }
+  },
+  "test": {
+    "n_tasks": 84,
+    "schemas": [
+      "abst",
+      "feue",
+      "kpi",
+      "luft",
+      "rett",
+      "wett"
+    ],
+    "by_language": {
+      "de": 21,
+      "en": 21,
+      "fr": 21,
+      "it": 21
+    },
+    "by_category": {
+      "aggregation": 30,
+      "argmax": 21,
+      "arithmetic": 9,
+      "filter_count": 15,
+      "lookup": 6,
+      "subquery": 3
+    },
+    "by_trap": {
+      "missing_value_marker": 3,
+      "multiple_bases": 12,
+      "none": 39,
+      "text_numbers": 27,
+      "time_type": 3
+    },
+    "files": {
+      "test/abst.yaml": "ab18306d21e6ff4ad64c96f4c8d583ab6b2b69d958293b370717659f710726c5",
+      "test/feue.yaml": "4196070da12dcaa5ff6ade50417c152f2f2d225a52e05b47dfde98bbb9cbf117",
+      "test/kpi.yaml": "1f1fb982763c7c19a45929239cdf16e3027ba05c73b1216f4645e6ded3960464",
+      "test/luft.yaml": "132d11c630fb5f57bfb0a57865d5cac164591626157294d028c9ecb45910e04c",
+      "test/rett.yaml": "a92c00f79838bfcc52c790935d9d57716d3758a7ece9b7c57238fc3f0741d35a",
+      "test/wett.yaml": "6772136f70d8cdcde68d3ad5711b8f9b698d6c9e923bb380c03a65b38b6ee789"
+    },
+    "data_sha256": {
+      "politik_abstimmungen_seit1933": "7d81ce20686b9aa0c14be9b9357066a291b2a5c9e4db5a9cd5c9d139a3d37988",
+      "sid_srz_od1027_feuerwehr_ausrueckzeit_jahr_stadtkreis": "c40af460501f792519504448236760800349bbff80da5f4261aef4fc6df3e04f",
+      "wir_preise_zik_totalindex_monatswerte_od6001": "9a0575da8d8d3b6d41d3f0c82f74a6ed1d1b8dbee97da6b79a73c9858cf98beb",
+      "ugz_luftschadstoffmessung_tageswerte": "d371e5726a341c59342178115288ea59244a553a213e8e819b4473b117810c2b",
+      "sid_srz_od1036_hilfsfristen_rettungsdienste_jahr_stadtkreis": "c2b07b37815b092b024864efe06c5a82651dd173c00c3ec466882df7bb9e1bf8",
+      "ugz_meteodaten_tagesmittelwerte": "3d349f50d3abb4b7e74e5290577ed23e66fbcb0d5eadc9ef847e52a9e9130317"
+    }
+  }
+}

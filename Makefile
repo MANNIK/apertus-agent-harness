@@ -3,7 +3,7 @@
 AB = .venv/bin/agentbench
 PY = .venv/bin/python
 .DEFAULT_GOAL := help
-.PHONY: help setup test demo smoke run compare compliance manifest judge docker-build docker-demo airgap-check clean
+.PHONY: help setup test demo smoke run compare compliance manifest judge docker-build docker-demo airgap-check clean data zurich-tasks
 
 help:  ## mostra questa guida
 	@grep -E '^[a-z-]+:.*##' Makefile | sed 's/:.*##/ —/'
@@ -44,6 +44,12 @@ docker-demo:  ## esegue il comando predefinito dell'immagine (oggi: controllo di
 airgap-check:  ## comando predefinito senza rete nel container + prova che la rete è davvero bloccata (fallisce se il comando non passa o se la rete risponde)
 	docker run --rm --network none apertus-agent-harness
 	@if docker run --rm --network none --entrypoint python apertus-agent-harness -c "import urllib.request; urllib.request.urlopen('http://example.com', timeout=3)" >/dev/null 2>&1; then echo "✗ la rete NON è bloccata nel container"; exit 1; else echo "✓ comando passato e connessioni in uscita bloccate (--network none)"; fi
+
+data:  ## riscarica i CSV CC0 della Città di Zurigo (rilegge la licenza dall'API; cambia gli sha256: vedi docs/dati.md)
+	$(PY) scripts/fetch_zurich.py --force
+
+zurich-tasks:  ## rigenera i task zurich-sql da data/zurich/ e scripts/zurich_spec.py (deterministico)
+	$(PY) scripts/build_zurich_tasks.py
 
 clean:  ## cancella solo i file temporanei di Python
 	find . -name __pycache__ -type d -prune -exec rm -rf {} + ; rm -rf .pytest_cache

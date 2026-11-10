@@ -1,6 +1,6 @@
 # Dati e licenze (compito W02)
 
-Aggiornato il **10 nov 2026**. Stato: **licenze verificate solo in parte; nessun dataset Text-to-SQL costruito; nessuno split creato.**
+Aggiornato il **10 nov 2026**. Stato: **dataset Text-to-SQL `zurich-sql` v0.1 costruito (210 task su dati reali CC0, split per schema); licenze di opendata.swiss/OpenParlData ancora non verificate; le domande non sono riviste da madrelingua.**
 Legenda: **verificato** = letto sulla fonte ufficiale; **parziale** = riportato da un riassunto di ricerca o da una pagina secondaria, non letto in originale; **non verificato** = non si è riusciti a leggerlo.
 Regola del progetto: nessun dato entra nel repository o in un addestramento prima del controllo di licenza.
 
@@ -33,7 +33,7 @@ Tra i 615 dataset CC0 con CSV, circa 179 sono tabelle statistiche di dimensione 
 Regole di selezione (da applicare, non ancora applicate): licenza `cc-zero` nel metadato del singolo dataset; CSV non «live» e non «Einzeldaten»; **nessun dato che contenga nomi di persone** (esclusi i dataset di candidati alle elezioni, i nomi dei neonati, ecc.); un dataset = uno schema, assegnato per intero a dev, val **o** test; hash sha256 e data di scaricamento registrati.
 Proposta di una prima rosa (da confermare dopo aver ispezionato i file): `bev_bestand_jahr_quartier_od3240`, `bau_whg_mpe_mietpreis_raum_zizahl_gn_jahr_…`, `fd_median_einkommen_quartier_od1003`, `politik_abstimmungen_seit1933`, `ugz_luftschadstoffmessung_tageswerte`,
 `ugz_meteodaten_tagesmittelwerte`, `prd_ssz_fz_motorisierungsgrad_jahr_quartier_…`, `sd_sod_sozialhilfequote_stadtquartier`, `wir_preise_zik_totalindex_monatswerte_…`, `vbz_fahrzeiten_ogd_2023`, `erz_sr_kennzahlen`, `sid_srz_od1027_feuerwehr_ausrueckzeit_…`.
-**Non ancora scaricato nulla da questo portale.** Il censimento (nomi, licenze, formati, dimensioni) viene dall'API; i nomi esatti completi dei dataset vanno presi dal catalogo.
+**Scaricati il 10 nov 2026 i 15 dataset della §7** (tutti `cc-zero` riletti dall'API al momento del download, sha256 in `data/zurich/MANIFEST.json`).
 I portali opendata.swiss e le sue API rispondono 403 ai programmi (non aggirato). Sul portale di Basilea (`data.bs.ch`, Opendatasoft) l'API risponde (364 dataset) ma **le licenze non sono state lette**: fonte eventuale futura.
 
 ## 3. Problema aperto: lo split per schema con una sola fonte (risolto in proposta da §2b)
@@ -52,5 +52,29 @@ Opzioni (decisione della squadra):
 Caratteristiche decise in `dev-tasks/W02_dati_e_licenze.md` (ipotesi da confermare sui dati reali): domande in DE/FR/IT/EN con lingua registrata per task; schema-linking tra lingue diverse; «trappole» di formato svizzere (date `gg.mm.aaaa`, numeri con apostrofo, CHF, valori mancanti, caratteri accentati) etichettate; domande su dati che i modelli ricordano male (es. esiti di votazioni) con risposta dall'esecuzione; query gold eseguibili e verificate; split per schema con id e sha256; nessun dato personale.
 Dimensione obiettivo: 200–500 task indipendenti in totale; la parte di **test sarà più piccola** (vedi le tabelle di potenza in `docs/analysis_plan.md`). Il processo di scrittura delle query gold (a mano, con revisione di un secondo membro della squadra; eventuale aiuto di Claude dichiarato come strumento di sviluppo) va fissato prima di iniziare.
 
+## 7. Dataset `zurich-sql` v0.1 (costruito il 10 nov 2026)
+- **Dati:** 15 CSV del portale della Città di Zurigo, tutti **CC0**, istantanea in `data/zurich/` (5,1 MB, committata: il portale li aggiorna ogni giorno e l'istantanea garantisce la riproducibilità; `scripts/fetch_zurich.py` rilegge la licenza dall'API e rifiuta tutto ciò che non è CC0). `MANIFEST.json`: fonte, licenza, sha256, data.
+  Scelti: popolazione (quartieri, circondari, confessioni), edilizia e affitti, redditi, motorizzazione, aiuto sociale, rifiuti, votazioni, qualità dell'aria, meteo, pronto intervento (pompieri, soccorso), indice dei prezzi. Aggregati statistici: **nessun nome di persona**.
+- **Task:** generati da `scripts/zurich_spec.py` (modelli di domanda in DE/FR/IT/EN con query gold) e `scripts/build_zurich_tasks.py`, che campiona i valori dai dati reali ed **esegue il gold**; scarta risultati vuoti, nulli, a zero, troppo grandi o con pareggio in testa. Generazione **deterministica** (stesso hash su rigenerazioni ripetute).
+- **Split per schema** (un dataset = uno schema = un solo split, e i dataset dello stesso dominio restano insieme):
+
+| split | task | schemi | lingue |
+| --- | --- | --- | --- |
+| dev | 96 | bevc, bevk, bevq, miet, motg, sozh, whgz | {'de': 24, 'en': 24, 'fr': 24, 'it': 24} |
+| val | 30 | abfl, eink | {'de': 8, 'en': 7, 'fr': 8, 'it': 7} |
+| test | 84 | abst, feue, kpi, luft, rett, wett | {'de': 21, 'en': 21, 'fr': 21, 'it': 21} |
+
+  `tasks/zurich/SPLITS.json` registra conteggi, impronte dei file e dei dati. Il CLI **rifiuta** i task del test senza `--final-test`.
+- **Trappole reali** (etichettate in `meta.trap`): nomi di colonna tedeschi con domande in altre lingue (`cross_lingual_schema`), numeri salvati come testo (`text_numbers`), marcatori di dato mancante `NA` e `.` (`missing_value_marker`), spazi finali nei nomi (`trailing_whitespace`), più basi dell'indice (`multiple_bases`), tipo orario (`time_type`), codici di dominio (`domain_codes`).
+- **Verificato:** i 210 gold si eseguono sull'ambiente di sola lettura e passano il proprio controllo (test `tests/test_zurich_tasks.py`); i file dei task coincidono con la rigenerazione; nessun id, schema o dominio compare in due split.
+- **Limiti (leggere):**
+  1. **Le domande non sono state riviste da madrelingua**: formulazioni in DE/FR/IT/EN scritte da Claude (strumento di sviluppo, da dichiarare nel rapporto). Serve una revisione a campione (proposta: almeno il 10% per lingua) prima di usare i numeri in un documento.
+  2. **Domande da modelli**: circa 70 modelli × 3 istanze; la varietà di forma è minore di un dataset scritto a mano. Le domande dello stesso modello hanno la stessa struttura.
+  3. **Il test è piccolo** (84 task, 6 schemi): intervalli larghi (vedi `docs/analysis_plan.md` §5); non dire «nessun effetto» senza guardare l'ampiezza.
+  4. **Pochi dati di addestramento**: il dev ha 96 task. Il generatore può produrre più istanze (`--n-dev`) dagli stessi schemi, ma restano gli stessi 7 schemi: il protocollo LoRA/WSP (W08/W07) deve dichiarare quanti ne usa.
+  5. Le risposte uniche dipendono dai dati dell'istantanea; i gold usano un ordinamento totale quando serve (`order_matters`), ma l'assenza di pareggi è controllata solo sui modelli con `tie`.
+  6. **Condizioni formali del portale non lette** (pagine legali 404): CC0 nei metadati e «ohne Nutzungseinschränkungen» sulla pagina; nulla su uso per IA.
+  7. **Contaminazione non esclusa**: i dati sono pubblici e potrebbero essere nei dati di addestramento di Apertus (non lo sappiamo).
+
 ## 6. Non ancora fatto
-Split dev/val/test e relative impronte; scelta delle fonti oltre Swissvotes; verifica delle licenze delle dipendenze Python; stima dello spazio per BIRD (dimensione del dev set non trovata).
+Revisione umana delle domande; Swissvotes come dataset aggiuntivo (scaricabile con `scripts/fetch_swissvotes.sh`, nessun task scritto); verifica delle licenze di opendata.swiss/OpenParlData; licenze di `peft`/`transformers`/`torch`; stima dello spazio per BIRD.

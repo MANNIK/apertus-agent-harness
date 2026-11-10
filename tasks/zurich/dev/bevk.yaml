@@ -1,0 +1,290 @@
+# GENERATO da scripts/build_zurich_tasks.py: non modificare a mano (le modifiche vanno nelle specifiche e si rigenera).
+# Schema bevk, split dev. Dati reali CC0 della Città di Zurigo (data/zurich/, vedi docs/dati.md).
+# Domande e query gold scritte da Claude (strumento di sviluppo), verificate eseguendo il gold; formulazioni NON riviste da madrelingua.
+- id: bevk_pop_1
+  category: lookup
+  prompt: Quanti abitanti aveva Kreis 4 nel 2020?
+  tools:
+  - run_sql
+  setup: &id001
+    sql_init:
+    - CREATE TABLE bevoelkerung_kreis AS SELECT * FROM read_csv('{DATA}/zurich/bev_bestand_jahr_kreis_od3242.csv', header=true, sample_size=-1)
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: bevk
+    dataset: bev_bestand_jahr_kreis_od3242
+    split: dev
+    group: bev
+    template: pop
+  checks:
+  - type: sql_result_match
+    gold: SELECT AnzBestWir FROM bevoelkerung_kreis WHERE KreisLang = 'Kreis 4' AND StichtagDatJahr = 2020
+  - type: final_number
+    value: 29034.0
+    tol: 0.0
+- id: bevk_pop_2
+  category: lookup
+  prompt: How many inhabitants did Kreis 7 have in 2004?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: bevk
+    dataset: bev_bestand_jahr_kreis_od3242
+    split: dev
+    group: bev
+    template: pop
+  checks:
+  - type: sql_result_match
+    gold: SELECT AnzBestWir FROM bevoelkerung_kreis WHERE KreisLang = 'Kreis 7' AND StichtagDatJahr = 2004
+  - type: final_number
+    value: 33728.0
+    tol: 0.0
+- id: bevk_pop_3
+  category: lookup
+  prompt: Wie viele Einwohnerinnen und Einwohner hatte Kreis 12 im Jahr 2003?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: bevk
+    dataset: bev_bestand_jahr_kreis_od3242
+    split: dev
+    group: bev
+    template: pop
+  checks:
+  - type: sql_result_match
+    gold: SELECT AnzBestWir FROM bevoelkerung_kreis WHERE KreisLang = 'Kreis 12' AND StichtagDatJahr = 2003
+  - type: final_number
+    value: 28404.0
+    tol: 0.0
+- id: bevk_smallest_1
+  category: argmin
+  prompt: Quel arrondissement de la ville comptait le moins d'habitants en 2001 ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: bevk
+    dataset: bev_bestand_jahr_kreis_od3242
+    split: dev
+    group: bev
+    template: smallest
+  checks:
+  - type: sql_result_match
+    gold: SELECT KreisLang FROM bevoelkerung_kreis WHERE StichtagDatJahr = 2001 ORDER BY AnzBestWir ASC, KreisLang LIMIT 1
+- id: bevk_smallest_2
+  category: argmin
+  prompt: Quale distretto cittadino aveva meno abitanti nel 2018?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: bevk
+    dataset: bev_bestand_jahr_kreis_od3242
+    split: dev
+    group: bev
+    template: smallest
+  checks:
+  - type: sql_result_match
+    gold: SELECT KreisLang FROM bevoelkerung_kreis WHERE StichtagDatJahr = 2018 ORDER BY AnzBestWir ASC, KreisLang LIMIT 1
+- id: bevk_smallest_3
+  category: argmin
+  prompt: Which city district (Kreis) had the fewest inhabitants in 1999?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: bevk
+    dataset: bev_bestand_jahr_kreis_od3242
+    split: dev
+    group: bev
+    template: smallest
+  checks:
+  - type: sql_result_match
+    gold: SELECT KreisLang FROM bevoelkerung_kreis WHERE StichtagDatJahr = 1999 ORDER BY AnzBestWir ASC, KreisLang LIMIT 1
+- id: bevk_avg_period_1
+  category: aggregation
+  prompt: Wie hoch war die durchschnittliche Einwohnerzahl von Kreis 3 in den Jahren 1995 bis 2004 (beide eingeschlossen), auf eine ganze Zahl gerundet?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: bevk
+    dataset: bev_bestand_jahr_kreis_od3242
+    split: dev
+    group: bev
+    template: avg_period
+  checks:
+  - type: sql_result_match
+    gold: SELECT ROUND(AVG(AnzBestWir)) FROM bevoelkerung_kreis WHERE KreisLang = 'Kreis 3' AND StichtagDatJahr BETWEEN 1995 AND 2004
+  - type: final_number
+    value: 45824.0
+    tol: 0.0
+- id: bevk_avg_period_2
+  category: aggregation
+  prompt: Quelle était la population moyenne de Kreis 11 entre 2005 et 2014 (années incluses), arrondie à l'unité ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: bevk
+    dataset: bev_bestand_jahr_kreis_od3242
+    split: dev
+    group: bev
+    template: avg_period
+  checks:
+  - type: sql_result_match
+    gold: SELECT ROUND(AVG(AnzBestWir)) FROM bevoelkerung_kreis WHERE KreisLang = 'Kreis 11' AND StichtagDatJahr BETWEEN 2005 AND 2014
+  - type: final_number
+    value: 65634.0
+    tol: 0.0
+- id: bevk_avg_period_3
+  category: aggregation
+  prompt: Qual era la popolazione media di Kreis 12 negli anni dal 2015 al 2024 (inclusi), arrotondata all'unità?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: bevk
+    dataset: bev_bestand_jahr_kreis_od3242
+    split: dev
+    group: bev
+    template: avg_period
+  checks:
+  - type: sql_result_match
+    gold: SELECT ROUND(AVG(AnzBestWir)) FROM bevoelkerung_kreis WHERE KreisLang = 'Kreis 12' AND StichtagDatJahr BETWEEN 2015 AND 2024
+  - type: final_number
+    value: 32618.0
+    tol: 0.0
+- id: bevk_peak_year_1
+  category: argmax
+  prompt: In which year did Kreis 6 have its highest population?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: bevk
+    dataset: bev_bestand_jahr_kreis_od3242
+    split: dev
+    group: bev
+    template: peak_year
+  checks:
+  - type: sql_result_match
+    gold: SELECT StichtagDatJahr FROM bevoelkerung_kreis WHERE KreisLang = 'Kreis 6' ORDER BY AnzBestWir DESC, StichtagDatJahr LIMIT 1
+  - type: final_number
+    value: 2025.0
+    tol: 0.0
+- id: bevk_peak_year_2
+  category: argmax
+  prompt: In welchem Jahr hatte Kreis 2 die höchste Einwohnerzahl?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: bevk
+    dataset: bev_bestand_jahr_kreis_od3242
+    split: dev
+    group: bev
+    template: peak_year
+  checks:
+  - type: sql_result_match
+    gold: SELECT StichtagDatJahr FROM bevoelkerung_kreis WHERE KreisLang = 'Kreis 2' ORDER BY AnzBestWir DESC, StichtagDatJahr LIMIT 1
+  - type: final_number
+    value: 2025.0
+    tol: 0.0
+- id: bevk_peak_year_3
+  category: argmax
+  prompt: En quelle année Kreis 9 a-t-il eu sa population la plus élevée ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: bevk
+    dataset: bev_bestand_jahr_kreis_od3242
+    split: dev
+    group: bev
+    template: peak_year
+  checks:
+  - type: sql_result_match
+    gold: SELECT StichtagDatJahr FROM bevoelkerung_kreis WHERE KreisLang = 'Kreis 9' ORDER BY AnzBestWir DESC, StichtagDatJahr LIMIT 1
+  - type: final_number
+    value: 2025.0
+    tol: 0.0
+- id: bevk_above_city_avg_1
+  category: subquery
+  prompt: Quali distretti avevano nel 2020 più abitanti della media di tutti i distretti? Indicali in ordine alfabetico.
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: bevk
+    dataset: bev_bestand_jahr_kreis_od3242
+    split: dev
+    group: bev
+    template: above_city_avg
+  checks:
+  - type: sql_result_match
+    gold: SELECT KreisLang FROM bevoelkerung_kreis WHERE StichtagDatJahr = 2020 AND AnzBestWir > (SELECT AVG(AnzBestWir) FROM bevoelkerung_kreis WHERE StichtagDatJahr = 2020) ORDER BY KreisLang
+    order_matters: true
+- id: bevk_above_city_avg_2
+  category: subquery
+  prompt: Which city districts had more inhabitants in 2004 than the average of all districts? List them in alphabetical order.
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: bevk
+    dataset: bev_bestand_jahr_kreis_od3242
+    split: dev
+    group: bev
+    template: above_city_avg
+  checks:
+  - type: sql_result_match
+    gold: SELECT KreisLang FROM bevoelkerung_kreis WHERE StichtagDatJahr = 2004 AND AnzBestWir > (SELECT AVG(AnzBestWir) FROM bevoelkerung_kreis WHERE StichtagDatJahr = 2004) ORDER BY KreisLang
+    order_matters: true
+- id: bevk_above_city_avg_3
+  category: subquery
+  prompt: Welche Stadtkreise hatten im Jahr 2013 mehr Einwohnerinnen und Einwohner als der Durchschnitt aller Kreise? Nenne sie in alphabetischer Reihenfolge.
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: bevk
+    dataset: bev_bestand_jahr_kreis_od3242
+    split: dev
+    group: bev
+    template: above_city_avg
+  checks:
+  - type: sql_result_match
+    gold: SELECT KreisLang FROM bevoelkerung_kreis WHERE StichtagDatJahr = 2013 AND AnzBestWir > (SELECT AVG(AnzBestWir) FROM bevoelkerung_kreis WHERE StichtagDatJahr = 2013) ORDER BY KreisLang
+    order_matters: true

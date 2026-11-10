@@ -5,7 +5,7 @@ l'originale e contro un fine-tuning LoRA. Task centrale: **Text-to-SQL su DuckDB
 Contesto e regole del hackathon: `../CLAUDE.md`; compiti: `dev-tasks/README.md` (serie W).
 
 **Stato (10 nov 2026, dopo W01):** esiste solo il **nucleo** (client OpenAI-compatibile, registrazione/replay, statistiche, report, conformità, parser delle tool call, CLI).
-Con **W03** esistono anche il tool `run_sql` (DuckDB in sola lettura), l'execution accuracy e 8 task **sintetici** di prova (`tasks/demo_sales.yaml`, non sono il dataset di valutazione). **Non esistono ancora** il dataset reale, gli strumenti sui pesi, WSP, LoRA, l'applicazione: sono i compiti W02 (in corso), W05–W10. WSP è un'ipotesi, non un risultato.
+Con **W02** esiste il dataset reale `zurich-sql` v0.1 (210 task su dati CC0 della Città di Zurigo, `tasks/zurich/`, split per schema; vedi `docs/dati.md` §7). Con **W03** esistono anche il tool `run_sql` (DuckDB in sola lettura), l'execution accuracy e 8 task **sintetici** di prova (`tasks/demo_sales.yaml`, non sono il dataset di valutazione). **Non esistono ancora** il dataset reale, gli strumenti sui pesi, WSP, LoRA, l'applicazione: sono i compiti W02 (in corso), W05–W10. WSP è un'ipotesi, non un risultato.
 La suite agentica del vecchio progetto è in `archive/agent-suite/` (vedi il suo `LEGGIMI.md`); **le sezioni di questo README sui task, i tool finti e i controlli la descrivono e sono storiche**
 finché W03 non le sostituisce. Il nucleo funziona con qualunque server che esponga `/v1/chat/completions` (mlx-lm, llama.cpp, vLLM, LM Studio, Ollama…).
 

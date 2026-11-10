@@ -1,0 +1,290 @@
+# GENERATO da scripts/build_zurich_tasks.py: non modificare a mano (le modifiche vanno nelle specifiche e si rigenera).
+# Schema feue, split test. Dati reali CC0 della Città di Zurigo (data/zurich/, vedi docs/dati.md).
+# Domande e query gold scritte da Claude (strumento di sviluppo), verificate eseguendo il gold; formulazioni NON riviste da madrelingua.
+- id: feue_missions_1
+  category: aggregation
+  prompt: How many fire-brigade call-outs were there in total in 2013 in Kreis 3 (all response-time categories combined)?
+  tools:
+  - run_sql
+  setup: &id001
+    sql_init:
+    - CREATE TABLE feuerwehr_ausrueckzeit AS SELECT * FROM read_csv('{DATA}/zurich/sid_srz_od1027_feuerwehr_ausrueckzeit_jahr_stadtkreis.csv', header=true, sample_size=-1)
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: feue
+    dataset: sid_srz_od1027_feuerwehr_ausrueckzeit_jahr_stadtkreis
+    split: test
+    group: sid
+    template: missions
+  checks:
+  - type: sql_result_match
+    gold: SELECT Anzahl_Einsaetze_bis_10min + Anzahl_Einsaetze_groesser_10min FROM feuerwehr_ausrueckzeit WHERE Stadtkreis = 'Kreis 3' AND Jahr = 2013
+  - type: final_number
+    value: 180.0
+    tol: 0.0
+- id: feue_missions_2
+  category: aggregation
+  prompt: Wie viele Feuerwehreinsätze gab es im Jahr 2018 im Kreis 7 insgesamt (alle Ausrückzeit-Kategorien zusammen)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: feue
+    dataset: sid_srz_od1027_feuerwehr_ausrueckzeit_jahr_stadtkreis
+    split: test
+    group: sid
+    template: missions
+  checks:
+  - type: sql_result_match
+    gold: SELECT Anzahl_Einsaetze_bis_10min + Anzahl_Einsaetze_groesser_10min FROM feuerwehr_ausrueckzeit WHERE Stadtkreis = 'Kreis 7' AND Jahr = 2018
+  - type: final_number
+    value: 139.0
+    tol: 0.0
+- id: feue_missions_3
+  category: aggregation
+  prompt: Combien d'interventions des pompiers y a-t-il eu au total en 2020 dans le Kreis 9 (toutes les catégories de temps de sortie réunies) ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: feue
+    dataset: sid_srz_od1027_feuerwehr_ausrueckzeit_jahr_stadtkreis
+    split: test
+    group: sid
+    template: missions
+  checks:
+  - type: sql_result_match
+    gold: SELECT Anzahl_Einsaetze_bis_10min + Anzahl_Einsaetze_groesser_10min FROM feuerwehr_ausrueckzeit WHERE Stadtkreis = 'Kreis 9' AND Jahr = 2020
+  - type: final_number
+    value: 229.0
+    tol: 0.0
+- id: feue_slowest_kreis_1
+  category: argmax
+  prompt: In quale distretto il tempo di uscita mediano dei pompieri era il più lungo nel 2024?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: feue
+    dataset: sid_srz_od1027_feuerwehr_ausrueckzeit_jahr_stadtkreis
+    split: test
+    group: sid
+    template: slowest_kreis
+  checks:
+  - type: sql_result_match
+    gold: SELECT Stadtkreis FROM feuerwehr_ausrueckzeit WHERE Jahr = 2024 ORDER BY Ausrueckzeit_Median DESC, Stadtkreis LIMIT 1
+- id: feue_slowest_kreis_2
+  category: argmax
+  prompt: In which city district was the median fire-brigade response (turn-out) time longest in 2025?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: feue
+    dataset: sid_srz_od1027_feuerwehr_ausrueckzeit_jahr_stadtkreis
+    split: test
+    group: sid
+    template: slowest_kreis
+  checks:
+  - type: sql_result_match
+    gold: SELECT Stadtkreis FROM feuerwehr_ausrueckzeit WHERE Jahr = 2025 ORDER BY Ausrueckzeit_Median DESC, Stadtkreis LIMIT 1
+- id: feue_slowest_kreis_3
+  category: argmax
+  prompt: In welchem Stadtkreis war die mediane Ausrückzeit der Feuerwehr im Jahr 2023 am längsten?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: feue
+    dataset: sid_srz_od1027_feuerwehr_ausrueckzeit_jahr_stadtkreis
+    split: test
+    group: sid
+    template: slowest_kreis
+  checks:
+  - type: sql_result_match
+    gold: SELECT Stadtkreis FROM feuerwehr_ausrueckzeit WHERE Jahr = 2023 ORDER BY Ausrueckzeit_Median DESC, Stadtkreis LIMIT 1
+- id: feue_citywide_share_1
+  category: arithmetic
+  prompt: Quelle était en 2020 à l'échelle de la ville la part des interventions avec un temps de sortie jusqu'à 10 minutes, en pourcentage arrondi à une décimale (calculée à partir du nombre d'interventions) ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: feue
+    dataset: sid_srz_od1027_feuerwehr_ausrueckzeit_jahr_stadtkreis
+    split: test
+    group: sid
+    template: citywide_share
+  checks:
+  - type: sql_result_match
+    gold: SELECT ROUND(100.0 * SUM(Anzahl_Einsaetze_bis_10min) / (SUM(Anzahl_Einsaetze_bis_10min) + SUM(Anzahl_Einsaetze_groesser_10min)), 1) FROM feuerwehr_ausrueckzeit WHERE Jahr = 2020
+  - type: final_number
+    value: 85.1
+    tol: 0.06
+- id: feue_citywide_share_2
+  category: arithmetic
+  prompt: Qual era nel 2012 in tutta la città la quota di interventi con tempo di uscita fino a 10 minuti, in percentuale arrotondata a un decimale (calcolata dal numero di interventi)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: feue
+    dataset: sid_srz_od1027_feuerwehr_ausrueckzeit_jahr_stadtkreis
+    split: test
+    group: sid
+    template: citywide_share
+  checks:
+  - type: sql_result_match
+    gold: SELECT ROUND(100.0 * SUM(Anzahl_Einsaetze_bis_10min) / (SUM(Anzahl_Einsaetze_bis_10min) + SUM(Anzahl_Einsaetze_groesser_10min)), 1) FROM feuerwehr_ausrueckzeit WHERE Jahr = 2012
+  - type: final_number
+    value: 83.0
+    tol: 0.0
+- id: feue_citywide_share_3
+  category: arithmetic
+  prompt: What was the citywide share of call-outs with a response time of up to 10 minutes in 2009, as a percentage rounded to one decimal (computed from the call-out counts)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: feue
+    dataset: sid_srz_od1027_feuerwehr_ausrueckzeit_jahr_stadtkreis
+    split: test
+    group: sid
+    template: citywide_share
+  checks:
+  - type: sql_result_match
+    gold: SELECT ROUND(100.0 * SUM(Anzahl_Einsaetze_bis_10min) / (SUM(Anzahl_Einsaetze_bis_10min) + SUM(Anzahl_Einsaetze_groesser_10min)), 1) FROM feuerwehr_ausrueckzeit WHERE Jahr = 2009
+  - type: final_number
+    value: 74.5
+    tol: 0.06
+- id: feue_kreise_below_1
+  category: filter_count
+  prompt: In wie vielen Stadtkreisen lag im Jahr 2024 der Anteil der Einsätze mit Ausrückzeit bis 10 Minuten unter 95 Prozent?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: feue
+    dataset: sid_srz_od1027_feuerwehr_ausrueckzeit_jahr_stadtkreis
+    split: test
+    group: sid
+    template: kreise_below
+  checks:
+  - type: sql_result_match
+    gold: SELECT COUNT(*) FROM feuerwehr_ausrueckzeit WHERE Jahr = 2024 AND Prozent_Einsaetze_bis_10min < 95
+  - type: final_number
+    value: 9.0
+    tol: 0.0
+- id: feue_kreise_below_2
+  category: filter_count
+  prompt: Dans combien d'arrondissements la part des interventions avec temps de sortie jusqu'à 10 minutes était-elle inférieure à 95 % en 2023 ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: feue
+    dataset: sid_srz_od1027_feuerwehr_ausrueckzeit_jahr_stadtkreis
+    split: test
+    group: sid
+    template: kreise_below
+  checks:
+  - type: sql_result_match
+    gold: SELECT COUNT(*) FROM feuerwehr_ausrueckzeit WHERE Jahr = 2023 AND Prozent_Einsaetze_bis_10min < 95
+  - type: final_number
+    value: 12.0
+    tol: 0.0
+- id: feue_kreise_below_3
+  category: filter_count
+  prompt: In quanti distretti la quota di interventi con tempo di uscita fino a 10 minuti era inferiore al 95 % nel 2017?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: feue
+    dataset: sid_srz_od1027_feuerwehr_ausrueckzeit_jahr_stadtkreis
+    split: test
+    group: sid
+    template: kreise_below
+  checks:
+  - type: sql_result_match
+    gold: SELECT COUNT(*) FROM feuerwehr_ausrueckzeit WHERE Jahr = 2017 AND Prozent_Einsaetze_bis_10min < 95
+  - type: final_number
+    value: 10.0
+    tol: 0.0
+- id: feue_median_time_1
+  category: lookup
+  prompt: What was the median fire-brigade response (turn-out) time in Kreis 3 in 2023?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: feue
+    dataset: sid_srz_od1027_feuerwehr_ausrueckzeit_jahr_stadtkreis
+    split: test
+    group: sid
+    template: median_time
+    trap: time_type
+  checks:
+  - type: sql_result_match
+    gold: SELECT Ausrueckzeit_Median FROM feuerwehr_ausrueckzeit WHERE Stadtkreis = 'Kreis 3' AND Jahr = 2023
+- id: feue_median_time_2
+  category: lookup
+  prompt: Wie lang war die mediane Ausrückzeit der Feuerwehr im Kreis 2 im Jahr 2023?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: feue
+    dataset: sid_srz_od1027_feuerwehr_ausrueckzeit_jahr_stadtkreis
+    split: test
+    group: sid
+    template: median_time
+    trap: time_type
+  checks:
+  - type: sql_result_match
+    gold: SELECT Ausrueckzeit_Median FROM feuerwehr_ausrueckzeit WHERE Stadtkreis = 'Kreis 2' AND Jahr = 2023
+- id: feue_median_time_3
+  category: lookup
+  prompt: Quel était le temps de sortie médian des pompiers dans le Kreis 10 en 2024 ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: feue
+    dataset: sid_srz_od1027_feuerwehr_ausrueckzeit_jahr_stadtkreis
+    split: test
+    group: sid
+    template: median_time
+    trap: time_type
+  checks:
+  - type: sql_result_match
+    gold: SELECT Ausrueckzeit_Median FROM feuerwehr_ausrueckzeit WHERE Stadtkreis = 'Kreis 10' AND Jahr = 2024

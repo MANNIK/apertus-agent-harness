@@ -14,6 +14,7 @@ stanno in `sql_eval.py`.
 """
 from __future__ import annotations
 
+import os
 import tempfile
 import threading
 from pathlib import Path
@@ -38,6 +39,11 @@ DEFAULT_LIMITS: dict[str, Any] = {
     "max_cell_chars": 200,
     "sample_rows": 3,         # righe d'esempio per tabella nel testo dello schema
 }
+
+
+def data_directory() -> str:
+    """Cartella dei dati: variabile `AGENTBENCH_DATA_DIR` oppure `<radice del progetto>/data` (checkout o installazione editabile)."""
+    return os.environ.get("AGENTBENCH_DATA_DIR") or str(Path(__file__).resolve().parents[2] / "data")
 
 
 def _require_duckdb():
@@ -71,9 +77,10 @@ class SqlBox(ToolBox):
         self._tmp = tempfile.TemporaryDirectory(prefix="agentbench-sql-")
         path = str(Path(self._tmp.name) / "db.duckdb")
         con = self._duckdb.connect(path)
+        data_dir = data_directory()
         try:
             for stmt in init:
-                con.execute(stmt)
+                con.execute(stmt.replace("{DATA}", data_dir))  # i task usano {DATA}/… per i file CSV del progetto
         finally:
             con.close()
         self.con = self._duckdb.connect(path, read_only=True, config={

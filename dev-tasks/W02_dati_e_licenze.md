@@ -1,5 +1,5 @@
 # W02 — Dati e licenze: BIRD, DuckDB e dataset analitico
-Stato: **in corso** (licenze verificate in parte, dataset non ancora costruito) · Priorità: alta · Serve: W01 (fatto)
+Stato: **dataset v0.1 fatto** (210 task reali); restano la revisione umana e le licenze di opendata.swiss/OpenParlData · Priorità: alta · Serve: W01 (fatto)
 
 ## Obiettivo
 Decidere quali dati usare per il Text-to-SQL, verificarne le licenze e fissare gli split dev / val / test.
@@ -52,3 +52,11 @@ Il documento di progetto propone BIRD (Text-to-SQL), un dataset analitico person
 - `opendata.swiss` e la sua API rispondono 403 ai programmi (non aggirato). Basilea (`data.bs.ch`): API raggiungibile, licenze **non** lette.
 - Selezione e regole in `docs/dati.md` §2b (CC0 per singolo dataset, niente nomi di persone, un dataset = uno schema = un solo split). **Nulla è stato ancora scaricato né trasformato in task.**
 - Prossimi passi: scaricare la rosa proposta con sha256, ispezionare colonne e valori, scrivere domande e gold (DE/FR/IT/EN) con revisione umana, definire gli split per schema.
+
+**Esito finale v0.1 (10 nov 2026, sera).**
+- Dati: 15 CSV CC0 della Città di Zurigo (licenza riletta dall'API a ogni download, sha256 in `data/zurich/MANIFEST.json`, istantanea committata, 5,1 MB). Nessun nome di persona.
+- Task: `tasks/zurich/{dev,val,test}/` = **210 task** (dev 96, val 30, test 84; 7+2+6 schemi; DE/FR/IT/EN bilanciate), generati in modo **deterministico** da `scripts/zurich_spec.py` + `scripts/build_zurich_tasks.py`, con il gold **eseguito** su ogni istanza.
+  Split **per schema e per dominio** (disgiunti, verificato da test). Il CLI rifiuta il test senza `--final-test`.
+- Verificato: `tests/test_zurich_tasks.py` (10 test): licenze e sha256 dei dati, impronte dei task, split disgiunti, 210 gold risolvibili nell'ambiente di sola lettura, rigenerazione identica, protezione del test. Totale `pytest`: **180 passati**.
+- **Non verificato / aperto:** (1) domande **non rilette da madrelingua** (scritte da Claude; da dichiarare); (2) la varietà è quella di ~70 modelli di domanda, non di un dataset scritto a mano; (3) test piccolo (84 task); (4) condizioni formali del portale non lette (pagine legali 404; niente sull'uso per IA); (5) opendata.swiss (403) e OpenParlData non verificate; (6) Swissvotes scaricabile ma senza task; (7) contaminazione di Apertus non esclusa.
+- Decisione di Nikola (10 nov 2026): «dati reali» e «altre fonti» → fonte principale: Open Data Stadt Zürich.

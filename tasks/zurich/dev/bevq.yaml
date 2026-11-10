@@ -1,0 +1,353 @@
+# GENERATO da scripts/build_zurich_tasks.py: non modificare a mano (le modifiche vanno nelle specifiche e si rigenera).
+# Schema bevq, split dev. Dati reali CC0 della Città di Zurigo (data/zurich/, vedi docs/dati.md).
+# Domande e query gold scritte da Claude (strumento di sviluppo), verificate eseguendo il gold; formulazioni NON riviste da madrelingua.
+- id: bevq_pop_1
+  category: lookup
+  prompt: Wie viele Personen wohnten im Jahr 2002 im Quartier Sihlfeld?
+  tools:
+  - run_sql
+  setup: &id001
+    sql_init:
+    - CREATE TABLE bevoelkerung_quartier AS SELECT * FROM read_csv('{DATA}/zurich/bev_bestand_jahr_quartier_od3240.csv', header=true, sample_size=-1)
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: bevq
+    dataset: bev_bestand_jahr_quartier_od3240
+    split: dev
+    group: bev
+    template: pop
+    trap: cross_lingual_schema
+  checks:
+  - type: sql_result_match
+    gold: SELECT AnzBestWir FROM bevoelkerung_quartier WHERE QuarLang = 'Sihlfeld' AND StichtagDatJahr = 2002
+  - type: final_number
+    value: 20731.0
+    tol: 0.0
+- id: bevq_pop_2
+  category: lookup
+  prompt: Combien de personnes habitaient dans le quartier Escher Wyss en 2009 ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: bevq
+    dataset: bev_bestand_jahr_quartier_od3240
+    split: dev
+    group: bev
+    template: pop
+    trap: cross_lingual_schema
+  checks:
+  - type: sql_result_match
+    gold: SELECT AnzBestWir FROM bevoelkerung_quartier WHERE QuarLang = 'Escher Wyss' AND StichtagDatJahr = 2009
+  - type: final_number
+    value: 3060.0
+    tol: 0.0
+- id: bevq_pop_3
+  category: lookup
+  prompt: Quante persone abitavano nel quartiere Lindenhof nel 1999?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: bevq
+    dataset: bev_bestand_jahr_quartier_od3240
+    split: dev
+    group: bev
+    template: pop
+    trap: cross_lingual_schema
+  checks:
+  - type: sql_result_match
+    gold: SELECT AnzBestWir FROM bevoelkerung_quartier WHERE QuarLang = 'Lindenhof' AND StichtagDatJahr = 1999
+  - type: final_number
+    value: 1032.0
+    tol: 0.0
+- id: bevq_biggest_1
+  category: argmax
+  prompt: Which district had the most inhabitants in 2005?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: bevq
+    dataset: bev_bestand_jahr_quartier_od3240
+    split: dev
+    group: bev
+    template: biggest
+  checks:
+  - type: sql_result_match
+    gold: SELECT QuarLang FROM bevoelkerung_quartier WHERE StichtagDatJahr = 2005 ORDER BY AnzBestWir DESC, QuarLang LIMIT 1
+- id: bevq_biggest_2
+  category: argmax
+  prompt: Welches Quartier hatte im Jahr 2015 die meisten Einwohnerinnen und Einwohner?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: bevq
+    dataset: bev_bestand_jahr_quartier_od3240
+    split: dev
+    group: bev
+    template: biggest
+  checks:
+  - type: sql_result_match
+    gold: SELECT QuarLang FROM bevoelkerung_quartier WHERE StichtagDatJahr = 2015 ORDER BY AnzBestWir DESC, QuarLang LIMIT 1
+- id: bevq_biggest_3
+  category: argmax
+  prompt: Quel quartier comptait le plus d'habitants en 2021 ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: bevq
+    dataset: bev_bestand_jahr_quartier_od3240
+    split: dev
+    group: bev
+    template: biggest
+  checks:
+  - type: sql_result_match
+    gold: SELECT QuarLang FROM bevoelkerung_quartier WHERE StichtagDatJahr = 2021 ORDER BY AnzBestWir DESC, QuarLang LIMIT 1
+- id: bevq_total_1
+  category: aggregation
+  prompt: Qual era la popolazione residente totale della città di Zurigo nel 2024?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: bevq
+    dataset: bev_bestand_jahr_quartier_od3240
+    split: dev
+    group: bev
+    template: total
+  checks:
+  - type: sql_result_match
+    gold: SELECT SUM(AnzBestWir) FROM bevoelkerung_quartier WHERE StichtagDatJahr = 2024
+  - type: final_number
+    value: 448664.0
+    tol: 0.0
+- id: bevq_total_2
+  category: aggregation
+  prompt: What was the total resident population of the city of Zurich in 2004?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: bevq
+    dataset: bev_bestand_jahr_quartier_od3240
+    split: dev
+    group: bev
+    template: total
+  checks:
+  - type: sql_result_match
+    gold: SELECT SUM(AnzBestWir) FROM bevoelkerung_quartier WHERE StichtagDatJahr = 2004
+  - type: final_number
+    value: 364977.0
+    tol: 0.0
+- id: bevq_total_3
+  category: aggregation
+  prompt: Wie gross war die gesamte Wohnbevölkerung der Stadt Zürich im Jahr 2014?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: bevq
+    dataset: bev_bestand_jahr_quartier_od3240
+    split: dev
+    group: bev
+    template: total
+  checks:
+  - type: sql_result_match
+    gold: SELECT SUM(AnzBestWir) FROM bevoelkerung_quartier WHERE StichtagDatJahr = 2014
+  - type: final_number
+    value: 404783.0
+    tol: 0.0
+- id: bevq_change_1
+  category: arithmetic
+  prompt: De combien de personnes la population du quartier City a-t-elle varié entre 1995 et 2005 (valeur 2005 moins valeur 1995) ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: bevq
+    dataset: bev_bestand_jahr_quartier_od3240
+    split: dev
+    group: bev
+    template: change
+  checks:
+  - type: sql_result_match
+    gold: SELECT (SELECT AnzBestWir FROM bevoelkerung_quartier WHERE QuarLang = 'City' AND StichtagDatJahr = 2005) - (SELECT AnzBestWir FROM bevoelkerung_quartier WHERE QuarLang = 'City' AND StichtagDatJahr = 1995)
+  - type: final_number
+    value: -161.0
+    tol: 0.0
+- id: bevq_change_2
+  category: arithmetic
+  prompt: Di quante persone è variata la popolazione del quartiere Seebach tra il 2000 e il 2010 (valore 2010 meno valore 2000)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: bevq
+    dataset: bev_bestand_jahr_quartier_od3240
+    split: dev
+    group: bev
+    template: change
+  checks:
+  - type: sql_result_match
+    gold: SELECT (SELECT AnzBestWir FROM bevoelkerung_quartier WHERE QuarLang = 'Seebach' AND StichtagDatJahr = 2010) - (SELECT AnzBestWir FROM bevoelkerung_quartier WHERE QuarLang = 'Seebach' AND StichtagDatJahr = 2000)
+  - type: final_number
+    value: 4167.0
+    tol: 0.0
+- id: bevq_change_3
+  category: arithmetic
+  prompt: By how many people did the population of the Lindenhof district change between 1995 and 2005 (value in 2005 minus value in 1995)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: bevq
+    dataset: bev_bestand_jahr_quartier_od3240
+    split: dev
+    group: bev
+    template: change
+  checks:
+  - type: sql_result_match
+    gold: SELECT (SELECT AnzBestWir FROM bevoelkerung_quartier WHERE QuarLang = 'Lindenhof' AND StichtagDatJahr = 2005) - (SELECT AnzBestWir FROM bevoelkerung_quartier WHERE QuarLang = 'Lindenhof' AND StichtagDatJahr = 1995)
+  - type: final_number
+    value: -146.0
+    tol: 0.0
+- id: bevq_top3_1
+  category: ranking
+  prompt: Nenne die drei bevölkerungsreichsten Quartiere im Jahr 1999, vom grössten zum kleinsten.
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: bevq
+    dataset: bev_bestand_jahr_quartier_od3240
+    split: dev
+    group: bev
+    template: top3
+  checks:
+  - type: sql_result_match
+    gold: SELECT QuarLang FROM bevoelkerung_quartier WHERE StichtagDatJahr = 1999 ORDER BY AnzBestWir DESC, QuarLang LIMIT 3
+    order_matters: true
+- id: bevq_top3_2
+  category: ranking
+  prompt: Cite les trois quartiers les plus peuplés en 2025, du plus grand au plus petit.
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: bevq
+    dataset: bev_bestand_jahr_quartier_od3240
+    split: dev
+    group: bev
+    template: top3
+  checks:
+  - type: sql_result_match
+    gold: SELECT QuarLang FROM bevoelkerung_quartier WHERE StichtagDatJahr = 2025 ORDER BY AnzBestWir DESC, QuarLang LIMIT 3
+    order_matters: true
+- id: bevq_top3_3
+  category: ranking
+  prompt: Indica i tre quartieri più popolosi nel 2002, dal più grande al più piccolo.
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: bevq
+    dataset: bev_bestand_jahr_quartier_od3240
+    split: dev
+    group: bev
+    template: top3
+  checks:
+  - type: sql_result_match
+    gold: SELECT QuarLang FROM bevoelkerung_quartier WHERE StichtagDatJahr = 2002 ORDER BY AnzBestWir DESC, QuarLang LIMIT 3
+    order_matters: true
+- id: bevq_count_above_1
+  category: filter_count
+  prompt: In how many districts did more than 10000 people live in 2017?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: bevq
+    dataset: bev_bestand_jahr_quartier_od3240
+    split: dev
+    group: bev
+    template: count_above
+  checks:
+  - type: sql_result_match
+    gold: SELECT COUNT(*) FROM bevoelkerung_quartier WHERE StichtagDatJahr = 2017 AND AnzBestWir > 10000
+  - type: final_number
+    value: 19.0
+    tol: 0.0
+- id: bevq_count_above_2
+  category: filter_count
+  prompt: In wie vielen Quartieren wohnten im Jahr 2006 mehr als 5000 Personen?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: bevq
+    dataset: bev_bestand_jahr_quartier_od3240
+    split: dev
+    group: bev
+    template: count_above
+  checks:
+  - type: sql_result_match
+    gold: SELECT COUNT(*) FROM bevoelkerung_quartier WHERE StichtagDatJahr = 2006 AND AnzBestWir > 5000
+  - type: final_number
+    value: 25.0
+    tol: 0.0
+- id: bevq_count_above_3
+  category: filter_count
+  prompt: Dans combien de quartiers habitaient plus de 5000 personnes en 2016 ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: bevq
+    dataset: bev_bestand_jahr_quartier_od3240
+    split: dev
+    group: bev
+    template: count_above
+  checks:
+  - type: sql_result_match
+    gold: SELECT COUNT(*) FROM bevoelkerung_quartier WHERE StichtagDatJahr = 2016 AND AnzBestWir > 5000
+  - type: final_number
+    value: 29.0
+    tol: 0.0

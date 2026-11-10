@@ -1,0 +1,236 @@
+# GENERATO da scripts/build_zurich_tasks.py: non modificare a mano (le modifiche vanno nelle specifiche e si rigenera).
+# Schema rett, split test. Dati reali CC0 della Città di Zurigo (data/zurich/, vedi docs/dati.md).
+# Domande e query gold scritte da Claude (strumento di sviluppo), verificate eseguendo il gold; formulazioni NON riviste da madrelingua.
+- id: rett_missions_1
+  category: aggregation
+  prompt: Quanti interventi del servizio di soccorso sono stati registrati nel 2009 nel Kreis 7 (interventi fino a 10 minuti più interventi oltre 10 minuti)?
+  tools:
+  - run_sql
+  setup: &id001
+    sql_init:
+    - CREATE TABLE rettungsdienst_hilfsfristen AS SELECT * FROM read_csv('{DATA}/zurich/sid_srz_od1036_hilfsfristen_rettungsdienste_jahr_stadtkreis.csv', header=true, sample_size=-1)
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: rett
+    dataset: sid_srz_od1036_hilfsfristen_rettungsdienste_jahr_stadtkreis
+    split: test
+    group: sid
+    template: missions
+  checks:
+  - type: sql_result_match
+    gold: SELECT Anzahl_Einsaetze_bis_10min + Anzahl_Einsaetze_groesser_10min FROM rettungsdienst_hilfsfristen WHERE Stadtkreis = 'Kreis 7' AND Jahr = 2009
+  - type: final_number
+    value: 236.0
+    tol: 0.0
+- id: rett_missions_2
+  category: aggregation
+  prompt: How many ambulance-service call-outs were recorded in 2022 in Kreis 5 (call-outs up to 10 minutes plus call-outs over 10 minutes)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: rett
+    dataset: sid_srz_od1036_hilfsfristen_rettungsdienste_jahr_stadtkreis
+    split: test
+    group: sid
+    template: missions
+  checks:
+  - type: sql_result_match
+    gold: SELECT Anzahl_Einsaetze_bis_10min + Anzahl_Einsaetze_groesser_10min FROM rettungsdienst_hilfsfristen WHERE Stadtkreis = 'Kreis 5' AND Jahr = 2022
+  - type: final_number
+    value: 821.0
+    tol: 0.0
+- id: rett_missions_3
+  category: aggregation
+  prompt: Wie viele Rettungsdiensteinsätze wurden im Jahr 2013 im Kreis 2 erfasst (Einsätze bis 10 Minuten plus Einsätze über 10 Minuten)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: rett
+    dataset: sid_srz_od1036_hilfsfristen_rettungsdienste_jahr_stadtkreis
+    split: test
+    group: sid
+    template: missions
+  checks:
+  - type: sql_result_match
+    gold: SELECT Anzahl_Einsaetze_bis_10min + Anzahl_Einsaetze_groesser_10min FROM rettungsdienst_hilfsfristen WHERE Stadtkreis = 'Kreis 2' AND Jahr = 2013
+  - type: final_number
+    value: 841.0
+    tol: 0.0
+- id: rett_slowest_1
+  category: argmax
+  prompt: Dans quel arrondissement le délai d'intervention médian du service de sauvetage était-il le plus long en 2025 ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: rett
+    dataset: sid_srz_od1036_hilfsfristen_rettungsdienste_jahr_stadtkreis
+    split: test
+    group: sid
+    template: slowest
+  checks:
+  - type: sql_result_match
+    gold: SELECT Stadtkreis FROM rettungsdienst_hilfsfristen WHERE Jahr = 2025 ORDER BY Hilfsfrist_Median DESC, Stadtkreis LIMIT 1
+- id: rett_slowest_2
+  category: argmax
+  prompt: In quale distretto il tempo di intervento mediano del servizio di soccorso era il più lungo nel 2023?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: rett
+    dataset: sid_srz_od1036_hilfsfristen_rettungsdienste_jahr_stadtkreis
+    split: test
+    group: sid
+    template: slowest
+  checks:
+  - type: sql_result_match
+    gold: SELECT Stadtkreis FROM rettungsdienst_hilfsfristen WHERE Jahr = 2023 ORDER BY Hilfsfrist_Median DESC, Stadtkreis LIMIT 1
+- id: rett_slowest_3
+  category: argmax
+  prompt: In which city district was the median ambulance response time longest in 2024?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: rett
+    dataset: sid_srz_od1036_hilfsfristen_rettungsdienste_jahr_stadtkreis
+    split: test
+    group: sid
+    template: slowest
+  checks:
+  - type: sql_result_match
+    gold: SELECT Stadtkreis FROM rettungsdienst_hilfsfristen WHERE Jahr = 2024 ORDER BY Hilfsfrist_Median DESC, Stadtkreis LIMIT 1
+- id: rett_citywide_15_1
+  category: arithmetic
+  prompt: Wie hoch war im Jahr 2013 stadtweit der Anteil der Einsätze mit Hilfsfrist bis 15 Minuten, in Prozent auf eine Dezimalstelle gerundet (aus den Einsatzzahlen berechnet)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: rett
+    dataset: sid_srz_od1036_hilfsfristen_rettungsdienste_jahr_stadtkreis
+    split: test
+    group: sid
+    template: citywide_15
+  checks:
+  - type: sql_result_match
+    gold: SELECT ROUND(100.0 * SUM(Anzahl_Einsaetze_bis_15min) / (SUM(Anzahl_Einsaetze_bis_15min) + SUM(Anzahl_Einsaetze_groesser_15min)), 1) FROM rettungsdienst_hilfsfristen WHERE Jahr = 2013
+  - type: final_number
+    value: 95.9
+    tol: 0.06
+- id: rett_citywide_15_2
+  category: arithmetic
+  prompt: Quelle était en 2009 à l'échelle de la ville la part des interventions avec un délai jusqu'à 15 minutes, en pourcentage arrondi à une décimale (calculée à partir du nombre d'interventions) ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: rett
+    dataset: sid_srz_od1036_hilfsfristen_rettungsdienste_jahr_stadtkreis
+    split: test
+    group: sid
+    template: citywide_15
+  checks:
+  - type: sql_result_match
+    gold: SELECT ROUND(100.0 * SUM(Anzahl_Einsaetze_bis_15min) / (SUM(Anzahl_Einsaetze_bis_15min) + SUM(Anzahl_Einsaetze_groesser_15min)), 1) FROM rettungsdienst_hilfsfristen WHERE Jahr = 2009
+  - type: final_number
+    value: 95.2
+    tol: 0.06
+- id: rett_citywide_15_3
+  category: arithmetic
+  prompt: Qual era nel 2022 in tutta la città la quota di interventi con tempo di intervento fino a 15 minuti, in percentuale arrotondata a un decimale (calcolata dal numero di interventi)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: rett
+    dataset: sid_srz_od1036_hilfsfristen_rettungsdienste_jahr_stadtkreis
+    split: test
+    group: sid
+    template: citywide_15
+  checks:
+  - type: sql_result_match
+    gold: SELECT ROUND(100.0 * SUM(Anzahl_Einsaetze_bis_15min) / (SUM(Anzahl_Einsaetze_bis_15min) + SUM(Anzahl_Einsaetze_groesser_15min)), 1) FROM rettungsdienst_hilfsfristen WHERE Jahr = 2022
+  - type: final_number
+    value: 96.4
+    tol: 0.06
+- id: rett_kreise_above_1
+  category: filter_count
+  prompt: In how many city districts did the ambulance service reach a response time of up to 10 minutes in at least 70 percent of call-outs in 2016?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: rett
+    dataset: sid_srz_od1036_hilfsfristen_rettungsdienste_jahr_stadtkreis
+    split: test
+    group: sid
+    template: kreise_above
+  checks:
+  - type: sql_result_match
+    gold: SELECT COUNT(*) FROM rettungsdienst_hilfsfristen WHERE Jahr = 2016 AND Prozent_Einsaetze_bis_10min >= 70
+  - type: final_number
+    value: 9.0
+    tol: 0.0
+- id: rett_kreise_above_2
+  category: filter_count
+  prompt: In wie vielen Stadtkreisen erreichte der Rettungsdienst im Jahr 2009 bei mindestens 70 Prozent der Einsätze eine Hilfsfrist bis 10 Minuten?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: rett
+    dataset: sid_srz_od1036_hilfsfristen_rettungsdienste_jahr_stadtkreis
+    split: test
+    group: sid
+    template: kreise_above
+  checks:
+  - type: sql_result_match
+    gold: SELECT COUNT(*) FROM rettungsdienst_hilfsfristen WHERE Jahr = 2009 AND Prozent_Einsaetze_bis_10min >= 70
+  - type: final_number
+    value: 11.0
+    tol: 0.0
+- id: rett_kreise_above_3
+  category: filter_count
+  prompt: Dans combien d'arrondissements le service de sauvetage a-t-il atteint en 2014 un délai d'intervention jusqu'à 10 minutes pour au moins 80 % des interventions ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: rett
+    dataset: sid_srz_od1036_hilfsfristen_rettungsdienste_jahr_stadtkreis
+    split: test
+    group: sid
+    template: kreise_above
+  checks:
+  - type: sql_result_match
+    gold: SELECT COUNT(*) FROM rettungsdienst_hilfsfristen WHERE Jahr = 2014 AND Prozent_Einsaetze_bis_10min >= 80
+  - type: final_number
+    value: 7.0
+    tol: 0.0

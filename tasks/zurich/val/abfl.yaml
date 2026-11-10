@@ -1,0 +1,308 @@
+# GENERATO da scripts/build_zurich_tasks.py: non modificare a mano (le modifiche vanno nelle specifiche e si rigenera).
+# Schema abfl, split val. Dati reali CC0 della Città di Zurigo (data/zurich/, vedi docs/dati.md).
+# Domande e query gold scritte da Claude (strumento di sviluppo), verificate eseguendo il gold; formulazioni NON riviste da madrelingua.
+- id: abfl_waste_month_1
+  category: lookup
+  prompt: How many tonnes of municipal waste were collected in November 2023?
+  tools:
+  - run_sql
+  setup: &id001
+    sql_init:
+    - CREATE TABLE stadtreinigung_kennzahlen AS SELECT * FROM read_csv('{DATA}/zurich/erz_sr_kennzahlen.csv', header=true, sample_size=-1)
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: abfl
+    dataset: erz_sr_kennzahlen
+    split: val
+    group: erz
+    template: waste_month
+    trap: trailing_whitespace
+  checks:
+  - type: sql_result_match
+    gold: SELECT Wert FROM stadtreinigung_kennzahlen WHERE Intervall = 'monatlich' AND TRIM(Indikator) = 'Siedlungsabfall' AND year(Datum) = 2023 AND month(Datum) = 11
+  - type: final_number
+    value: 428.0
+    tol: 0.0
+- id: abfl_waste_month_2
+  category: lookup
+  prompt: Wie viele Tonnen Siedlungsabfall wurden April 2026 gesammelt?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: abfl
+    dataset: erz_sr_kennzahlen
+    split: val
+    group: erz
+    template: waste_month
+    trap: trailing_whitespace
+  checks:
+  - type: sql_result_match
+    gold: SELECT Wert FROM stadtreinigung_kennzahlen WHERE Intervall = 'monatlich' AND TRIM(Indikator) = 'Siedlungsabfall' AND year(Datum) = 2026 AND month(Datum) = 4
+  - type: final_number
+    value: 375.0
+    tol: 0.0
+- id: abfl_waste_month_3
+  category: lookup
+  prompt: Combien de tonnes de déchets urbains ont été collectées au mois de décembre 2025 ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: abfl
+    dataset: erz_sr_kennzahlen
+    split: val
+    group: erz
+    template: waste_month
+    trap: trailing_whitespace
+  checks:
+  - type: sql_result_match
+    gold: SELECT Wert FROM stadtreinigung_kennzahlen WHERE Intervall = 'monatlich' AND TRIM(Indikator) = 'Siedlungsabfall' AND year(Datum) = 2025 AND month(Datum) = 12
+  - type: final_number
+    value: 348.0
+    tol: 0.0
+- id: abfl_waste_year_1
+  category: aggregation
+  prompt: Quante tonnellate di rifiuti urbani sono state raccolte in totale nel 2023 (somma dei valori mensili)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: abfl
+    dataset: erz_sr_kennzahlen
+    split: val
+    group: erz
+    template: waste_year
+    trap: trailing_whitespace
+  checks:
+  - type: sql_result_match
+    gold: SELECT SUM(Wert) FROM stadtreinigung_kennzahlen WHERE Intervall = 'monatlich' AND TRIM(Indikator) = 'Siedlungsabfall' AND year(Datum) = 2023
+  - type: final_number
+    value: 3823.1
+    tol: 0.06
+- id: abfl_waste_year_2
+  category: aggregation
+  prompt: How many tonnes of municipal waste were collected in total in 2025 (sum of the monthly values)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: abfl
+    dataset: erz_sr_kennzahlen
+    split: val
+    group: erz
+    template: waste_year
+    trap: trailing_whitespace
+  checks:
+  - type: sql_result_match
+    gold: SELECT SUM(Wert) FROM stadtreinigung_kennzahlen WHERE Intervall = 'monatlich' AND TRIM(Indikator) = 'Siedlungsabfall' AND year(Datum) = 2025
+  - type: final_number
+    value: 4362.0
+    tol: 0.0
+- id: abfl_waste_year_3
+  category: aggregation
+  prompt: Wie viele Tonnen Siedlungsabfall wurden im Jahr 2024 insgesamt gesammelt (Summe der Monatswerte)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: abfl
+    dataset: erz_sr_kennzahlen
+    split: val
+    group: erz
+    template: waste_year
+    trap: trailing_whitespace
+  checks:
+  - type: sql_result_match
+    gold: SELECT SUM(Wert) FROM stadtreinigung_kennzahlen WHERE Intervall = 'monatlich' AND TRIM(Indikator) = 'Siedlungsabfall' AND year(Datum) = 2024
+  - type: final_number
+    value: 4018.0
+    tol: 0.0
+- id: abfl_salt_peak_1
+  category: argmax
+  prompt: Quel mois de 2024 a connu la plus forte consommation de sel de déneigement ? Indique la date de fin de mois.
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: abfl
+    dataset: erz_sr_kennzahlen
+    split: val
+    group: erz
+    template: salt_peak
+    trap: trailing_whitespace
+  checks:
+  - type: sql_result_match
+    gold: SELECT Datum FROM stadtreinigung_kennzahlen WHERE Intervall = 'monatlich' AND TRIM(Indikator) = 'Streusalzverbrauch pro Monat' AND year(Datum) = 2024 ORDER BY Wert DESC, Datum LIMIT 1
+- id: abfl_salt_peak_2
+  category: argmax
+  prompt: In quale mese del 2023 il consumo di sale antighiaccio è stato più alto? Indica la data di fine mese.
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: abfl
+    dataset: erz_sr_kennzahlen
+    split: val
+    group: erz
+    template: salt_peak
+    trap: trailing_whitespace
+  checks:
+  - type: sql_result_match
+    gold: SELECT Datum FROM stadtreinigung_kennzahlen WHERE Intervall = 'monatlich' AND TRIM(Indikator) = 'Streusalzverbrauch pro Monat' AND year(Datum) = 2023 ORDER BY Wert DESC, Datum LIMIT 1
+- id: abfl_salt_peak_3
+  category: argmax
+  prompt: In which month of 2025 was road-salt consumption highest? Give the month-end date.
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: abfl
+    dataset: erz_sr_kennzahlen
+    split: val
+    group: erz
+    template: salt_peak
+    trap: trailing_whitespace
+  checks:
+  - type: sql_result_match
+    gold: SELECT Datum FROM stadtreinigung_kennzahlen WHERE Intervall = 'monatlich' AND TRIM(Indikator) = 'Streusalzverbrauch pro Monat' AND year(Datum) = 2025 ORDER BY Wert DESC, Datum LIMIT 1
+- id: abfl_diesel_year_1
+  category: aggregation
+  prompt: Wie viele Liter Diesel wurden im Jahr 2024 insgesamt getankt (Summe der Monatswerte)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: abfl
+    dataset: erz_sr_kennzahlen
+    split: val
+    group: erz
+    template: diesel_year
+    trap: trailing_whitespace
+  checks:
+  - type: sql_result_match
+    gold: SELECT SUM(Wert) FROM stadtreinigung_kennzahlen WHERE Intervall = 'monatlich' AND TRIM(Indikator) = 'Treibstoff Diesel' AND year(Datum) = 2024
+  - type: final_number
+    value: 223203.0
+    tol: 0.0
+- id: abfl_diesel_year_2
+  category: aggregation
+  prompt: Combien de litres de diesel ont été consommés au total en 2023 (somme des valeurs mensuelles) ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: abfl
+    dataset: erz_sr_kennzahlen
+    split: val
+    group: erz
+    template: diesel_year
+    trap: trailing_whitespace
+  checks:
+  - type: sql_result_match
+    gold: SELECT SUM(Wert) FROM stadtreinigung_kennzahlen WHERE Intervall = 'monatlich' AND TRIM(Indikator) = 'Treibstoff Diesel' AND year(Datum) = 2023
+  - type: final_number
+    value: 292051.0
+    tol: 0.0
+- id: abfl_diesel_year_3
+  category: aggregation
+  prompt: Quanti litri di diesel sono stati consumati in totale nel 2025 (somma dei valori mensili)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: abfl
+    dataset: erz_sr_kennzahlen
+    split: val
+    group: erz
+    template: diesel_year
+    trap: trailing_whitespace
+  checks:
+  - type: sql_result_match
+    gold: SELECT SUM(Wert) FROM stadtreinigung_kennzahlen WHERE Intervall = 'monatlich' AND TRIM(Indikator) = 'Treibstoff Diesel' AND year(Datum) = 2025
+  - type: final_number
+    value: 171366.0
+    tol: 0.0
+- id: abfl_annual_waste_1
+  category: lookup
+  prompt: How many tonnes of municipal waste and sweepings does the annual statistic report for 2017?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: abfl
+    dataset: erz_sr_kennzahlen
+    split: val
+    group: erz
+    template: annual_waste
+  checks:
+  - type: sql_result_match
+    gold: SELECT Wert FROM stadtreinigung_kennzahlen WHERE Intervall = 'jährlich' AND Indikator = 'Siedlungsabfall und Wischgut' AND year(Datum) = 2017
+  - type: final_number
+    value: 9220.0
+    tol: 0.0
+- id: abfl_annual_waste_2
+  category: lookup
+  prompt: Wie viele Tonnen Siedlungsabfall und Wischgut meldet die Jahresstatistik für das Jahr 2021?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: abfl
+    dataset: erz_sr_kennzahlen
+    split: val
+    group: erz
+    template: annual_waste
+  checks:
+  - type: sql_result_match
+    gold: SELECT Wert FROM stadtreinigung_kennzahlen WHERE Intervall = 'jährlich' AND Indikator = 'Siedlungsabfall und Wischgut' AND year(Datum) = 2021
+  - type: final_number
+    value: 8623.0
+    tol: 0.0
+- id: abfl_annual_waste_3
+  category: lookup
+  prompt: Combien de tonnes de déchets urbains et de balayures la statistique annuelle indique-t-elle pour 2022 ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: abfl
+    dataset: erz_sr_kennzahlen
+    split: val
+    group: erz
+    template: annual_waste
+  checks:
+  - type: sql_result_match
+    gold: SELECT Wert FROM stadtreinigung_kennzahlen WHERE Intervall = 'jährlich' AND Indikator = 'Siedlungsabfall und Wischgut' AND year(Datum) = 2022
+  - type: final_number
+    value: 4073.0
+    tol: 0.0

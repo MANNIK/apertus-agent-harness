@@ -1,0 +1,299 @@
+# GENERATO da scripts/build_zurich_tasks.py: non modificare a mano (le modifiche vanno nelle specifiche e si rigenera).
+# Schema eink, split val. Dati reali CC0 della Città di Zurigo (data/zurich/, vedi docs/dati.md).
+# Domande e query gold scritte da Claude (strumento di sviluppo), verificate eseguendo il gold; formulazioni NON riviste da madrelingua.
+- id: eink_median_income_1
+  category: lookup
+  prompt: Wie hoch war im Jahr 2008 das mittlere (Median-)Einkommen im Quartier Schwamendingen-Mitte beim Tarif «Einelternfamilientarif» (in Tausend Franken)?
+  tools:
+  - run_sql
+  setup: &id001
+    sql_init:
+    - CREATE TABLE einkommen_quartier AS SELECT * FROM read_csv('{DATA}/zurich/fd_median_einkommen_quartier_od1003.csv', header=true, sample_size=-1)
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: eink
+    dataset: fd_median_einkommen_quartier_od1003
+    split: val
+    group: fd
+    template: median_income
+    trap: cross_lingual_schema
+  checks:
+  - type: sql_result_match
+    gold: SELECT SteuerEinkommen_p50 FROM einkommen_quartier WHERE QuarLang = 'Schwamendingen-Mitte' AND StichtagDatJahr = 2008 AND SteuerTarifLang = 'Einelternfamilientarif'
+  - type: final_number
+    value: 25.75
+    tol: 0.06
+- id: eink_median_income_2
+  category: lookup
+  prompt: Quel était en 2018 le revenu médian dans le quartier Affoltern pour le tarif « Verheiratetentarif » (en milliers de francs) ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: eink
+    dataset: fd_median_einkommen_quartier_od1003
+    split: val
+    group: fd
+    template: median_income
+    trap: cross_lingual_schema
+  checks:
+  - type: sql_result_match
+    gold: SELECT SteuerEinkommen_p50 FROM einkommen_quartier WHERE QuarLang = 'Affoltern' AND StichtagDatJahr = 2018 AND SteuerTarifLang = 'Verheiratetentarif'
+  - type: final_number
+    value: 72.9
+    tol: 0.06
+- id: eink_median_income_3
+  category: lookup
+  prompt: Qual era nel 2015 il reddito mediano nel quartiere Unterstrass per la tariffa «Einelternfamilientarif» (in migliaia di franchi)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: eink
+    dataset: fd_median_einkommen_quartier_od1003
+    split: val
+    group: fd
+    template: median_income
+    trap: cross_lingual_schema
+  checks:
+  - type: sql_result_match
+    gold: SELECT SteuerEinkommen_p50 FROM einkommen_quartier WHERE QuarLang = 'Unterstrass' AND StichtagDatJahr = 2015 AND SteuerTarifLang = 'Einelternfamilientarif'
+  - type: final_number
+    value: 50.6
+    tol: 0.06
+- id: eink_highest_quarter_1
+  category: argmax
+  prompt: Which district had the highest median income under the basic tariff (Grundtarif) in 2011?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: eink
+    dataset: fd_median_einkommen_quartier_od1003
+    split: val
+    group: fd
+    template: highest_quarter
+  checks:
+  - type: sql_result_match
+    gold: SELECT QuarLang FROM einkommen_quartier WHERE StichtagDatJahr = 2011 AND SteuerTarifLang = 'Grundtarif' AND SteuerEinkommen_p50 IS NOT NULL ORDER BY SteuerEinkommen_p50 DESC, QuarLang LIMIT 1
+- id: eink_highest_quarter_2
+  category: argmax
+  prompt: Welches Quartier hatte im Jahr 2021 beim Grundtarif das höchste Median-Einkommen?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: eink
+    dataset: fd_median_einkommen_quartier_od1003
+    split: val
+    group: fd
+    template: highest_quarter
+  checks:
+  - type: sql_result_match
+    gold: SELECT QuarLang FROM einkommen_quartier WHERE StichtagDatJahr = 2021 AND SteuerTarifLang = 'Grundtarif' AND SteuerEinkommen_p50 IS NOT NULL ORDER BY SteuerEinkommen_p50 DESC, QuarLang LIMIT 1
+- id: eink_highest_quarter_3
+  category: argmax
+  prompt: Quel quartier avait en 2017 le revenu médian le plus élevé au tarif de base (Grundtarif) ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: eink
+    dataset: fd_median_einkommen_quartier_od1003
+    split: val
+    group: fd
+    template: highest_quarter
+  checks:
+  - type: sql_result_match
+    gold: SELECT QuarLang FROM einkommen_quartier WHERE StichtagDatJahr = 2017 AND SteuerTarifLang = 'Grundtarif' AND SteuerEinkommen_p50 IS NOT NULL ORDER BY SteuerEinkommen_p50 DESC, QuarLang LIMIT 1
+- id: eink_spread_1
+  category: arithmetic
+  prompt: Qual era nel 2007 nel quartiere Witikon, con la tariffa base, la differenza tra il 75° e il 25° percentile del reddito (in migliaia di franchi)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: eink
+    dataset: fd_median_einkommen_quartier_od1003
+    split: val
+    group: fd
+    template: spread
+  checks:
+  - type: sql_result_match
+    gold: SELECT ROUND(SteuerEinkommen_p75 - SteuerEinkommen_p25, 1) FROM einkommen_quartier WHERE QuarLang = 'Witikon' AND StichtagDatJahr = 2007 AND SteuerTarifLang = 'Grundtarif'
+  - type: final_number
+    value: 52.5
+    tol: 0.06
+- id: eink_spread_2
+  category: arithmetic
+  prompt: What was the gap between the 75th and 25th income percentiles in the Enge district in 2021 under the basic tariff (in thousands of francs)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: eink
+    dataset: fd_median_einkommen_quartier_od1003
+    split: val
+    group: fd
+    template: spread
+  checks:
+  - type: sql_result_match
+    gold: SELECT ROUND(SteuerEinkommen_p75 - SteuerEinkommen_p25, 1) FROM einkommen_quartier WHERE QuarLang = 'Enge' AND StichtagDatJahr = 2021 AND SteuerTarifLang = 'Grundtarif'
+  - type: final_number
+    value: 80.1
+    tol: 0.06
+- id: eink_spread_3
+  category: arithmetic
+  prompt: Wie gross war im Jahr 2013 im Quartier Saatlen beim Grundtarif der Abstand zwischen dem 75%- und dem 25%-Perzentil des Einkommens (in Tausend Franken)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: eink
+    dataset: fd_median_einkommen_quartier_od1003
+    split: val
+    group: fd
+    template: spread
+  checks:
+  - type: sql_result_match
+    gold: SELECT ROUND(SteuerEinkommen_p75 - SteuerEinkommen_p25, 1) FROM einkommen_quartier WHERE QuarLang = 'Saatlen' AND StichtagDatJahr = 2013 AND SteuerTarifLang = 'Grundtarif'
+  - type: final_number
+    value: 36.3
+    tol: 0.06
+- id: eink_count_above_1
+  category: filter_count
+  prompt: Dans combien de quartiers le revenu médian au tarif de base dépassait-il 40 milliers de francs en 2013 ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: eink
+    dataset: fd_median_einkommen_quartier_od1003
+    split: val
+    group: fd
+    template: count_above
+  checks:
+  - type: sql_result_match
+    gold: SELECT COUNT(*) FROM einkommen_quartier WHERE StichtagDatJahr = 2013 AND SteuerTarifLang = 'Grundtarif' AND SteuerEinkommen_p50 > 40
+  - type: final_number
+    value: 24.0
+    tol: 0.0
+- id: eink_count_above_2
+  category: filter_count
+  prompt: In quanti quartieri il reddito mediano con la tariffa base superava 40 migliaia di franchi nel 2007?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: eink
+    dataset: fd_median_einkommen_quartier_od1003
+    split: val
+    group: fd
+    template: count_above
+  checks:
+  - type: sql_result_match
+    gold: SELECT COUNT(*) FROM einkommen_quartier WHERE StichtagDatJahr = 2007 AND SteuerTarifLang = 'Grundtarif' AND SteuerEinkommen_p50 > 40
+  - type: final_number
+    value: 19.0
+    tol: 0.0
+- id: eink_count_above_3
+  category: filter_count
+  prompt: In how many districts was the median income under the basic tariff above 40 thousand francs in 2005?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: eink
+    dataset: fd_median_einkommen_quartier_od1003
+    split: val
+    group: fd
+    template: count_above
+  checks:
+  - type: sql_result_match
+    gold: SELECT COUNT(*) FROM einkommen_quartier WHERE StichtagDatJahr = 2005 AND SteuerTarifLang = 'Grundtarif' AND SteuerEinkommen_p50 > 40
+  - type: final_number
+    value: 15.0
+    tol: 0.0
+- id: eink_married_vs_basic_1
+  category: arithmetic
+  prompt: Um wie viel war im Jahr 2006 im Quartier Seebach das Median-Einkommen beim Verheiratetentarif höher als beim Grundtarif (in Tausend Franken)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: eink
+    dataset: fd_median_einkommen_quartier_od1003
+    split: val
+    group: fd
+    template: married_vs_basic
+  checks:
+  - type: sql_result_match
+    gold: SELECT ROUND((SELECT SteuerEinkommen_p50 FROM einkommen_quartier WHERE QuarLang = 'Seebach' AND StichtagDatJahr = 2006 AND SteuerTarifLang = 'Verheiratetentarif') - (SELECT SteuerEinkommen_p50 FROM einkommen_quartier WHERE QuarLang = 'Seebach' AND StichtagDatJahr = 2006 AND SteuerTarifLang = 'Grundtarif'), 1)
+  - type: final_number
+    value: 24.9
+    tol: 0.06
+- id: eink_married_vs_basic_2
+  category: arithmetic
+  prompt: De combien le revenu médian au tarif pour personnes mariées (Verheiratetentarif) dépassait-il celui du tarif de base en 2019 dans le quartier Albisrieden (en milliers de francs) ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: eink
+    dataset: fd_median_einkommen_quartier_od1003
+    split: val
+    group: fd
+    template: married_vs_basic
+  checks:
+  - type: sql_result_match
+    gold: SELECT ROUND((SELECT SteuerEinkommen_p50 FROM einkommen_quartier WHERE QuarLang = 'Albisrieden' AND StichtagDatJahr = 2019 AND SteuerTarifLang = 'Verheiratetentarif') - (SELECT SteuerEinkommen_p50 FROM einkommen_quartier WHERE QuarLang = 'Albisrieden' AND StichtagDatJahr = 2019 AND SteuerTarifLang = 'Grundtarif'), 1)
+  - type: final_number
+    value: 40.6
+    tol: 0.06
+- id: eink_married_vs_basic_3
+  category: arithmetic
+  prompt: Di quanto il reddito mediano con la tariffa per coniugati (Verheiratetentarif) superava quello con la tariffa base nel 2020 nel quartiere Hard (in migliaia di franchi)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: eink
+    dataset: fd_median_einkommen_quartier_od1003
+    split: val
+    group: fd
+    template: married_vs_basic
+  checks:
+  - type: sql_result_match
+    gold: SELECT ROUND((SELECT SteuerEinkommen_p50 FROM einkommen_quartier WHERE QuarLang = 'Hard' AND StichtagDatJahr = 2020 AND SteuerTarifLang = 'Verheiratetentarif') - (SELECT SteuerEinkommen_p50 FROM einkommen_quartier WHERE QuarLang = 'Hard' AND StichtagDatJahr = 2020 AND SteuerTarifLang = 'Grundtarif'), 1)
+  - type: final_number
+    value: 21.8
+    tol: 0.06

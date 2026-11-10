@@ -1,6 +1,8 @@
 # tasks — task Text-to-SQL
 
-- Oggi contiene **solo** `demo_sales.yaml`: 8 task **sintetici** (schema e dati inventati) per test e demo. **Non è il dataset di valutazione** (arriva con W02, dati svizzeri) e non sono risultati di Apertus.
+- `demo_sales.yaml`: 8 task **sintetici** (schema e dati inventati) per test e demo; **non** è il dataset di valutazione. Gli altri file di questa cartella sono sottocartelle: `agentbench run --tasks tasks` carica solo i `*.yaml` di primo livello (la demo).
+- **`zurich/{dev,val,test}/`: dataset reale `zurich-sql` v0.1** (210 task su dati CC0 della Città di Zurigo, vedi `docs/dati.md` §7). **File generati**: non modificarli a mano; cambia `scripts/zurich_spec.py` e rigenera con `scripts/build_zurich_tasks.py` (`tests/test_zurich_tasks.py` verifica che coincidano).
+  Uso: `agentbench run --tasks tasks/zurich/dev`. Il **test** richiede `--final-test` e si usa **una sola volta** a configurazione congelata.
 - La vecchia suite agentica è in `archive/agent-suite/tasks/` (non estenderla).
 
 ## Formato di un task SQL (YAML, lista di task)
@@ -10,7 +12,7 @@
   prompt: "<la domanda>"       # solo la domanda: lo schema lo aggiunge l'harness
   tools: [run_sql]
   setup:
-    sql_init: ["CREATE TABLE ...", "INSERT INTO ..."]   # costruisce il DB (una connessione normale), poi il DB è riaperto in sola lettura
+    sql_init: ["CREATE TABLE ...", "INSERT INTO ..."]   # costruisce il DB (una connessione normale), poi il DB è riaperto in sola lettura; {DATA} = cartella dei dati (env AGENTBENCH_DATA_DIR o <radice>/data)
     limits: {timeout_s: 10, max_rows_shown: 50, ...}    # opzionale; vedi DEFAULT_LIMITS in src/agentbench/sql_env.py
   meta: {language: fr, schema_id: ..., split: dev|val|test|demo, trap: ...}   # etichette per le analisi a strati
   checks:

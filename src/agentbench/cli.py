@@ -105,6 +105,9 @@ def cmd_run(args) -> int:
                        args.category.split(",") if args.category else None)
     if not tasks:
         sys.exit("nessun task selezionato")
+    if not args.final_test and any(t.meta.get("split") == "test" for t in tasks):
+        sys.exit("errore: la selezione contiene task dello split TEST. Il test set si usa una sola volta, alla fine, con configurazione e checkpoint "
+                 "congelati (docs/analysis_plan.md §6). Se è davvero la valutazione finale aggiungi --final-test.")
     slug = re.sub(r"[^A-Za-z0-9._-]+", "-", client.model).strip("-")
     if replay:
         slug = "replay-" + slug
@@ -220,6 +223,7 @@ def main(argv: list[str] | None = None) -> None:
     _add_model_args(p)
     p.add_argument("--tasks", default=DEFAULT_TASKS, help="cartella o file YAML dei task")
     p.add_argument("--only", help="id dei task separati da virgola")
+    p.add_argument("--final-test", action="store_true", help="consente i task dello split test (solo valutazione finale, una volta per condizione)")
     p.add_argument("--category", help="categorie separate da virgola")
     p.add_argument("--repeats", type=int, default=1, help="ripetizioni per task (usa >1 con temperature > 0)")
     p.add_argument("--history-mode", choices=["openai", "text"], default=None,

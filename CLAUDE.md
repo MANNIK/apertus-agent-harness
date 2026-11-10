@@ -9,7 +9,8 @@ l'originale e con LoRA su **Text-to-SQL (DuckDB)**, con valutazione per esecuzio
   Non estenderlo e non citarlo come risultato del nuovo progetto. `make demo` ora rigioca la demo **Text-to-SQL** sintetica. I moduli `tools.py`, `checks.py`, `tasks.py` restano nel pacchetto
   (`runner`, `bench` e `cli` li usano come infrastruttura: W03 vi ha innestato `run_sql` e `sql_result_match`), ma i **tool finti e i controlli agentici sono legacy**. Alcuni test del nucleo leggono `archive/agent-suite/tasks/` solo come dati di prova.
 - **Fatto con W03 (10 nov 2026):** tool `run_sql` su DuckDB in sola lettura (`sql_env.py`), execution accuracy (`sql_eval.py` + controllo `sql_result_match`), 8 task **sintetici** di prova in `tasks/demo_sales.yaml`, demo con oracolo (`make demo`).
-- **Da costruire (serie W):** dataset Text-to-SQL reale con split dev/val/test (W02); strumenti di
+- **Fatto con W02 (10 nov 2026):** dataset reale `zurich-sql` v0.1: 210 task su 15 dataset CC0 della Città di Zurigo, split per schema (dev 96 / val 30 / test 84), in `tasks/zurich/`; dati in `data/zurich/`. Le domande **non sono riviste da madrelingua**.
+- **Da costruire (serie W):** revisione umana delle domande; strumenti di
   ispezione dei pesi; ciclo WSP; baseline LoRA; valutazione a tre condizioni; applicazione dimostrativa.
 Tutto ciò che è elencato come "da costruire" **non esiste ancora**: non descriverlo come funzionante.
 
@@ -48,6 +49,7 @@ Tutto ciò che è elencato come "da costruire" **non esiste ancora**: non descri
 ```
 scripts/bootstrap.sh              # una volta: uv, Python, dipendenze (tutto dentro .uv/ e .venv/)
 .venv/bin/python -m pytest -q     # test (nessun modello): 170 passati il 10 nov 2026 (dopo W03)
+make data | make zurich-tasks     # riscarica i dati CC0 / rigenera i task (deterministico)
 make help                         # elenco comandi; make demo = replay della demo sintetica Text-to-SQL (oracolo, deve dare il 100%)
 scripts/serve_mlx.sh              # server del modello locale (porta 8080), stampa le variabili da esportare
 .venv/bin/agentbench smoke        # primo test contro il modello (LLM_BASE_URL, LLM_NAME, LLM_API_KEY, oppure APERTUS_*)

@@ -1,0 +1,365 @@
+# GENERATO da scripts/build_zurich_tasks.py: non modificare a mano (le modifiche vanno nelle specifiche e si rigenera).
+# Schema luft, split test. Dati reali CC0 della Città di Zurigo (data/zurich/, vedi docs/dati.md).
+# Domande e query gold scritte da Claude (strumento di sviluppo), verificate eseguendo il gold; formulazioni NON riviste da madrelingua.
+- id: luft_monthly_mean_1
+  category: aggregation
+  prompt: Quelle était la moyenne mensuelle de NO2 au mois de janvier 2025 à la station Zch_Schimmelstrasse (moyenne des valeurs journalières, arrondie à une décimale) ?
+  tools:
+  - run_sql
+  setup: &id001
+    sql_init:
+    - 'CREATE TABLE luftqualitaet AS SELECT * REPLACE (CAST(substr(Datum, 1, 10) AS DATE) AS Datum) FROM read_csv(''{DATA}/zurich/ugz_luftschadstoffmessung_tageswerte.csv'', header=true, sample_size=-1, types={''Datum'': ''VARCHAR''})'
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: luft
+    dataset: ugz_luftschadstoffmessung_tageswerte
+    split: test
+    group: ugz
+    template: monthly_mean
+    trap: text_numbers
+  checks:
+  - type: sql_result_match
+    gold: SELECT ROUND(AVG(TRY_CAST(Wert AS DOUBLE)), 1) FROM luftqualitaet WHERE Standort = 'Zch_Schimmelstrasse' AND Parameter = 'NO2' AND month(Datum) = 1
+  - type: final_number
+    value: 30.2
+    tol: 0.06
+- id: luft_monthly_mean_2
+  category: aggregation
+  prompt: Qual era la media mensile di NO2 nel mese di marzo 2025 alla stazione Zch_Heubeeribüel (media dei valori giornalieri, arrotondata a un decimale)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: luft
+    dataset: ugz_luftschadstoffmessung_tageswerte
+    split: test
+    group: ugz
+    template: monthly_mean
+    trap: text_numbers
+  checks:
+  - type: sql_result_match
+    gold: SELECT ROUND(AVG(TRY_CAST(Wert AS DOUBLE)), 1) FROM luftqualitaet WHERE Standort = 'Zch_Heubeeribüel' AND Parameter = 'NO2' AND month(Datum) = 3
+  - type: final_number
+    value: 10.4
+    tol: 0.06
+- id: luft_monthly_mean_3
+  category: aggregation
+  prompt: What was the monthly mean of NO2 in July 2025 at the station Zch_Rosengartenstrasse (average of the daily values, rounded to one decimal)?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: luft
+    dataset: ugz_luftschadstoffmessung_tageswerte
+    split: test
+    group: ugz
+    template: monthly_mean
+    trap: text_numbers
+  checks:
+  - type: sql_result_match
+    gold: SELECT ROUND(AVG(TRY_CAST(Wert AS DOUBLE)), 1) FROM luftqualitaet WHERE Standort = 'Zch_Rosengartenstrasse' AND Parameter = 'NO2' AND month(Datum) = 7
+  - type: final_number
+    value: 22.9
+    tol: 0.06
+- id: luft_max_pm10_1
+  category: aggregation
+  prompt: Wie hoch war der höchste Tageswert von O3 am Standort Zch_Heubeeribüel im Jahr 2025?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: luft
+    dataset: ugz_luftschadstoffmessung_tageswerte
+    split: test
+    group: ugz
+    template: max_pm10
+    trap: text_numbers
+  checks:
+  - type: sql_result_match
+    gold: SELECT MAX(TRY_CAST(Wert AS DOUBLE)) FROM luftqualitaet WHERE Standort = 'Zch_Heubeeribüel' AND Parameter = 'O3'
+  - type: final_number
+    value: 127.74
+    tol: 0.06
+- id: luft_max_pm10_2
+  category: aggregation
+  prompt: Quelle a été la valeur journalière la plus élevée de NO2 à la station Zch_Rosengartenstrasse en 2025 ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: luft
+    dataset: ugz_luftschadstoffmessung_tageswerte
+    split: test
+    group: ugz
+    template: max_pm10
+    trap: text_numbers
+  checks:
+  - type: sql_result_match
+    gold: SELECT MAX(TRY_CAST(Wert AS DOUBLE)) FROM luftqualitaet WHERE Standort = 'Zch_Rosengartenstrasse' AND Parameter = 'NO2'
+  - type: final_number
+    value: 61.08
+    tol: 0.06
+- id: luft_max_pm10_3
+  category: aggregation
+  prompt: Qual è stato il valore giornaliero più alto di PM10 alla stazione Zch_Stampfenbachstrasse nel 2025?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: luft
+    dataset: ugz_luftschadstoffmessung_tageswerte
+    split: test
+    group: ugz
+    template: max_pm10
+    trap: text_numbers
+  checks:
+  - type: sql_result_match
+    gold: SELECT MAX(TRY_CAST(Wert AS DOUBLE)) FROM luftqualitaet WHERE Standort = 'Zch_Stampfenbachstrasse' AND Parameter = 'PM10'
+  - type: final_number
+    value: 39.21
+    tol: 0.06
+- id: luft_days_above_1
+  category: filter_count
+  prompt: On how many days in 2025 did the daily PM10 value at the station Zch_Rosengartenstrasse exceed 20 µg/m3?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: luft
+    dataset: ugz_luftschadstoffmessung_tageswerte
+    split: test
+    group: ugz
+    template: days_above
+    trap: text_numbers
+  checks:
+  - type: sql_result_match
+    gold: SELECT COUNT(*) FROM luftqualitaet WHERE Standort = 'Zch_Rosengartenstrasse' AND Parameter = 'PM10' AND TRY_CAST(Wert AS DOUBLE) > 20
+  - type: final_number
+    value: 62.0
+    tol: 0.0
+- id: luft_days_above_2
+  category: filter_count
+  prompt: An wie vielen Tagen im Jahr 2025 lag der Tageswert von PM10 am Standort Zch_Stampfenbachstrasse über 30 µg/m3?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: luft
+    dataset: ugz_luftschadstoffmessung_tageswerte
+    split: test
+    group: ugz
+    template: days_above
+    trap: text_numbers
+  checks:
+  - type: sql_result_match
+    gold: SELECT COUNT(*) FROM luftqualitaet WHERE Standort = 'Zch_Stampfenbachstrasse' AND Parameter = 'PM10' AND TRY_CAST(Wert AS DOUBLE) > 30
+  - type: final_number
+    value: 8.0
+    tol: 0.0
+- id: luft_days_above_3
+  category: filter_count
+  prompt: Pendant combien de jours en 2025 la valeur journalière de PM10 à la station Zch_Schimmelstrasse a-t-elle dépassé 20 µg/m3 ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: luft
+    dataset: ugz_luftschadstoffmessung_tageswerte
+    split: test
+    group: ugz
+    template: days_above
+    trap: text_numbers
+  checks:
+  - type: sql_result_match
+    gold: SELECT COUNT(*) FROM luftqualitaet WHERE Standort = 'Zch_Schimmelstrasse' AND Parameter = 'PM10' AND TRY_CAST(Wert AS DOUBLE) > 20
+  - type: final_number
+    value: 60.0
+    tol: 0.0
+- id: luft_missing_days_1
+  category: filter_count
+  prompt: In quanti giorni del 2025 manca il valore misurato («NA») di O3_max_h1 alla stazione Zch_Rosengartenstrasse?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: luft
+    dataset: ugz_luftschadstoffmessung_tageswerte
+    split: test
+    group: ugz
+    template: missing_days
+    trap: missing_value_marker
+  checks:
+  - type: sql_result_match
+    gold: SELECT COUNT(*) FROM luftqualitaet WHERE Standort = 'Zch_Rosengartenstrasse' AND Parameter = 'O3_max_h1' AND Wert = 'NA'
+  - type: final_number
+    value: 2.0
+    tol: 0.0
+- id: luft_missing_days_2
+  category: filter_count
+  prompt: On how many days in 2025 is the measured value ("NA") for NO missing at the station Zch_Stampfenbachstrasse?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: luft
+    dataset: ugz_luftschadstoffmessung_tageswerte
+    split: test
+    group: ugz
+    template: missing_days
+    trap: missing_value_marker
+  checks:
+  - type: sql_result_match
+    gold: SELECT COUNT(*) FROM luftqualitaet WHERE Standort = 'Zch_Stampfenbachstrasse' AND Parameter = 'NO' AND Wert = 'NA'
+  - type: final_number
+    value: 7.0
+    tol: 0.0
+- id: luft_missing_days_3
+  category: filter_count
+  prompt: An wie vielen Tagen im Jahr 2025 fehlt der Messwert («NA») für PM10 am Standort Zch_Schimmelstrasse?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: luft
+    dataset: ugz_luftschadstoffmessung_tageswerte
+    split: test
+    group: ugz
+    template: missing_days
+    trap: missing_value_marker
+  checks:
+  - type: sql_result_match
+    gold: SELECT COUNT(*) FROM luftqualitaet WHERE Standort = 'Zch_Schimmelstrasse' AND Parameter = 'PM10' AND Wert = 'NA'
+  - type: final_number
+    value: 2.0
+    tol: 0.0
+- id: luft_worst_station_1
+  category: argmax
+  prompt: À quelle station la moyenne annuelle de NO2 était-elle la plus élevée en 2025 ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: luft
+    dataset: ugz_luftschadstoffmessung_tageswerte
+    split: test
+    group: ugz
+    template: worst_station
+    trap: text_numbers
+  checks:
+  - type: sql_result_match
+    gold: SELECT Standort FROM luftqualitaet WHERE Parameter = 'NO2' AND TRY_CAST(Wert AS DOUBLE) IS NOT NULL GROUP BY Standort ORDER BY AVG(TRY_CAST(Wert AS DOUBLE)) DESC, Standort LIMIT 1
+- id: luft_worst_station_2
+  category: argmax
+  prompt: In quale stazione la media annuale di NO era la più alta nel 2025?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: luft
+    dataset: ugz_luftschadstoffmessung_tageswerte
+    split: test
+    group: ugz
+    template: worst_station
+    trap: text_numbers
+  checks:
+  - type: sql_result_match
+    gold: SELECT Standort FROM luftqualitaet WHERE Parameter = 'NO' AND TRY_CAST(Wert AS DOUBLE) IS NOT NULL GROUP BY Standort ORDER BY AVG(TRY_CAST(Wert AS DOUBLE)) DESC, Standort LIMIT 1
+- id: luft_worst_station_3
+  category: argmax
+  prompt: At which station was the annual mean of PM2.5 highest in 2025?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: en
+    schema_id: luft
+    dataset: ugz_luftschadstoffmessung_tageswerte
+    split: test
+    group: ugz
+    template: worst_station
+    trap: text_numbers
+  checks:
+  - type: sql_result_match
+    gold: SELECT Standort FROM luftqualitaet WHERE Parameter = 'PM2.5' AND TRY_CAST(Wert AS DOUBLE) IS NOT NULL GROUP BY Standort ORDER BY AVG(TRY_CAST(Wert AS DOUBLE)) DESC, Standort LIMIT 1
+- id: luft_peak_date_1
+  category: argmax
+  prompt: An welchem Datum wurde im Jahr 2025 der höchste Tageswert von PM10 am Standort Zch_Heubeeribüel gemessen?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: de
+    schema_id: luft
+    dataset: ugz_luftschadstoffmessung_tageswerte
+    split: test
+    group: ugz
+    template: peak_date
+    trap: text_numbers
+  checks:
+  - type: sql_result_match
+    gold: SELECT Datum FROM luftqualitaet WHERE Standort = 'Zch_Heubeeribüel' AND Parameter = 'PM10' AND TRY_CAST(Wert AS DOUBLE) IS NOT NULL ORDER BY TRY_CAST(Wert AS DOUBLE) DESC, Datum LIMIT 1
+- id: luft_peak_date_2
+  category: argmax
+  prompt: À quelle date la valeur journalière la plus élevée de NO2 a-t-elle été mesurée à la station Zch_Stampfenbachstrasse en 2025 ?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: fr
+    schema_id: luft
+    dataset: ugz_luftschadstoffmessung_tageswerte
+    split: test
+    group: ugz
+    template: peak_date
+    trap: text_numbers
+  checks:
+  - type: sql_result_match
+    gold: SELECT Datum FROM luftqualitaet WHERE Standort = 'Zch_Stampfenbachstrasse' AND Parameter = 'NO2' AND TRY_CAST(Wert AS DOUBLE) IS NOT NULL ORDER BY TRY_CAST(Wert AS DOUBLE) DESC, Datum LIMIT 1
+- id: luft_peak_date_3
+  category: argmax
+  prompt: In quale data è stato misurato nel 2025 il valore giornaliero più alto di PM2.5 alla stazione Zch_Schimmelstrasse?
+  tools:
+  - run_sql
+  setup: *id001
+  max_steps: 6
+  meta:
+    language: it
+    schema_id: luft
+    dataset: ugz_luftschadstoffmessung_tageswerte
+    split: test
+    group: ugz
+    template: peak_date
+    trap: text_numbers
+  checks:
+  - type: sql_result_match
+    gold: SELECT Datum FROM luftqualitaet WHERE Standort = 'Zch_Schimmelstrasse' AND Parameter = 'PM2.5' AND TRY_CAST(Wert AS DOUBLE) IS NOT NULL ORDER BY TRY_CAST(Wert AS DOUBLE) DESC, Datum LIMIT 1
