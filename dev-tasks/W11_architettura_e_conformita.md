@@ -8,7 +8,8 @@ Scegliere e dichiarare l'architettura (regola 5) e chiudere i controlli di confo
 `deployment.target` in `models.yaml` è vuoto: l'avviso resta finché Nikola non sceglie tra on-premise, air-gapped e cloud sovrano svizzero. Docker e `make airgap-check` (T07) esistono. Modelli da dichiarare: originale, WSP, LoRA (tecnica, versione/hash, ruolo, fase) e Claude Sonnet 5.5 (solo sviluppo).
 
 ## Passi
-1. Chiedi a Nikola l'architettura; imposta `deployment.target` solo dopo la sua scelta.
+1. Chiedi a Nikola l'architettura; imposta `deployment.target` solo dopo la sua scelta. Elemento per la decisione (10 nov 2026): **air-gapped/on-premise su un Mac** è l'opzione più
+   vicina a ciò che esiste già (MLX locale, Docker senza rete, `airgap-check`); i progetti premiati dimostravano la deployabilità sovrana con prove (rete interna, sonda di uscita). È un suggerimento, non una scelta.
 2. Dichiara i checkpoint WSP/LoRA e ogni strumento/modello di sviluppo realmente usato; non dichiarare quelli non usati.
 3. Aggiorna Dockerfile/airgap-check per l'applicazione (W10) senza includere pesi nell'immagine; blocca versioni e digest dell'immagine base.
 4. `make compliance` senza errori né avvisi non spiegati.

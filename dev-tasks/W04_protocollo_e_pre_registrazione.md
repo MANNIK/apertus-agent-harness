@@ -15,6 +15,9 @@ Il piano attuale riguarda la vecchia suite e resta come storico (spostarlo in `d
 5. Protocollo anti-overfitting: dev/val per iterare, test una sola volta; registro di tutte le modifiche tentate; criteri di accettazione di una modifica fissati prima.
 6. Controlli di sanità del modello modificato (non è semplicemente rotto): pochi prompt non-SQL; cosa invalida il confronto.
 7. Limiti noti e sezione `Deviations` vuota con data.
+8. **Aggiunte del 10 nov 2026:** (a) confronto WSP/LoRA **a parità di parametri addestrabili/modificati**, di dati e di budget, oppure curva accuratezza vs % di parametri
+   con i punti dichiarati; (b) soglia fissata prima per dichiarare "nessun margine" (baseline troppo alta o troppo bassa, vedi W05) e cosa si fa in quel caso;
+   (c) la lingua della domanda (DE/FR/IT/EN) come strato dell'analisi; (d) i tentativi scartati sono riportati nel rapporto, non solo quelli riusciti.
 
 ## Criteri di accettazione
 - Piano completo, datato, committato prima delle prime run WSP/LoRA.

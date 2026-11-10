@@ -11,6 +11,8 @@ Il punteggio ufficiale non usa nessun LLM: si eseguono la query del modello e la
 1. Aggiungi DuckDB come **extra opzionale** (licenza verificata in W02) senza rompere `scan_network_imports`.
 2. Implementa il tool `run_sql` (solo lettura, timeout e limite di righe dichiarati) e il caricamento dello schema nel prompt o come tool di ispezione.
 3. Implementa il controllo di execution accuracy: regole su ordine, duplicati, NULL, tipi e arrotondamenti dichiarate una volta e valide per tutte le condizioni; più il controllo sulla risposta finale (numeri/valori).
+   Le regole vanno scritte **prima** di vedere risultati di modelli e coprire esplicitamente: ordine delle righe (solo se la domanda lo richiede), nomi/ordine delle colonne, NULL,
+   duplicati, tipi numerici e tolleranza di arrotondamento. Gold con più risposte valide: documentale come casi noti, non ammorbidire il confronto dopo.
 4. Scrivi `tests/` con DuckDB in memoria: ogni task ha la query gold in un test di risolvibilità; query sbagliate (colonne/righe in più, ordine, NULL) devono fallire.
 5. Crea una demo sintetica (oracolo che esegue le query gold) per `make demo`, con le stesse regole di `demo-oracle`: non è un risultato di Apertus.
 6. Aggiorna `src/agentbench/CLAUDE.md`, `tasks/CLAUDE.md` e `tests/CLAUDE.md` con quanto imparato.
