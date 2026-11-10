@@ -1,0 +1,11 @@
+task_id,split,schema,language,category,trap,strict_ex,relaxed_ex,completed,final_number_ok,stopped,steps,tool_calls,latency_s,prompt_tokens,completion_tokens
+abfl_waste_month_1,val,abfl,en,lookup,trailing_whitespace,0,0,0,0,max_steps,6,6,100.029,4936,758
+abfl_waste_month_2,val,abfl,de,lookup,trailing_whitespace,0,0,1,0,final,4,3,116.696,3680,914
+abfl_waste_month_3,val,abfl,fr,lookup,trailing_whitespace,0,0,1,0,final,2,1,46.716,1041,367
+abfl_waste_year_1,val,abfl,it,aggregation,trailing_whitespace,0,0,1,0,final,2,1,77.276,1331,598
+abfl_waste_year_2,val,abfl,en,aggregation,trailing_whitespace,0,0,0,0,max_steps,6,6,142.051,5376,1008
+abfl_waste_year_3,val,abfl,de,aggregation,trailing_whitespace,0,0,1,0,final,2,1,39.637,1012,297
+abfl_salt_peak_1,val,abfl,fr,argmax,trailing_whitespace,0,0,1,,final,3,2,125.344,2602,879
+abfl_salt_peak_2,val,abfl,it,argmax,trailing_whitespace,0,0,1,,final,1,0,136.325,371,1024
+abfl_salt_peak_3,val,abfl,en,argmax,trailing_whitespace,0,0,1,,final,1,0,135.623,363,1024
+abfl_diesel_year_1,val,abfl,de,aggregation,trailing_whitespace,1,1,1,1,final,2,1,63.253,1191,464

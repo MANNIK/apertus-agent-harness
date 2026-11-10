@@ -114,11 +114,11 @@ All TBD until real runs exist. Each number must be copied from a run folder and 
 
 | Item | Value |
 |---|---|
-| Original weights, dev: execution accuracy (95% Wilson) | TBD (run: `runs/…`) |
-| Original weights, val: execution accuracy | TBD (run: `runs/…`) |
-| Repeatability at temperature 0 (two identical runs) | TBD (run: `runs/…`) |
-| Replay reproduces the scores | TBD (run: `runs/…`) |
-| Accuracy by question language and by trap category | TBD (run: `runs/…`) |
+| Original weights, dev: strict execution accuracy (95% Wilson) | 46/96 = 48% (38–58%); relaxed 63/96 = 66% (run: `runs/rescored-baseline-orig-dev-r1`; `reference_runs/baseline-original/per_task_dev-r1.csv`) |
+| Original weights, val: strict execution accuracy | 9/30 = 30% (17–48%); relaxed 10/30 = 33% (run: `runs/rescored-baseline-orig-val-r1`; `reference_runs/baseline-original/per_task_val-r1.csv`) |
+| Repeatability at temperature 0 (two identical runs) | outcome, queries and final text identical on 10/10 tasks (10 val tasks of one schema only) (run: `runs/baseline-orig-val-r1` vs `runs/baseline-orig-val-r2-first10`) |
+| Replay reproduces the scores | dev, val and the repeat run were re-scored by replay from the recorded responses under the current score definition (run: `runs/rescored-baseline-orig-*`); replay of the original definition was not compared |
+| Accuracy by question language and by trap category | dev, strict: DE 12/24, EN 13/24, FR 10/24, IT 11/24 (no demonstrable difference); `domain_codes` 0/12, `text_numbers` 0/6 (run: `reference_runs/baseline-original/summary_dev-r1.md`) |
 | WSP vs. original on test (McNemar, Holm-adjusted, intervals) | TBD (run: `runs/…`) |
 | LoRA vs. original on test | TBD (run: `runs/…`) |
 | WSP vs. LoRA at matched parameter budget | TBD (run: `runs/…`) |

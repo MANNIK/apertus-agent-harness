@@ -20,7 +20,7 @@ Il lavoro attivo è la **serie W**. La **serie T** è lo storico del progetto pr
 | W02 | Dati e licenze: BIRD, DuckDB, dataset analitico, split dev/val/test | alta | **v0.1 fatto** (210 task reali CC0); resta revisione umana delle domande |  — |
 | W03 | Ambiente Text-to-SQL: tool `run_sql` ed execution accuracy | alta | **fatto sui dati sintetici** (mai provato con Apertus reale) | W01, W02 |
 | W04 | Protocollo di valutazione e nuova pre-registrazione | alta | **bozza v0.1 fatta**; punti [OPEN] da chiudere con la squadra | — |
-| W05 | Baseline: Apertus 8B originale su dev e val | alta | pronto dopo W03 | W03, server MLX acceso |
+| W05 | Baseline: Apertus 8B originale su dev e val | alta | **fatto** (dev 48%, val 30%, rigida); cancello superato | W03, server MLX acceso |
 | W06 | Strumenti di ispezione e modifica dei pesi | alta | **parziale**: strumenti sui pesi fatti (sintetici), PyTorch/HF Jobs no | ambiente PyTorch separato |
 | W07 | Ciclo Weight-Space Programming | alta | **bloccato**: scheda dei metodi scritta, metodo da scegliere | W04, W05, W06 |
 | W08 | Baseline LoRA con protocollo comparabile | alta | **bloccato**: protocollo e budget proposti, nessun LoRA | W02, W04 |
