@@ -46,3 +46,9 @@ Il documento di progetto propone BIRD (Text-to-SQL), un dataset analitico person
 - Share-alike di BIRD e pesi addestrati: questione aperta, non consulenza legale; per ora BIRD solo valutazione.
 - **Problema di fondo:** con la sola fonte Swissvotes lo split per schema è debole (un solo dominio). Serve la decisione della squadra tra le opzioni in `docs/dati.md` §3.
 - Nessuno split, nessun dataset Text-to-SQL, nessuna query gold, nessuna verifica delle licenze delle dipendenze Python.
+
+**Aggiornamento (10 nov 2026, sera) — nuova fonte principale proposta: Open Data Stadt Zürich.**
+- Nikola: «dati reali» e «altre fonti». L'API CKAN di `data.stadt-zuerich.ch` risponde: **942 dataset, 913 CC0, 13 CC BY, 16 CC BY-SA, 629 con CSV** (verificato con la pagina del portale, stessi conteggi). Le pagine legali sono 404: testo formale **non letto**, nulla su uso per IA o diritti di terzi.
+- `opendata.swiss` e la sua API rispondono 403 ai programmi (non aggirato). Basilea (`data.bs.ch`): API raggiungibile, licenze **non** lette.
+- Selezione e regole in `docs/dati.md` §2b (CC0 per singolo dataset, niente nomi di persone, un dataset = uno schema = un solo split). **Nulla è stato ancora scaricato né trasformato in task.**
+- Prossimi passi: scaricare la rosa proposta con sha256, ispezionare colonne e valori, scrivere domande e gold (DE/FR/IT/EN) con revisione umana, definire gli split per schema.
