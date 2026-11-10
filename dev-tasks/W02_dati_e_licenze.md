@@ -1,5 +1,5 @@
 # W02 — Dati e licenze: BIRD, DuckDB e dataset analitico
-Stato: pronto · Priorità: alta · Serve: W01 (non strettamente)
+Stato: **in corso** (licenze verificate in parte, dataset non ancora costruito) · Priorità: alta · Serve: W01 (fatto)
 
 ## Obiettivo
 Decidere quali dati usare per il Text-to-SQL, verificarne le licenze e fissare gli split dev / val / test.
@@ -34,4 +34,15 @@ Il documento di progetto propone BIRD (Text-to-SQL), un dataset analitico person
 - Non committare dataset senza licenza chiara. Non usare il test per scegliere nulla. Nessun dato reale o personale.
 
 ## Esito
-(da compilare)
+**Parziale (10 nov 2026)** — documento `docs/dati.md` scritto; dataset e split **non** ancora fatti.
+
+**Verificato**
+- Swissvotes: **CC BY 4.0** letto sulla pagina ufficiale; file CSV scaricato (2.736.956 byte, sha256 in `docs/dati.md`), 719 righe × 874 colonne, UTF-8 con BOM, separatore `;`. `scripts/fetch_swissvotes.sh` scarica e verifica lo sha256 (provato: stesso hash).
+- BIRD: dichiara **CC BY-SA 4.0** sul sito e nel README ufficiali (dal 27 apr 2024). Nessuna dimensione del dev set trovata.
+
+**Non verificato / aperto**
+- DuckDB (MIT) e Spider: solo da riassunti di ricerca. opendata.swiss/BFS: le pagine rispondono 403 ai programmi: **serve la lettura umana nel browser** dataset per dataset. OpenParlData: licenza dei dati non trovata.
+- Il paper di BIRD (2023) sarebbe stato CC BY-NC secondo un riassunto di ricerca: non confermato.
+- Share-alike di BIRD e pesi addestrati: questione aperta, non consulenza legale; per ora BIRD solo valutazione.
+- **Problema di fondo:** con la sola fonte Swissvotes lo split per schema è debole (un solo dominio). Serve la decisione della squadra tra le opzioni in `docs/dati.md` §3.
+- Nessuno split, nessun dataset Text-to-SQL, nessuna query gold, nessuna verifica delle licenze delle dipendenze Python.

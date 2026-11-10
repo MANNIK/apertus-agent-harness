@@ -17,7 +17,7 @@ Il lavoro attivo è la **serie W**. La **serie T** è lo storico del progetto pr
 | ID | Compito | Priorità | Stato | Serve |
 | --- | --- | --- | --- | --- |
 | W01 | Riorientare il repository (archiviare la suite agentica, nucleo pulito) | alta (primo) | **fatto** (rinomina in attesa di Nikola) | — |
-| W02 | Dati e licenze: BIRD, DuckDB, dataset analitico, split dev/val/test | alta | pronto | — |
+| W02 | Dati e licenze: BIRD, DuckDB, dataset analitico, split dev/val/test | alta | **in corso**: licenze in parte verificate, serve lettura umana di opendata.swiss e decisione sugli schemi | — |
 | W03 | Ambiente Text-to-SQL: tool `run_sql` ed execution accuracy | alta | pronto dopo W01–W02 | W01, W02 |
 | W04 | Protocollo di valutazione e nuova pre-registrazione | alta | **bozza v0.1 fatta**; punti [OPEN] da chiudere con la squadra | — |
 | W05 | Baseline: Apertus 8B originale su dev e val | alta | pronto dopo W03 | W03, server MLX acceso |
