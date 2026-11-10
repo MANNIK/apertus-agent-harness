@@ -11,13 +11,13 @@ from mock_server import MockServer, final, scripted
 from agentbench.tasks import load_tasks
 
 ROOT = Path(__file__).resolve().parent.parent
-TASK = [t for t in load_tasks(ROOT / "tasks") if t.id == "ab_no_tool_needed"][0]
+TASK = [t for t in load_tasks(ROOT / "archive" / "agent-suite" / "tasks") if t.id == "ab_no_tool_needed"][0]
 
 
 def run_cli(tmp_path, name, *flags):
     with MockServer(scripted({TASK.prompt: [final("Paris")]})) as srv:
         with pytest.raises(SystemExit) as e:
-            main(["run", "--base-url", srv.url, "--model", "mock", "--only", TASK.id, "--tasks", str(ROOT / "tasks"),
+            main(["run", "--base-url", srv.url, "--model", "mock", "--only", TASK.id, "--tasks", str(ROOT / "archive" / "agent-suite" / "tasks"),
                   "--out", str(tmp_path / name), *flags])
         assert e.value.code == 0
     return srv.requests[0], json.loads((tmp_path / name / "meta.json").read_text())

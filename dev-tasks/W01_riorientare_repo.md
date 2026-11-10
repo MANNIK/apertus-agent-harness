@@ -1,5 +1,5 @@
 # W01 — Riorientare il repository sul progetto WSP / Text-to-SQL
-Stato: pronto · Priorità: alta (primo) · Serve: —
+Stato: fatto (commit e rinomina in attesa di Nikola) · Priorità: alta (primo) · Serve: —
 
 ## Obiettivo
 Togliere dal percorso principale la suite agentica del vecchio progetto e lasciare un nucleo pulito su cui costruire il Text-to-SQL, senza perdere la storia né i test del nucleo riusabile.
@@ -25,4 +25,29 @@ Decisione di Nikola (10 nov 2026): la suite agentica (62 task, tool finti) viene
 - Non rinominare la cartella né fare push senza chiedere.
 
 ## Esito
-(da compilare)
+Stato: **fatto, tranne commit e rinomina** (10 nov 2026, ramo `riorientamento`).
+
+**Dipendenze trovate (passo 2).** `runner.py`, `bench.py`, `cli.py` e `checks.py` importano `tools.py`; `bench.py`/`cli.py` importano `tasks.py` e `checks.py`. Quindi questi tre moduli **non sono
+spostabili senza rompere il nucleo**: restano in `src/agentbench/` e li sostituisce W03 (il compito non chiedeva di spostarli). Cinque test del nucleo (`e2e`, `replay`, `judge`, `compliance`,
+`thinking_flag`) usavano i task YAML come dati di prova.
+
+**Fatto**
+- Ramo `riorientamento`. Spostati con `git mv` in `archive/agent-suite/`: `tasks/`, `reference_runs/` (con `demo-oracle`), `prompts/`, `rubrics/`, `scripts/build_demo.py` e i test `test_tasks_solvable`,
+  `test_demo`, `test_t03_suite_defects`, `test_t09_suite_extension`. Aggiunto `archive/agent-suite/LEGGIMI.md`. Git le vede come 27 rinomine.
+- I cinque test del nucleo ora leggono `archive/agent-suite/tasks/` e `.../rubrics/` come dati di prova (sed sui percorsi).
+- `Makefile`: `make demo` termina con un messaggio chiaro; `make run` accetta `TASKS=`. `Dockerfile`: tolti i `COPY` dei file archiviati; il comando predefinito è ora `agentbench compliance --models models.yaml`.
+  `.github/workflows/eval.yml`: il passo "Esegui la suite" fallisce di proposito con un messaggio. Aggiornati README, `CLAUDE.md` (radice e progetto), `tests/CLAUDE.md`, `scripts/CLAUDE.md`.
+
+**Verificato (comandi eseguiti)**
+- `.venv/bin/python -m pytest -q`: **101 passati** (129 prima; la differenza sono i 28 test spostati con la suite: calcolo, non ricontato per file).
+- `make compliance`: 0 errori, 1 avviso (`deployment.target` vuoto: attende la scelta di Nikola, W11).
+- `make demo`: esce con codice 1 e il messaggio previsto. `agentbench list-tasks` senza `--tasks` dà "errore: … 'tasks'"; con `--tasks archive/agent-suite/tasks` elenca 62 task.
+- Nessun riferimento attivo a `tasks/`, `demo-oracle`, `rubrics/`, `prompts/` fuori dall'archivio (grep sui documenti e sui file di build).
+
+**Non verificato / aperto**
+- **Docker non è attivo su questo Mac**: né il `Dockerfile` modificato né `make airgap-check` sono stati provati. Da rifare quando Docker è disponibile.
+- La workflow GitHub non è stata eseguita.
+- `agentbench judge` ha ancora come predefinito `rubrics/agentic_v1.md` (percorso vecchio): serve `--rubric archive/agent-suite/rubrics/agentic_v1.md`. Il giudice è comunque "solo se serve" (T08 obsoleto).
+- **Nessun commit fatto**: le modifiche sono nel working tree del ramo `riorientamento` (rinomine già in index). Il criterio "`git log` mostra gli spostamenti come rinomine" si soddisfa solo dopo il commit, che spetta a Nikola autorizzare.
+- Rinomina della cartella `apertus-agent-harness`: **non fatta, serve l'ok di Nikola** (proposta: `apertus-weight-space-lab`; implica `CLAUDE.md`, remoto GitHub, percorsi `../models`).
+- `docs/analysis_plan.md` (vecchio piano) è ancora al suo posto: lo sposta W04.

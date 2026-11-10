@@ -14,7 +14,7 @@ from agentbench.tasks import load_tasks
 from mock_server import MockServer, final, scripted
 
 ROOT = Path(__file__).resolve().parent.parent
-TASK = [t for t in load_tasks(ROOT / "tasks") if t.id == "sc_weather_it"]
+TASK = [t for t in load_tasks(ROOT / "archive" / "agent-suite" / "tasks") if t.id == "sc_weather_it"]
 
 
 def manifest(tmp_path, **override):

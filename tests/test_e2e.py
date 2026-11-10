@@ -16,7 +16,7 @@ from agentbench.tasks import load_tasks
 from mock_server import MockServer, final, native, prefix, scripted
 
 ROOT = Path(__file__).resolve().parent.parent
-TASKS = {t.id: t for t in load_tasks(ROOT / "tasks")}
+TASKS = {t.id: t for t in load_tasks(ROOT / "archive" / "agent-suite" / "tasks")}
 P = {tid: t.prompt for tid, t in TASKS.items()}
 
 GOOD = {
@@ -154,7 +154,7 @@ def test_cli_run_writes_report(tmp_path, capsys):
     out = tmp_path / "out"
     with MockServer(scripted(GOOD)) as srv:
         with pytest.raises(SystemExit) as e:
-            main(["run", "--base-url", srv.url, "--model", "mock", "--tasks", str(ROOT / "tasks"),
+            main(["run", "--base-url", srv.url, "--model", "mock", "--tasks", str(ROOT / "archive" / "agent-suite" / "tasks"),
                   "--only", "sc_weather_it,ms_weather_diff", "--out", str(out)])
     assert e.value.code == 0
     assert (out / "report.md").exists() and "2/2 esecuzioni passate" in capsys.readouterr().out
@@ -162,7 +162,7 @@ def test_cli_run_writes_report(tmp_path, capsys):
 
 def test_cli_rejects_unknown_task(tmp_path):
     with pytest.raises(SystemExit) as e:
-        main(["run", "--base-url", "http://127.0.0.1:1/v1", "--model", "m", "--tasks", str(ROOT / "tasks"), "--only", "nope"])
+        main(["run", "--base-url", "http://127.0.0.1:1/v1", "--model", "m", "--tasks", str(ROOT / "archive" / "agent-suite" / "tasks"), "--only", "nope"])
     assert "nope" in str(e.value.code)
 
 

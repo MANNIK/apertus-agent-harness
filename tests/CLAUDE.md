@@ -5,9 +5,10 @@
 - Ogni bug trovato in una run reale diventa un test con un caso minimo che lo riproduce.
 - I test non devono mai richiedere Internet, un modello vero, GPU o token (Hugging Face compreso).
 
-## Test del vecchio progetto (in archiviazione, W01)
-`test_tasks_solvable.py` (`SOLUTIONS` = id dei task YAML), `test_demo.py` (demo-oracle, integrità sha256 e replay al 100%), `test_t03_suite_defects.py`, `test_t09_suite_extension.py`,
-`test_thinking_flag.py` e quelli sulle tool finte vengono spostati o adattati con la suite. Non aggiungere test a quella suite.
+## Test del vecchio progetto (W01 fatto il 10 nov 2026)
+`test_tasks_solvable.py`, `test_demo.py`, `test_t03_suite_defects.py`, `test_t09_suite_extension.py` sono in `archive/agent-suite/tests/` (non eseguibili così come sono; pytest raccoglie solo `tests/`).
+`test_e2e`, `test_replay`, `test_judge`, `test_compliance`, `test_thinking_flag` restano perché provano il nucleo, ma **leggono `archive/agent-suite/tasks/` come dati di prova**; `test_tools_checks.py`
+prova `tools.py`/`checks.py`, ancora nel pacchetto. W03 sostituirà questi dati e moduli: quando lo fai, riadatta i test, non toglierli. Non aggiungere test alla vecchia suite.
 
 ## Regole per il nuovo progetto (da W03 in poi)
 - **Text-to-SQL:** DuckDB **in memoria** con dati sintetici piccoli; ogni task ha la query gold in un test di risolvibilità (analogo a `test_tasks_solvable.py`).

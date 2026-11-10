@@ -13,7 +13,7 @@ from agentbench.tasks import load_tasks
 from mock_server import MockServer, final, native, scripted
 
 ROOT = Path(__file__).resolve().parent.parent
-TASKS = {t.id: t for t in load_tasks(ROOT / "tasks")}
+TASKS = {t.id: t for t in load_tasks(ROOT / "archive" / "agent-suite" / "tasks")}
 IDS = ["sc_weather_it", "ms_weather_diff"]
 SCRIPTS = {
     TASKS["sc_weather_it"].prompt: [native("get_weather", {"city": "Lugano"}), final("A Lugano ci sono 12 °C.")],
@@ -61,7 +61,7 @@ def test_judge_agreeing_with_checks_gives_perfect_agreement_and_saves_metadata(r
             "Lugano is warmer": '{"verdict": "FAIL", "violated": [3], "reason": "manca Zurigo"}'}
     with MockServer(verdict_policy(good)) as srv:
         client = ChatClient(srv.url, "qwen-judge-open", retries=0, timeout=10)
-        res = judge_run(run_dir, client, ROOT / "rubrics" / "agentic_v1.md", TOOLS)
+        res = judge_run(run_dir, client, ROOT / "archive" / "agent-suite" / "rubrics" / "agentic_v1.md", TOOLS)
     a = agreement(res["rows"])
     assert a["n"] == 2 and a["agree"] == 1.0 and a["kappa"] == 1.0
     meta = json.loads((run_dir / "judge_meta.json").read_text())
@@ -73,7 +73,7 @@ def test_judge_agreeing_with_checks_gives_perfect_agreement_and_saves_metadata(r
 def test_lenient_judge_is_exposed_as_disagreement(run_dir):
     lenient = {k: '{"verdict": "PASS", "violated": [], "reason": "sembra ok"}' for k in ("A Lugano ci sono", "Lugano is warmer")}
     with MockServer(verdict_policy(lenient)) as srv:
-        res = judge_run(run_dir, ChatClient(srv.url, "j", retries=0, timeout=10), ROOT / "rubrics" / "agentic_v1.md", TOOLS)
+        res = judge_run(run_dir, ChatClient(srv.url, "j", retries=0, timeout=10), ROOT / "archive" / "agent-suite" / "rubrics" / "agentic_v1.md", TOOLS)
     a = agreement(res["rows"])
     assert a["agree"] == 0.5 and [r["task_id"] for r in a["auto_fail_judge_pass"]] == ["ms_weather_diff"]
     assert "controlli troppo severi" in render_agreement(res) and "ms_weather_diff" in render_agreement(res)
@@ -82,13 +82,13 @@ def test_lenient_judge_is_exposed_as_disagreement(run_dir):
 def test_same_model_as_tested_is_warned(run_dir):
     good = {"A Lugano ci sono": '{"verdict": "PASS"}', "Lugano is warmer": '{"verdict": "FAIL"}'}
     with MockServer(verdict_policy(good)) as srv:
-        res = judge_run(run_dir, ChatClient(srv.url, "apertus-test", retries=0, timeout=10), ROOT / "rubrics" / "agentic_v1.md", TOOLS)
+        res = judge_run(run_dir, ChatClient(srv.url, "apertus-test", retries=0, timeout=10), ROOT / "archive" / "agent-suite" / "rubrics" / "agentic_v1.md", TOOLS)
     assert res["meta"]["same_model_as_tested"] and "coincide con il modello sotto test" in render_agreement(res)
 
 
 def test_unparseable_and_failed_judgements_are_not_counted_as_agreement(run_dir):
     with MockServer(lambda m, t, b: final("boh")) as srv:
-        res = judge_run(run_dir, ChatClient(srv.url, "j", retries=0, timeout=10), ROOT / "rubrics" / "agentic_v1.md", TOOLS)
+        res = judge_run(run_dir, ChatClient(srv.url, "j", retries=0, timeout=10), ROOT / "archive" / "agent-suite" / "rubrics" / "agentic_v1.md", TOOLS)
     a = agreement(res["rows"])
     assert a["n"] == 0 and a["unusable"] == 2 and "Nessun giudizio utilizzabile" in render_agreement(res)
 
@@ -98,7 +98,7 @@ def test_cli_judge_writes_report(run_dir, capsys):
     with MockServer(verdict_policy(good)) as srv:
         with pytest.raises(SystemExit) as e:
             main(["judge", str(run_dir), "--judge-base-url", srv.url, "--judge-model", "qwen-judge-open",
-                  "--rubric", str(ROOT / "rubrics" / "agentic_v1.md"), "--tasks", str(ROOT / "tasks")])
+                  "--rubric", str(ROOT / "archive" / "agent-suite" / "rubrics" / "agentic_v1.md"), "--tasks", str(ROOT / "archive" / "agent-suite" / "tasks")])
     assert e.value.code == 0 and (run_dir / "judge_report.md").exists() and "Accordo: 100%" in capsys.readouterr().out
 
 
