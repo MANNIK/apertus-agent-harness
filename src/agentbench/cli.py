@@ -105,8 +105,8 @@ def cmd_run(args) -> int:
                        args.category.split(",") if args.category else None)
     if not tasks:
         sys.exit("nessun task selezionato")
-    if not args.final_test and any(t.meta.get("split") == "test" for t in tasks):
-        sys.exit("errore: la selezione contiene task dello split TEST. Il test set si usa una sola volta, alla fine, con configurazione e checkpoint "
+    if not args.final_test and any(t.meta.get("split") in ("test", "regression_final") for t in tasks):
+        sys.exit("errore: la selezione contiene task di uno split FINALE (test o regression_final). Il test set si usa una sola volta, alla fine, con configurazione e checkpoint "
                  "congelati (docs/analysis_plan.md §6). Se è davvero la valutazione finale aggiungi --final-test.")
     slug = re.sub(r"[^A-Za-z0-9._-]+", "-", client.model).strip("-")
     if replay:

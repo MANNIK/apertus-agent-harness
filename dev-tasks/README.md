@@ -22,13 +22,13 @@ Il lavoro attivo è la **serie W**. La **serie T** è lo storico del progetto pr
 | W04 | Protocollo di valutazione e nuova pre-registrazione | alta | **bozza v0.1 fatta**; punti [OPEN] da chiudere con la squadra | — |
 | W05 | Baseline: Apertus 8B originale su dev e val | alta | pronto dopo W03 | W03, server MLX acceso |
 | W06 | Strumenti di ispezione e modifica dei pesi | alta | pronto (ricerca) | ambiente PyTorch separato |
-| W07 | Ciclo Weight-Space Programming | alta | **bloccato**: metodo da decidere | W04, W05, W06 |
-| W08 | Baseline LoRA con protocollo comparabile | alta | **bloccato**: protocollo da decidere | W02, W04 |
+| W07 | Ciclo Weight-Space Programming | alta | **bloccato**: scheda dei metodi scritta, metodo da scegliere | W04, W05, W06 |
+| W08 | Baseline LoRA con protocollo comparabile | alta | **bloccato**: protocollo e budget proposti, nessun LoRA | W02, W04 |
 | W09 | Valutazione a tre condizioni, regressioni e costi | alta | **bloccato** | W05, W07, W08 |
 | W10 | Applicazione dimostrativa di data analysis self-hosted | media-alta | pronto (da definire) | W03, un checkpoint servibile |
-| W11 | Architettura di deployment e conformità | alta | pronto (decisione di Nikola) | scelta di Nikola |
-| W12 | Rapporto tecnico (inglese) | alta | pronto (bozza) | — |
-| W13 | Misura di regressione su capacità non ottimizzate | media | da decidere | scelta del set |
+| W11 | Architettura di deployment e conformità | alta | **parziale**: opzioni documentate, architettura da scegliere (Nikola) | scelta di Nikola |
+| W12 | Rapporto tecnico (inglese) | alta | **bozza riscritta** (risultati TBD) | — |
+| W13 | Misura di regressione su capacità non ottimizzate | media | **proposto** (36 item), da confermare | scelta del set |
 
 Ordine consigliato: **W01 → W04 → W02 → W03 → W05**, in parallelo **W06** e **W12**; poi W07/W08 (quando i metodi sono decisi) → W09; **W10** e **W11** prima del 27 novembre.
 

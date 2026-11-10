@@ -1,5 +1,5 @@
 # W11 — Architettura di deployment e conformità alle regole
-Stato: pronto (decisione di Nikola) · Priorità: alta · Serve: decisione di Nikola
+Stato: **parziale: opzioni documentate, architettura da scegliere (Nikola)** · Priorità: alta · Serve: decisione di Nikola
 
 ## Obiettivo
 Scegliere e dichiarare l'architettura (regola 5) e chiudere i controlli di conformità sui modelli (regole 3, 4, 6).
@@ -21,4 +21,8 @@ Scegliere e dichiarare l'architettura (regola 5) e chiudere i controlli di confo
 - Non scegliere l'architettura al posto di Nikola. Non inserire chiavi o pesi nell'immagine.
 
 ## Esito
-(da compilare)
+Stato: **parziale (10 nov 2026): documento delle opzioni scritto; architettura NON scelta; Dockerfile non esteso.**
+- `docs/deployment_options.md`: fatti verificati, tre opzioni a confronto (on-premise, air-gapped, cloud sovrano svizzero), conseguenze per i pesi modificati (il gateway ufficiale serve probabilmente solo i pesi originali: ipotesi da confermare), considerazione non vincolante a favore dell'air-gapped su Mac.
+- `models.yaml`: ruoli e versioni aggiornati al nuovo progetto (Apertus 8B sotto test, Claude Sonnet 5.5 come strumento di sviluppo, oracolo della demo, gateway). `deployment.target` resta vuoto; `make compliance`: 0 errori, 1 avviso (architettura).
+- **Non fatto:** scelta dell'architettura (spetta a Nikola); Dockerfile con DuckDB, dati e task; `make airgap-check` (richiede Docker acceso); dichiarazione dei checkpoint WSP/LoRA (non esistono).
+

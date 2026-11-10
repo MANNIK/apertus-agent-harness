@@ -1,0 +1,134 @@
+# GENERATO da scripts/build_regression_tasks.py (set di regressione general-v0.1, W13): non modificare a mano.
+# Item proposti da Claude, risposte verificabili, controlli deterministici sul testo (nessun giudice AI). Da confermare dalla squadra.
+- id: reg_bottles
+  category: arithmetic
+  prompt: Une bouteille contient 1,5 litre. Combien de litres y a-t-il dans 8 bouteilles ?
+  max_steps: 3
+  meta:
+    language: fr
+    split: regression_sanity
+    capability: arithmetic
+  checks:
+  - type: final_number
+    value: 12
+    tol: 0.0
+- id: reg_mult
+  category: arithmetic
+  prompt: What is 17 times 23?
+  max_steps: 3
+  meta:
+    language: en
+    split: regression_sanity
+    capability: arithmetic
+  checks:
+  - type: final_number
+    value: 391
+    tol: 0.0
+- id: reg_division
+  category: arithmetic
+  prompt: Quanto fa 1000 diviso per 8?
+  max_steps: 3
+  meta:
+    language: it
+    split: regression_sanity
+    capability: arithmetic
+  checks:
+  - type: final_number
+    value: 125
+    tol: 0.0
+- id: reg_aare
+  category: extraction
+  prompt: 'Text: ''The Aare flows through Bern and joins the Rhine near Koblenz.'' Question: Which city does the Aare flow through? Answer with one word.'
+  max_steps: 3
+  meta:
+    language: en
+    split: regression_sanity
+    capability: extraction
+  checks:
+  - type: final_regex
+    pattern: \bBern\b
+- id: reg_dog
+  category: translation
+  prompt: Translate the English word 'dog' into German. Answer with one word.
+  max_steps: 3
+  meta:
+    language: en
+    split: regression_sanity
+    capability: translation
+  checks:
+  - type: final_regex
+    pattern: \bHund\b
+- id: reg_capital
+  category: swiss_knowledge
+  prompt: What is the capital of Switzerland? Answer with one word.
+  max_steps: 3
+  meta:
+    language: en
+    split: regression_sanity
+    capability: swiss_knowledge
+  checks:
+  - type: final_regex
+    pattern: \bBern[ea]?\b
+- id: reg_json
+  category: format
+  prompt: Return a JSON object with the keys "name" and "age" for a person called Anna who is 30. Output only the JSON.
+  max_steps: 3
+  meta:
+    language: en
+    split: regression_sanity
+    capability: format
+  checks:
+  - type: final_contains_all
+    values:
+    - '"name"'
+    - '"age"'
+    - Anna
+    - '30'
+  - type: final_regex
+    pattern: \{.*\}
+- id: reg_eu
+  category: format
+  prompt: 'Rispondi solo con «sì» o «no»: la Svizzera è un paese dell''Unione europea?'
+  max_steps: 3
+  meta:
+    language: it
+    split: regression_sanity
+    capability: format
+  checks:
+  - type: final_regex
+    pattern: ^\W*no\W*$
+- id: reg_spider
+  category: knowledge
+  prompt: Wie viele Beine hat eine Spinne? Antworte nur mit der Zahl.
+  max_steps: 3
+  meta:
+    language: de
+    split: regression_sanity
+    capability: knowledge
+  checks:
+  - type: final_number
+    value: 8
+    tol: 0.0
+- id: reg_sort
+  category: reasoning
+  prompt: 'Sort these numbers from smallest to largest, separated by commas: 9, 2, 7, 4.'
+  max_steps: 3
+  meta:
+    language: en
+    split: regression_sanity
+    capability: reasoning
+  checks:
+  - type: final_regex
+    pattern: 2\s*,\s*4\s*,\s*7\s*,\s*9
+- id: reg_nine_nine
+  category: arithmetic
+  prompt: Combien font 9 fois 9 ?
+  max_steps: 3
+  meta:
+    language: fr
+    split: regression_sanity
+    capability: arithmetic
+  checks:
+  - type: final_number
+    value: 81
+    tol: 0.0

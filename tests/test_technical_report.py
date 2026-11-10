@@ -19,4 +19,6 @@ def test_report_has_required_sections_and_no_invented_numbers():
         assert h in text
     results = text.split("## 6. Results", 1)[1].split("## 7.", 1)[0]
     rows = [r for r in results.splitlines() if r.startswith("| ") and not r.startswith("| Item") and not r.startswith("|---")]
-    assert rows and all("TBD (run:" in r for r in rows)
+    # ogni riga cita la run da cui viene il valore: o è ancora un segnaposto "TBD (run: …)" o riporta un numero con "(run: `runs/…`)".
+    # Un numero senza riferimento a una run salvata non passa.
+    assert rows and all("(run:" in r for r in rows)

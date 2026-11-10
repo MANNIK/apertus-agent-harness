@@ -1,5 +1,5 @@
 # W08 — Baseline LoRA con protocollo comparabile
-Stato: bloccato dal protocollo (domanda aperta n. 4) · Priorità: alta · Serve: W02, W04
+Stato: **protocollo e budget proposti; nessun LoRA addestrato (decisione della squadra)** · Priorità: alta · Serve: W02, W04
 
 ## Obiettivo
 Ottenere un LoRA addestrato in condizioni paragonabili a WSP (dati disponibili, budget, costo) per confrontare miglioramento e costo.
@@ -22,4 +22,8 @@ Il confronto è sensato solo se dati, budget di calcolo e numero di parametri ad
 - Non addestrare sul test né su schemi del test. Non stampare il token HF.
 
 ## Esito
-(da compilare)
+Stato: **protocollo e stima del budget proposti (10 nov 2026); nessun LoRA addestrato.**
+- `docs/lora_budget.md`: prezzi ufficiali di Hugging Face Jobs letti da risultato di ricerca (a10g-small 1,00 $/h con 24 GB, a100-large 2,50 $/h con 80 GB; cifre di terze parti molto più alte non coincidono con la documentazione), stime di memoria per LoRA su 8B, due opzioni (Hugging Face Jobs oppure `mlx_lm.lora` sul Mac), protocollo proposto (solo dev, parametri ≤ WSP, registro del costo) e decisioni da prendere.
+- **Non verificato:** i 10 $ di crediti (informazione di Nikola, saldo non controllato); tempi e costi per run sono **stime**, non misure; il percorso di conversione HF↔MLX non è provato; la pagina dei prezzi non è stata riletta direttamente.
+- **Blocca ancora:** la scelta dell'opzione, del rango e dei dati; W04 (parità di budget) e la decisione su WSP.
+

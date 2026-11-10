@@ -1,5 +1,5 @@
 # W12 — Rapporto tecnico (inglese) sul progetto WSP / Text-to-SQL
-Stato: pronto (bozza) · Priorità: alta · Serve: —
+Stato: **bozza riscritta, risultati TBD** · Priorità: alta · Serve: —
 
 ## Obiettivo
 Riscrivere `docs/technical_report.md` per il nuovo progetto, con struttura finale e risultati come segnaposto fino alle run vere.
@@ -20,4 +20,8 @@ La bozza attuale è della vecchia suite. Restano riusabili la struttura e i test
 - Nessun numero inventato; nessuna conclusione senza intervalli.
 
 ## Esito
-(da compilare)
+Stato: **bozza riscritta per il nuovo progetto (10 nov 2026); tutti i risultati sono segnaposto `TBD (run: …)`.**
+- `docs/technical_report.md` (inglese): compito centrale, tre condizioni, modelli (tabella generata da `agentbench manifest`, verificata da test), architettura (TBD), riproducibilità, metodo e statistica, tabella dei risultati vuota, limiti onesti (domande non riviste da madrelingua, 70 modelli di domanda, test piccolo, contaminazione non esclusa, velocità, WSP ipotesi).
+- `tests/test_technical_report.py`: ogni riga dei risultati deve citare una run (`(run: …)`): un numero senza run salvata non passa.
+- **Da fare:** sostituire i segnaposto con numeri letti da run salvate (con sha256 di `meta.json`), dichiarare l'architettura, descrivere WSP e LoRA quando esistono, rivedere la tabella dei modelli (checkpoint modificati).
+

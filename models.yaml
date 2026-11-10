@@ -28,7 +28,7 @@ models:
     license: "Apache-2.0 (Apertus); license of the third-party conversion: to be verified"
     open_weights: true
     stages: [development, evaluation]
-    role: "Model under test: evaluated as an agent (tool calling, error recovery, prompt injection)."
+    role: "Model under test and base of the modified checkpoints: writes SQL (read-only DuckDB tool) for questions about Swiss open data in DE/FR/IT/EN. Original-weights condition of the comparison original / WSP / LoRA."
 
   - id: claude-sonnet-5-5
     name: "Claude Sonnet 5.5 (Anthropic), used through Claude Code"
@@ -37,16 +37,16 @@ models:
     license: "proprietary (closed model)"
     open_weights: false
     stages: [development]
-    role: "Coding assistant: development of the harness, analysis of results, documentation. Not used at runtime nor as a judge in evaluations."
+    role: "Coding assistant (rule 2): development of the harness, drafting of the dataset (question templates in DE/FR/IT/EN and gold SQL, all executed and checked by code), analysis of results, documentation, and design of the weight modifications (WSP) once they exist. Not used at runtime nor as a judge in evaluations."
 
   - id: demo-oracle-synthetic
     name: "Synthetic script for the demo (no real model)"
     match: ["demo-oracle-synthetic"]
-    version: "scripts/build_demo.py"
+    version: "scripts/build_demo_sql.py"
     license: "Apache-2.0 (project code)"
     open_weights: true
     stages: [development]
-    role: "Fake server that plays the correct path of each task: only used to verify the harness (make demo). It is not Apertus and produces no research results."
+    role: "Fake server that runs the gold query of each synthetic task: only used to verify the harness (make demo). It is not Apertus and produces no research results."
 
   # Modelli ospitati dal gateway ufficiale (gateway.keera.ch). Gli id sono i nomi esposti dall'API.
   - id: apertus-v1-5-8b
@@ -56,7 +56,7 @@ models:
     license: "Apache-2.0 (Apertus; as in the MLX entry above, gateway model card not checked)"
     open_weights: true
     stages: [development, evaluation]
-    role: "Model under test via the official API: evaluated as an agent (tool calling, error recovery, prompt injection)."
+    role: "Original-weights model under test via the official API (available from 27 November 08:00): Text-to-SQL on Swiss open data. Serves only the official weights, not the modified ones."
 
   - id: apertus-v1-5-70b
     name: "Apertus v1.5 70B, served by the CSCS/Keera gateway"
@@ -65,4 +65,4 @@ models:
     license: "to be verified"
     open_weights: true
     stages: [development, evaluation]
-    role: "Model under test via the official API (large variant): evaluated as an agent."
+    role: "Original-weights model under test via the official API (large variant), optional reference: Text-to-SQL on Swiss open data."

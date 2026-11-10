@@ -1,5 +1,5 @@
 # W07 — Ciclo Weight-Space Programming
-Stato: bloccato dal metodo (domanda aperta n. 1) · Priorità: alta · Serve: W04, W05, W06
+Stato: **scheda dei metodi scritta; metodo da scegliere (bloccato dalla decisione della squadra)** · Priorità: alta · Serve: W04, W05, W06
 
 ## Obiettivo
 Far proporre al modello di sviluppo modifiche ai pesi, valutarle **solo su dev/val** e conservare solo quelle che superano criteri fissati prima.
@@ -24,4 +24,8 @@ Il documento descrive il ciclo: analisi errori → statistiche/sottospazi → ip
 - Non guardare il test set. Non scegliere tu la tecnica al posto della squadra. Non scrivere che migliora senza intervalli e test.
 
 ## Esito
-(da compilare)
+Stato: **scheda dei metodi candidati scritta (10 nov 2026); metodo NON scelto, ciclo NON implementato.**
+- `docs/wsp_candidate_methods.md`: tre metodi (A localizzazione guidata + modifica sparsa, B modifica in forma chiusa di rango basso, C potatura di un task vector), ciascuno con meccanismo in una frase, costo, controllo a tensori/direzioni casuali, rischi e confronto; raccomandazione non vincolante.
+- **Non verificato:** nessun metodo è stato provato; i riferimenti alla letteratura sono dalla mia memoria e vanno controllati.
+- **Blocca ancora:** la scelta del metodo e dei criteri di accettazione (da scrivere in `docs/analysis_plan.md` §6 prima della prima run), il cancello di fattibilità di W05, l'ambiente PyTorch (W06) e la conferma sui pesi propri.
+

@@ -1,0 +1,288 @@
+# GENERATO da scripts/build_regression_tasks.py (set di regressione general-v0.1, W13): non modificare a mano.
+# Item proposti da Claude, risposte verificabili, controlli deterministici sul testo (nessun giudice AI). Da confermare dalla squadra.
+- id: reg_train_arrival
+  category: arithmetic
+  prompt: A train leaves at 08:15 and the trip takes 2 hours and 50 minutes. At what time does it arrive? Answer in the format HH:MM.
+  max_steps: 3
+  meta:
+    language: en
+    split: regression_final
+    capability: arithmetic
+  checks:
+  - type: final_regex
+    pattern: \b11:05\b
+- id: reg_notebooks
+  category: arithmetic
+  prompt: Ein Heft kostet 3 Franken 50. Wie viele Franken kosten 6 Hefte? Antworte nur mit der Zahl.
+  max_steps: 3
+  meta:
+    language: de
+    split: regression_final
+    capability: arithmetic
+  checks:
+  - type: final_number
+    value: 21
+    tol: 0.0
+- id: reg_stickers
+  category: arithmetic
+  prompt: Maria ha 48 figurine e ne regala un quarto. Quante figurine le rimangono?
+  max_steps: 3
+  meta:
+    language: it
+    split: regression_final
+    capability: arithmetic
+  checks:
+  - type: final_number
+    value: 36
+    tol: 0.0
+- id: reg_percent
+  category: arithmetic
+  prompt: Was ist 15 % von 240?
+  max_steps: 3
+  meta:
+    language: de
+    split: regression_final
+    capability: arithmetic
+  checks:
+  - type: final_number
+    value: 36
+    tol: 0.0
+- id: reg_discount
+  category: arithmetic
+  prompt: Quel est le prix après une réduction de 20 % sur 150 francs ?
+  max_steps: 3
+  meta:
+    language: fr
+    split: regression_final
+    capability: arithmetic
+  checks:
+  - type: final_number
+    value: 120
+    tol: 0.0
+- id: reg_cm
+  category: units
+  prompt: How many centimetres are in 2.5 metres?
+  max_steps: 3
+  meta:
+    language: en
+    split: regression_final
+    capability: units
+  checks:
+  - type: final_number
+    value: 250
+    tol: 0.0
+- id: reg_minutes
+  category: units
+  prompt: Wie viele Minuten sind 3,5 Stunden?
+  max_steps: 3
+  meta:
+    language: de
+    split: regression_final
+    capability: units
+  checks:
+  - type: final_number
+    value: 210
+    tol: 0.0
+- id: reg_albula
+  category: extraction
+  prompt: 'Text: «Die Rhätische Bahn betreibt die Albulalinie zwischen Thusis und St. Moritz.» Frage: Zwischen welchen beiden Orten verkehrt die Albulalinie?'
+  max_steps: 3
+  meta:
+    language: de
+    split: regression_final
+    capability: extraction
+  checks:
+  - type: final_contains_all
+    values:
+    - Thusis
+    - St. Moritz
+- id: reg_marie
+  category: extraction
+  prompt: 'Texte : « Marie habite à Lausanne et travaille à Genève. » Question : Où travaille Marie ?'
+  max_steps: 3
+  meta:
+    language: fr
+    split: regression_final
+    capability: extraction
+  checks:
+  - type: final_regex
+    pattern: Gen[eè]ve
+- id: reg_pears
+  category: extraction
+  prompt: 'Testo: «Luca ha comprato tre mele e due pere.» Domanda: Quante pere ha comprato Luca? Rispondi solo con il numero.'
+  max_steps: 3
+  meta:
+    language: it
+    split: regression_final
+    capability: extraction
+  checks:
+  - type: final_number
+    value: 2
+    tol: 0.0
+- id: reg_brot
+  category: translation
+  prompt: Übersetze das deutsche Wort 'Brot' ins Französische. Antworte mit einem Wort.
+  max_steps: 3
+  meta:
+    language: de
+    split: regression_final
+    capability: translation
+  checks:
+  - type: final_regex
+    pattern: \bpain\b
+- id: reg_maison
+  category: translation
+  prompt: Traduis le mot français 'maison' en italien. Réponds par un seul mot.
+  max_steps: 3
+  meta:
+    language: fr
+    split: regression_final
+    capability: translation
+  checks:
+  - type: final_regex
+    pattern: \bcasa\b
+- id: reg_acqua
+  category: translation
+  prompt: Traduci in inglese la parola italiana 'acqua'. Rispondi con una sola parola.
+  max_steps: 3
+  meta:
+    language: it
+    split: regression_final
+    capability: translation
+  checks:
+  - type: final_regex
+    pattern: \bwater\b
+- id: reg_cantons
+  category: swiss_knowledge
+  prompt: Wie viele Kantone hat die Schweiz? Antworte nur mit der Zahl.
+  max_steps: 3
+  meta:
+    language: de
+    split: regression_final
+    capability: swiss_knowledge
+  checks:
+  - type: final_number
+    value: 26
+    tol: 0.0
+- id: reg_biggest_city
+  category: swiss_knowledge
+  prompt: Quelle est la plus grande ville de Suisse par sa population ? Réponds par un seul mot.
+  max_steps: 3
+  meta:
+    language: fr
+    split: regression_final
+    capability: swiss_knowledge
+  checks:
+  - type: final_regex
+    pattern: Z(u|ü)rich
+- id: reg_language
+  category: swiss_knowledge
+  prompt: Qual è la lingua più parlata in Svizzera? Rispondi con una sola parola.
+  max_steps: 3
+  meta:
+    language: it
+    split: regression_final
+    capability: swiss_knowledge
+  checks:
+  - type: final_regex
+    pattern: tedesc|german|deutsch
+- id: reg_three_colours
+  category: format
+  prompt: Nenne genau drei Farben, getrennt durch Kommas, ohne weiteren Text.
+  max_steps: 3
+  meta:
+    language: de
+    split: regression_final
+    capability: format
+  checks:
+  - type: final_regex
+    pattern: ^\s*[^,\n]+,[^,\n]+,[^,\n]+\s*$
+- id: reg_seven
+  category: format
+  prompt: Écris le nombre 7 en toutes lettres, sans autre texte.
+  max_steps: 3
+  meta:
+    language: fr
+    split: regression_final
+    capability: format
+  checks:
+  - type: final_regex
+    pattern: ^\s*sept\W*$
+- id: reg_opposite
+  category: language
+  prompt: 'Complete the sentence with one word: ''The opposite of hot is ___.'''
+  max_steps: 3
+  meta:
+    language: en
+    split: regression_final
+    capability: language
+  checks:
+  - type: final_regex
+    pattern: \bcold\b
+- id: reg_tuesday
+  category: knowledge
+  prompt: Quel jour vient après mardi ? Réponds par un seul mot.
+  max_steps: 3
+  meta:
+    language: fr
+    split: regression_final
+    capability: knowledge
+  checks:
+  - type: final_regex
+    pattern: mercredi
+- id: reg_week
+  category: knowledge
+  prompt: Quanti giorni ha una settimana? Rispondi solo con il numero.
+  max_steps: 3
+  meta:
+    language: it
+    split: regression_final
+    capability: knowledge
+  checks:
+  - type: final_number
+    value: 7
+    tol: 0.0
+- id: reg_plural
+  category: language
+  prompt: Wie lautet der Plural von 'Haus'? Antworte mit einem Wort.
+  max_steps: 3
+  meta:
+    language: de
+    split: regression_final
+    capability: language
+  checks:
+  - type: final_regex
+    pattern: \bHäuser\b
+- id: reg_prime
+  category: reasoning
+  prompt: Is 91 a prime number? Answer yes or no.
+  max_steps: 3
+  meta:
+    language: en
+    split: regression_final
+    capability: reasoning
+  checks:
+  - type: final_regex
+    pattern: ^\W*no\b
+- id: reg_contrary
+  category: language
+  prompt: Qual è il contrario di «grande»? Rispondi con una sola parola.
+  max_steps: 3
+  meta:
+    language: it
+    split: regression_final
+    capability: language
+  checks:
+  - type: final_regex
+    pattern: piccol
+- id: reg_fractions
+  category: reasoning
+  prompt: 'Which is larger: 3/4 or 2/3? Answer with the fraction only.'
+  max_steps: 3
+  meta:
+    language: en
+    split: regression_final
+    capability: reasoning
+  checks:
+  - type: final_regex
+    pattern: 3\s*/\s*4
