@@ -21,9 +21,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT ROUND(Motorisierungsgrad, 1) FROM motorisierungsgrad WHERE QuarLang = 'Saatlen' AND StichtagDatJahr = 2008
+  - type: sql_result_projection
+    gold: SELECT ROUND(Motorisierungsgrad, 1) FROM motorisierungsgrad WHERE QuarLang = 'Saatlen' AND StichtagDatJahr = 2008
+    diagnostic: true
   - type: final_number
     value: 323.9
     tol: 0.06
+    diagnostic: true
 - id: motg_rate_2
   category: lookup
   prompt: Qual era il tasso di motorizzazione (automobili ogni 1000 abitanti) nel quartiere Mühlebach nel 2011, arrotondato a un decimale?
@@ -42,9 +46,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT ROUND(Motorisierungsgrad, 1) FROM motorisierungsgrad WHERE QuarLang = 'Mühlebach' AND StichtagDatJahr = 2011
+  - type: sql_result_projection
+    gold: SELECT ROUND(Motorisierungsgrad, 1) FROM motorisierungsgrad WHERE QuarLang = 'Mühlebach' AND StichtagDatJahr = 2011
+    diagnostic: true
   - type: final_number
     value: 424.5
     tol: 0.06
+    diagnostic: true
 - id: motg_rate_3
   category: lookup
   prompt: What was the motorisation rate (cars per 1000 inhabitants) in the Seefeld district in 2007, rounded to one decimal?
@@ -63,9 +71,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT ROUND(Motorisierungsgrad, 1) FROM motorisierungsgrad WHERE QuarLang = 'Seefeld' AND StichtagDatJahr = 2007
+  - type: sql_result_projection
+    gold: SELECT ROUND(Motorisierungsgrad, 1) FROM motorisierungsgrad WHERE QuarLang = 'Seefeld' AND StichtagDatJahr = 2007
+    diagnostic: true
   - type: final_number
     value: 529.2
     tol: 0.06
+    diagnostic: true
 - id: motg_highest_1
   category: argmax
   prompt: In welchem Quartier war der Motorisierungsgrad im Jahr 2014 am höchsten?
@@ -83,6 +95,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT QuarLang FROM motorisierungsgrad WHERE StichtagDatJahr = 2014 ORDER BY Motorisierungsgrad DESC, QuarLang LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT QuarLang FROM motorisierungsgrad WHERE StichtagDatJahr = 2014 ORDER BY Motorisierungsgrad DESC, QuarLang LIMIT 1
+    diagnostic: true
 - id: motg_highest_2
   category: argmax
   prompt: Dans quel quartier le taux de motorisation était-il le plus élevé en 2004 ?
@@ -100,6 +115,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT QuarLang FROM motorisierungsgrad WHERE StichtagDatJahr = 2004 ORDER BY Motorisierungsgrad DESC, QuarLang LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT QuarLang FROM motorisierungsgrad WHERE StichtagDatJahr = 2004 ORDER BY Motorisierungsgrad DESC, QuarLang LIMIT 1
+    diagnostic: true
 - id: motg_highest_3
   category: argmax
   prompt: In quale quartiere il tasso di motorizzazione era il più alto nel 2022?
@@ -117,6 +135,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT QuarLang FROM motorisierungsgrad WHERE StichtagDatJahr = 2022 ORDER BY Motorisierungsgrad DESC, QuarLang LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT QuarLang FROM motorisierungsgrad WHERE StichtagDatJahr = 2022 ORDER BY Motorisierungsgrad DESC, QuarLang LIMIT 1
+    diagnostic: true
 - id: motg_count_above_1
   category: filter_count
   prompt: In how many districts was the motorisation rate above 350 in 2014?
@@ -134,9 +155,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(*) FROM motorisierungsgrad WHERE StichtagDatJahr = 2014 AND Motorisierungsgrad > 350
+  - type: sql_result_projection
+    gold: SELECT COUNT(*) FROM motorisierungsgrad WHERE StichtagDatJahr = 2014 AND Motorisierungsgrad > 350
+    diagnostic: true
   - type: final_number
     value: 15.0
     tol: 0.0
+    diagnostic: true
 - id: motg_count_above_2
   category: filter_count
   prompt: In wie vielen Quartieren lag der Motorisierungsgrad im Jahr 2007 über 350?
@@ -154,9 +179,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(*) FROM motorisierungsgrad WHERE StichtagDatJahr = 2007 AND Motorisierungsgrad > 350
+  - type: sql_result_projection
+    gold: SELECT COUNT(*) FROM motorisierungsgrad WHERE StichtagDatJahr = 2007 AND Motorisierungsgrad > 350
+    diagnostic: true
   - type: final_number
     value: 24.0
     tol: 0.0
+    diagnostic: true
 - id: motg_count_above_3
   category: filter_count
   prompt: Dans combien de quartiers le taux de motorisation dépassait-il 250 en 2012 ?
@@ -174,9 +203,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(*) FROM motorisierungsgrad WHERE StichtagDatJahr = 2012 AND Motorisierungsgrad > 250
+  - type: sql_result_projection
+    gold: SELECT COUNT(*) FROM motorisierungsgrad WHERE StichtagDatJahr = 2012 AND Motorisierungsgrad > 250
+    diagnostic: true
   - type: final_number
     value: 34.0
     tol: 0.0
+    diagnostic: true
 - id: motg_avg_city_1
   category: aggregation
   prompt: Qual era nel 2006 la media semplice del tasso di motorizzazione su tutti i quartieri, arrotondata a un decimale?
@@ -194,9 +227,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT ROUND(AVG(Motorisierungsgrad), 1) FROM motorisierungsgrad WHERE StichtagDatJahr = 2006
+  - type: sql_result_projection
+    gold: SELECT ROUND(AVG(Motorisierungsgrad), 1) FROM motorisierungsgrad WHERE StichtagDatJahr = 2006
+    diagnostic: true
   - type: final_number
     value: 430.3
     tol: 0.06
+    diagnostic: true
 - id: motg_avg_city_2
   category: aggregation
   prompt: What was the simple average of the motorisation rate across all districts in 2004, rounded to one decimal?
@@ -214,9 +251,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT ROUND(AVG(Motorisierungsgrad), 1) FROM motorisierungsgrad WHERE StichtagDatJahr = 2004
+  - type: sql_result_projection
+    gold: SELECT ROUND(AVG(Motorisierungsgrad), 1) FROM motorisierungsgrad WHERE StichtagDatJahr = 2004
+    diagnostic: true
   - type: final_number
     value: 450.4
     tol: 0.06
+    diagnostic: true
 - id: motg_avg_city_3
   category: aggregation
   prompt: Wie hoch war im Jahr 2003 der einfache Durchschnitt des Motorisierungsgrads über alle Quartiere, auf eine Dezimalstelle gerundet?
@@ -234,6 +275,10 @@
   checks:
   - type: sql_result_match
     gold: SELECT ROUND(AVG(Motorisierungsgrad), 1) FROM motorisierungsgrad WHERE StichtagDatJahr = 2003
+  - type: sql_result_projection
+    gold: SELECT ROUND(AVG(Motorisierungsgrad), 1) FROM motorisierungsgrad WHERE StichtagDatJahr = 2003
+    diagnostic: true
   - type: final_number
     value: 448.4
     tol: 0.06
+    diagnostic: true

@@ -14,11 +14,14 @@ Regole
 - Booleani: uguali solo a booleani. Stringhe: confronto esatto, maiuscole/minuscole e spazi contano. Date/ore: uguali solo a valori dello stesso tipo
   (una data convertita in testo non equivale alla data).
 - NaN = NaN.
+- **Misura secondaria «rilassata» (`compare_projection`)**: accetta colonne in più e in ordine diverso, se esiste una scelta ordinata di colonne del risultato che, dopo la proiezione,
+  soddisfa le regole sopra. Serve a separare «ha sbagliato la query» da «ha aggiunto una colonna utile» (es. nome e conteggio quando si chiede solo il nome). Non sostituisce la misura rigida (primaria).
 - Limite noto: con righe non ordinate si ordinano entrambi i lati con una chiave arrotondata e poi si confronta con la tolleranza; un caso di
   valori a cavallo dell'arrotondamento e uguali in tutte le altre colonne potrebbe dare un falso negativo (non osservato, solo teorico).
 """
 from __future__ import annotations
 
+import itertools
 import math
 from dataclasses import dataclass, field
 from decimal import Decimal
@@ -94,3 +97,19 @@ def compare_results(pred: SqlResult, gold: SqlResult, order_matters: bool = Fals
             if not values_equal(vp, vg):
                 return Match(False, f"riga {i + 1}, colonna {j + 1}: {vp!r} invece di {vg!r}")
     return Match(True, f"risultato uguale ({len(g)} righe, {len(g[0]) if g else len(gold.columns)} colonne)")
+
+
+def compare_projection(pred: SqlResult, gold: SqlResult, order_matters: bool = False, max_cols: int = 8) -> Match:
+    """Execution accuracy rilassata: il gold è una proiezione (ordinata) del risultato del modello. Più permissiva di `compare_results`, mai più severa."""
+    k, n = len(gold.columns), len(pred.columns)
+    if n < k:
+        return Match(False, f"colonne insufficienti: {n} invece di almeno {k}")
+    if len(pred.rows) != len(gold.rows):
+        return Match(False, f"numero di righe diverso: {len(pred.rows)} invece di {len(gold.rows)}")
+    if n > max_cols:
+        return Match(False, f"troppe colonne ({n}) per la proiezione")
+    for idx in itertools.permutations(range(n), k):
+        proj = SqlResult([pred.columns[i] for i in idx], [tuple(r[i] for i in idx) for r in pred.rows])
+        if compare_results(proj, gold, order_matters).ok:
+            return Match(True, f"le colonne {[i + 1 for i in idx]} del risultato coincidono con il gold")
+    return Match(False, "nessuna scelta di colonne coincide con il gold")

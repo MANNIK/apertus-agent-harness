@@ -94,6 +94,10 @@ def test_kb_multilingual_keywords():
     ("The average is 7.67.", 7.67),
     ("Totale: 68.315", 68315),
     ("12°C", 12),
+    ("En 1991, 81 839 personnes", 81839),            # francese: spazio come separatore delle migliaia (caso reale visto in una run)
+    ("Ci sono 447\u00a0082 abitanti", 447082),        # NBSP
+    ("Es gab 1 234 567 Personen", 1234567),
+    ("Totale 12 345,50 CHF", 12345.5),
 ])
 def test_extract_numbers_swiss_italian_english_formats(text, value):
     assert any(abs(n - value) < 1e-9 for n in extract_numbers(text)), extract_numbers(text)
@@ -173,3 +177,9 @@ def test_broken_check_does_not_crash_the_run():
     task = Task("t", "c", "p", [{"type": "called"}])  # manca 'tool'
     results = evaluate(task, make_traj([]), ToolBox())
     assert results[1]["ok"] is False and "errore nel controllo" in results[1]["detail"]
+
+
+def test_space_separated_groups_do_not_merge_unrelated_numbers():
+    nums = extract_numbers("Nel 2023 100 persone e tra 81 e 839 casi, anni 1991 1992")
+    assert 100.0 in nums and 2023.0 in nums and 81.0 in nums and 839.0 in nums and 1991.0 in nums and 1992.0 in nums
+    assert 2023100.0 not in nums and 81839.0 not in nums and 19911992.0 not in nums

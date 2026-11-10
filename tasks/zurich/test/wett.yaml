@@ -21,9 +21,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT ROUND(AVG(TRY_CAST(Wert AS DOUBLE)), 1) FROM meteo WHERE Standort = 'Zch_Schimmelstrasse' AND Parameter = 'T' AND month(Datum) = 3
+  - type: sql_result_projection
+    gold: SELECT ROUND(AVG(TRY_CAST(Wert AS DOUBLE)), 1) FROM meteo WHERE Standort = 'Zch_Schimmelstrasse' AND Parameter = 'T' AND month(Datum) = 3
+    diagnostic: true
   - type: final_number
     value: 8.7
     tol: 0.06
+    diagnostic: true
 - id: wett_monthly_temp_2
   category: aggregation
   prompt: Wie hoch war die mittlere Tagestemperatur Mai 2025 am Standort Zch_Heubeeribüel (Mittel der Tageswerte des Parameters T, auf eine Dezimalstelle gerundet)?
@@ -42,9 +46,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT ROUND(AVG(TRY_CAST(Wert AS DOUBLE)), 1) FROM meteo WHERE Standort = 'Zch_Heubeeribüel' AND Parameter = 'T' AND month(Datum) = 5
+  - type: sql_result_projection
+    gold: SELECT ROUND(AVG(TRY_CAST(Wert AS DOUBLE)), 1) FROM meteo WHERE Standort = 'Zch_Heubeeribüel' AND Parameter = 'T' AND month(Datum) = 5
+    diagnostic: true
   - type: final_number
     value: 13.6
     tol: 0.06
+    diagnostic: true
 - id: wett_monthly_temp_3
   category: aggregation
   prompt: Quelle était la température moyenne au mois de décembre 2025 à la station Zch_Stampfenbachstrasse (moyenne des valeurs journalières du paramètre T, arrondie à une décimale) ?
@@ -63,9 +71,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT ROUND(AVG(TRY_CAST(Wert AS DOUBLE)), 1) FROM meteo WHERE Standort = 'Zch_Stampfenbachstrasse' AND Parameter = 'T' AND month(Datum) = 12
+  - type: sql_result_projection
+    gold: SELECT ROUND(AVG(TRY_CAST(Wert AS DOUBLE)), 1) FROM meteo WHERE Standort = 'Zch_Stampfenbachstrasse' AND Parameter = 'T' AND month(Datum) = 12
+    diagnostic: true
   - type: final_number
     value: 3.5
     tol: 0.06
+    diagnostic: true
 - id: wett_hottest_day_1
   category: argmax
   prompt: In quale data è stata misurata nel 2025 alla stazione Zch_Schimmelstrasse la temperatura massima più alta (parametro T_max_h1)?
@@ -84,6 +96,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT Datum FROM meteo WHERE Standort = 'Zch_Schimmelstrasse' AND Parameter = 'T_max_h1' AND TRY_CAST(Wert AS DOUBLE) IS NOT NULL ORDER BY TRY_CAST(Wert AS DOUBLE) DESC, Datum LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT Datum FROM meteo WHERE Standort = 'Zch_Schimmelstrasse' AND Parameter = 'T_max_h1' AND TRY_CAST(Wert AS DOUBLE) IS NOT NULL ORDER BY TRY_CAST(Wert AS DOUBLE) DESC, Datum LIMIT 1
+    diagnostic: true
 - id: wett_hottest_day_2
   category: argmax
   prompt: On which date in 2025 was the highest daily maximum temperature (parameter T_max_h1) measured at the station Zch_Heubeeribüel?
@@ -102,6 +117,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT Datum FROM meteo WHERE Standort = 'Zch_Heubeeribüel' AND Parameter = 'T_max_h1' AND TRY_CAST(Wert AS DOUBLE) IS NOT NULL ORDER BY TRY_CAST(Wert AS DOUBLE) DESC, Datum LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT Datum FROM meteo WHERE Standort = 'Zch_Heubeeribüel' AND Parameter = 'T_max_h1' AND TRY_CAST(Wert AS DOUBLE) IS NOT NULL ORDER BY TRY_CAST(Wert AS DOUBLE) DESC, Datum LIMIT 1
+    diagnostic: true
 - id: wett_hottest_day_3
   category: argmax
   prompt: An welchem Datum wurde 2025 am Standort Zch_Rosengartenstrasse die höchste Tageshöchsttemperatur (Parameter T_max_h1) gemessen?
@@ -120,6 +138,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT Datum FROM meteo WHERE Standort = 'Zch_Rosengartenstrasse' AND Parameter = 'T_max_h1' AND TRY_CAST(Wert AS DOUBLE) IS NOT NULL ORDER BY TRY_CAST(Wert AS DOUBLE) DESC, Datum LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT Datum FROM meteo WHERE Standort = 'Zch_Rosengartenstrasse' AND Parameter = 'T_max_h1' AND TRY_CAST(Wert AS DOUBLE) IS NOT NULL ORDER BY TRY_CAST(Wert AS DOUBLE) DESC, Datum LIMIT 1
+    diagnostic: true
 - id: wett_hot_days_1
   category: filter_count
   prompt: Pendant combien de jours en 2025 la température maximale (T_max_h1) à la station Zch_Rosengartenstrasse a-t-elle dépassé 30 °C ?
@@ -138,9 +159,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(*) FROM meteo WHERE Standort = 'Zch_Rosengartenstrasse' AND Parameter = 'T_max_h1' AND TRY_CAST(Wert AS DOUBLE) > 30
+  - type: sql_result_projection
+    gold: SELECT COUNT(*) FROM meteo WHERE Standort = 'Zch_Rosengartenstrasse' AND Parameter = 'T_max_h1' AND TRY_CAST(Wert AS DOUBLE) > 30
+    diagnostic: true
   - type: final_number
     value: 16.0
     tol: 0.0
+    diagnostic: true
 - id: wett_hot_days_2
   category: filter_count
   prompt: In quanti giorni del 2025 la temperatura massima (T_max_h1) alla stazione Zch_Schimmelstrasse ha superato 25 °C?
@@ -159,9 +184,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(*) FROM meteo WHERE Standort = 'Zch_Schimmelstrasse' AND Parameter = 'T_max_h1' AND TRY_CAST(Wert AS DOUBLE) > 25
+  - type: sql_result_projection
+    gold: SELECT COUNT(*) FROM meteo WHERE Standort = 'Zch_Schimmelstrasse' AND Parameter = 'T_max_h1' AND TRY_CAST(Wert AS DOUBLE) > 25
+    diagnostic: true
   - type: final_number
     value: 62.0
     tol: 0.0
+    diagnostic: true
 - id: wett_hot_days_3
   category: filter_count
   prompt: On how many days in 2025 did the daily maximum temperature (T_max_h1) at the station Zch_Stampfenbachstrasse exceed 25 °C?
@@ -180,9 +209,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(*) FROM meteo WHERE Standort = 'Zch_Stampfenbachstrasse' AND Parameter = 'T_max_h1' AND TRY_CAST(Wert AS DOUBLE) > 25
+  - type: sql_result_projection
+    gold: SELECT COUNT(*) FROM meteo WHERE Standort = 'Zch_Stampfenbachstrasse' AND Parameter = 'T_max_h1' AND TRY_CAST(Wert AS DOUBLE) > 25
+    diagnostic: true
   - type: final_number
     value: 60.0
     tol: 0.0
+    diagnostic: true
 - id: wett_rain_total_1
   category: aggregation
   prompt: Wie viele Minuten hat es Dezember 2025 am Standort Zch_Stampfenbachstrasse insgesamt geregnet (Parameter RainDur, Summe der Tageswerte)?
@@ -201,9 +234,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT SUM(TRY_CAST(Wert AS DOUBLE)) FROM meteo WHERE Standort = 'Zch_Stampfenbachstrasse' AND Parameter = 'RainDur' AND month(Datum) = 12
+  - type: sql_result_projection
+    gold: SELECT SUM(TRY_CAST(Wert AS DOUBLE)) FROM meteo WHERE Standort = 'Zch_Stampfenbachstrasse' AND Parameter = 'RainDur' AND month(Datum) = 12
+    diagnostic: true
   - type: final_number
     value: 2023.4299999999998
     tol: 0.06
+    diagnostic: true
 - id: wett_rain_total_2
   category: aggregation
   prompt: Pendant combien de minutes au total a-t-il plu au mois de août 2025 à la station Zch_Schimmelstrasse (paramètre RainDur, somme des valeurs journalières) ?
@@ -222,9 +259,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT SUM(TRY_CAST(Wert AS DOUBLE)) FROM meteo WHERE Standort = 'Zch_Schimmelstrasse' AND Parameter = 'RainDur' AND month(Datum) = 8
+  - type: sql_result_projection
+    gold: SELECT SUM(TRY_CAST(Wert AS DOUBLE)) FROM meteo WHERE Standort = 'Zch_Schimmelstrasse' AND Parameter = 'RainDur' AND month(Datum) = 8
+    diagnostic: true
   - type: final_number
     value: 2734.14
     tol: 0.06
+    diagnostic: true
 - id: wett_rain_total_3
   category: aggregation
   prompt: Per quanti minuti in totale ha piovuto nel mese di agosto 2025 alla stazione Zch_Rosengartenstrasse (parametro RainDur, somma dei valori giornalieri)?
@@ -243,6 +284,10 @@
   checks:
   - type: sql_result_match
     gold: SELECT SUM(TRY_CAST(Wert AS DOUBLE)) FROM meteo WHERE Standort = 'Zch_Rosengartenstrasse' AND Parameter = 'RainDur' AND month(Datum) = 8
+  - type: sql_result_projection
+    gold: SELECT SUM(TRY_CAST(Wert AS DOUBLE)) FROM meteo WHERE Standort = 'Zch_Rosengartenstrasse' AND Parameter = 'RainDur' AND month(Datum) = 8
+    diagnostic: true
   - type: final_number
     value: 2022.8099999999997
     tol: 0.06
+    diagnostic: true

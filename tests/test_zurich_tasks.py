@@ -63,7 +63,10 @@ def test_task_format_and_labels():
             assert t.tools == ["run_sql"] and t.meta["split"] == split and t.id.startswith(t.meta["schema_id"] + "_")
             assert t.meta["language"] in {"de", "fr", "it", "en"} and t.meta["dataset"] in MANIFEST
             assert "{DATA}" in t.setup["sql_init"][0] and t.prompt.strip()
-            assert any(c["type"] == "sql_result_match" for c in t.checks)
+            assert [c["type"] for c in t.checks][:2] == ["sql_result_match", "sql_result_projection"]
+            primary = [c for c in t.checks if not c.get("diagnostic")]
+            assert [c["type"] for c in primary] == ["sql_result_match"], "il punteggio primario è solo l'execution accuracy rigida"
+            assert all(c.get("diagnostic") for c in t.checks if c["type"] in ("sql_result_projection", "final_number"))
 
 
 def test_languages_are_balanced_in_each_split():
@@ -114,7 +117,7 @@ def test_test_split_is_protected_unless_final_test_is_given(tmp_path):
     one = BY_SPLIT["test"][0].id
     with pytest.raises(SystemExit) as e:
         main(["run", "--base-url", "http://127.0.0.1:1/v1", "--model", "m", "--tasks", str(ZH / "test"), "--only", one, "--out", str(tmp_path / "a")])
-    assert "TEST" in str(e.value.code) and "--final-test" in str(e.value.code)
+    assert "FINALE" in str(e.value.code) and "--final-test" in str(e.value.code)
     assert not (tmp_path / "a").exists()
     # dev e val non sono protetti; con --final-test il test parte
     with MockServer(lambda m, t, b: final("x")) as srv:

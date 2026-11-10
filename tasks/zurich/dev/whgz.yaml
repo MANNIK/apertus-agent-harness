@@ -20,9 +20,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT AnzWhgStat FROM wohnungen_nach_zimmerzahl WHERE AnzZimmerLevel2Lang_noDM = '2-Zimmer' AND StichtagDatJahr = 1995
+  - type: sql_result_projection
+    gold: SELECT AnzWhgStat FROM wohnungen_nach_zimmerzahl WHERE AnzZimmerLevel2Lang_noDM = '2-Zimmer' AND StichtagDatJahr = 1995
+    diagnostic: true
   - type: final_number
     value: 40190.0
     tol: 0.0
+    diagnostic: true
 - id: whgz_count_type_2
   category: lookup
   prompt: Quanti alloggi di tipo «5-Zimmer» c'erano nel parco immobiliare nel 2008?
@@ -40,9 +44,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT AnzWhgStat FROM wohnungen_nach_zimmerzahl WHERE AnzZimmerLevel2Lang_noDM = '5-Zimmer' AND StichtagDatJahr = 2008
+  - type: sql_result_projection
+    gold: SELECT AnzWhgStat FROM wohnungen_nach_zimmerzahl WHERE AnzZimmerLevel2Lang_noDM = '5-Zimmer' AND StichtagDatJahr = 2008
+    diagnostic: true
   - type: final_number
     value: 12231.0
     tol: 0.0
+    diagnostic: true
 - id: whgz_count_type_3
   category: lookup
   prompt: How many apartments of type "4-Zimmer" were in the housing stock in 2001?
@@ -60,9 +68,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT AnzWhgStat FROM wohnungen_nach_zimmerzahl WHERE AnzZimmerLevel2Lang_noDM = '4-Zimmer' AND StichtagDatJahr = 2001
+  - type: sql_result_projection
+    gold: SELECT AnzWhgStat FROM wohnungen_nach_zimmerzahl WHERE AnzZimmerLevel2Lang_noDM = '4-Zimmer' AND StichtagDatJahr = 2001
+    diagnostic: true
   - type: final_number
     value: 39424.0
     tol: 0.0
+    diagnostic: true
 - id: whgz_total_1
   category: aggregation
   prompt: Wie gross war der gesamte Wohnungsbestand im Jahr 2024?
@@ -80,9 +92,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT SUM(AnzWhgStat) FROM wohnungen_nach_zimmerzahl WHERE StichtagDatJahr = 2024
+  - type: sql_result_projection
+    gold: SELECT SUM(AnzWhgStat) FROM wohnungen_nach_zimmerzahl WHERE StichtagDatJahr = 2024
+    diagnostic: true
   - type: final_number
     value: 236402.0
     tol: 0.0
+    diagnostic: true
 - id: whgz_total_2
   category: aggregation
   prompt: Quelle était la taille totale du parc de logements en 1998 ?
@@ -100,9 +116,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT SUM(AnzWhgStat) FROM wohnungen_nach_zimmerzahl WHERE StichtagDatJahr = 1998
+  - type: sql_result_projection
+    gold: SELECT SUM(AnzWhgStat) FROM wohnungen_nach_zimmerzahl WHERE StichtagDatJahr = 1998
+    diagnostic: true
   - type: final_number
     value: 195133.0
     tol: 0.0
+    diagnostic: true
 - id: whgz_total_3
   category: aggregation
   prompt: Quanto era grande il parco alloggi totale nel 2000?
@@ -120,9 +140,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT SUM(AnzWhgStat) FROM wohnungen_nach_zimmerzahl WHERE StichtagDatJahr = 2000
+  - type: sql_result_projection
+    gold: SELECT SUM(AnzWhgStat) FROM wohnungen_nach_zimmerzahl WHERE StichtagDatJahr = 2000
+    diagnostic: true
   - type: final_number
     value: 197199.0
     tol: 0.0
+    diagnostic: true
 - id: whgz_largest_type_1
   category: argmax
   prompt: Which room-count category had the most apartments in 2003?
@@ -140,6 +164,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT AnzZimmerLevel2Lang_noDM FROM wohnungen_nach_zimmerzahl WHERE StichtagDatJahr = 2003 ORDER BY AnzWhgStat DESC, AnzZimmerLevel2Lang_noDM LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT AnzZimmerLevel2Lang_noDM FROM wohnungen_nach_zimmerzahl WHERE StichtagDatJahr = 2003 ORDER BY AnzWhgStat DESC, AnzZimmerLevel2Lang_noDM LIMIT 1
+    diagnostic: true
 - id: whgz_largest_type_2
   category: argmax
   prompt: Welche Zimmerzahl-Kategorie hatte im Jahr 2006 die meisten Wohnungen?
@@ -157,6 +184,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT AnzZimmerLevel2Lang_noDM FROM wohnungen_nach_zimmerzahl WHERE StichtagDatJahr = 2006 ORDER BY AnzWhgStat DESC, AnzZimmerLevel2Lang_noDM LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT AnzZimmerLevel2Lang_noDM FROM wohnungen_nach_zimmerzahl WHERE StichtagDatJahr = 2006 ORDER BY AnzWhgStat DESC, AnzZimmerLevel2Lang_noDM LIMIT 1
+    diagnostic: true
 - id: whgz_largest_type_3
   category: argmax
   prompt: Quelle catégorie de nombre de pièces comptait le plus de logements en 2009 ?
@@ -174,6 +204,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT AnzZimmerLevel2Lang_noDM FROM wohnungen_nach_zimmerzahl WHERE StichtagDatJahr = 2009 ORDER BY AnzWhgStat DESC, AnzZimmerLevel2Lang_noDM LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT AnzZimmerLevel2Lang_noDM FROM wohnungen_nach_zimmerzahl WHERE StichtagDatJahr = 2009 ORDER BY AnzWhgStat DESC, AnzZimmerLevel2Lang_noDM LIMIT 1
+    diagnostic: true
 - id: whgz_growth_1
   category: arithmetic
   prompt: Di quanti alloggi della categoria «2-Zimmer» è cresciuto il parco tra il 1956 e il 1976 (valore 1976 meno valore 1956)?
@@ -191,9 +224,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT (SELECT AnzWhgStat FROM wohnungen_nach_zimmerzahl WHERE AnzZimmerLevel2Lang_noDM = '2-Zimmer' AND StichtagDatJahr = 1976) - (SELECT AnzWhgStat FROM wohnungen_nach_zimmerzahl WHERE AnzZimmerLevel2Lang_noDM = '2-Zimmer' AND StichtagDatJahr = 1956)
+  - type: sql_result_projection
+    gold: SELECT (SELECT AnzWhgStat FROM wohnungen_nach_zimmerzahl WHERE AnzZimmerLevel2Lang_noDM = '2-Zimmer' AND StichtagDatJahr = 1976) - (SELECT AnzWhgStat FROM wohnungen_nach_zimmerzahl WHERE AnzZimmerLevel2Lang_noDM = '2-Zimmer' AND StichtagDatJahr = 1956)
+    diagnostic: true
   - type: final_number
     value: 8117.0
     tol: 0.0
+    diagnostic: true
 - id: whgz_growth_2
   category: arithmetic
   prompt: By how many apartments of the category "4-Zimmer" did the stock grow between 1985 and 2005 (value in 2005 minus value in 1985)?
@@ -211,9 +248,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT (SELECT AnzWhgStat FROM wohnungen_nach_zimmerzahl WHERE AnzZimmerLevel2Lang_noDM = '4-Zimmer' AND StichtagDatJahr = 2005) - (SELECT AnzWhgStat FROM wohnungen_nach_zimmerzahl WHERE AnzZimmerLevel2Lang_noDM = '4-Zimmer' AND StichtagDatJahr = 1985)
+  - type: sql_result_projection
+    gold: SELECT (SELECT AnzWhgStat FROM wohnungen_nach_zimmerzahl WHERE AnzZimmerLevel2Lang_noDM = '4-Zimmer' AND StichtagDatJahr = 2005) - (SELECT AnzWhgStat FROM wohnungen_nach_zimmerzahl WHERE AnzZimmerLevel2Lang_noDM = '4-Zimmer' AND StichtagDatJahr = 1985)
+    diagnostic: true
   - type: final_number
     value: 6005.0
     tol: 0.0
+    diagnostic: true
 - id: whgz_growth_3
   category: arithmetic
   prompt: Um wie viele Wohnungen der Kategorie «6-Zimmer und mehr» ist der Bestand zwischen 2003 und 2023 gewachsen (Wert 2023 minus Wert 2003)?
@@ -231,6 +272,10 @@
   checks:
   - type: sql_result_match
     gold: SELECT (SELECT AnzWhgStat FROM wohnungen_nach_zimmerzahl WHERE AnzZimmerLevel2Lang_noDM = '6-Zimmer und mehr' AND StichtagDatJahr = 2023) - (SELECT AnzWhgStat FROM wohnungen_nach_zimmerzahl WHERE AnzZimmerLevel2Lang_noDM = '6-Zimmer und mehr' AND StichtagDatJahr = 2003)
+  - type: sql_result_projection
+    gold: SELECT (SELECT AnzWhgStat FROM wohnungen_nach_zimmerzahl WHERE AnzZimmerLevel2Lang_noDM = '6-Zimmer und mehr' AND StichtagDatJahr = 2023) - (SELECT AnzWhgStat FROM wohnungen_nach_zimmerzahl WHERE AnzZimmerLevel2Lang_noDM = '6-Zimmer und mehr' AND StichtagDatJahr = 2003)
+    diagnostic: true
   - type: final_number
     value: 691.0
     tol: 0.0
+    diagnostic: true

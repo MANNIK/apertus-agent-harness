@@ -2,7 +2,7 @@
 import datetime as dt
 from decimal import Decimal
 
-from agentbench.sql_eval import SqlResult, compare_results, values_equal
+from agentbench.sql_eval import SqlResult, compare_projection, compare_results, values_equal
 
 
 def R(rows, cols=("a",)):
@@ -81,3 +81,19 @@ def test_reason_names_the_first_difference():
     m = compare_results(R([(1, "x")], cols=("n", "s")), R([(1, "y")], cols=("n", "s")))
     assert not m.ok and "riga 1, colonna 2" in m.reason
     assert "colonne" in compare_results(R([(1,)]), R([(1, 2)], cols=("a", "b"))).reason
+
+
+def test_relaxed_projection_accepts_extra_or_reordered_columns_but_never_wrong_values():
+    gold = R([("Bern",)], cols=("name",))
+    assert not ok(R([("Bern", 124729)], cols=("name", "n")), gold)                       # rigida: colonna in più = errore
+    assert compare_projection(R([("Bern", 124729)], cols=("name", "n")), gold).ok          # rilassata: ok
+    assert compare_projection(R([(124729, "Bern")], cols=("n", "name")), gold).ok          # colonna in altra posizione
+    assert not compare_projection(R([("Zürich", 1)], cols=("name", "n")), gold).ok         # valore sbagliato
+    assert not compare_projection(R([("Bern",), ("Zürich",)], cols=("name",)), gold).ok    # righe diverse
+    two = R([("a", 1), ("b", 2)], cols=("x", "y"))
+    assert compare_projection(R([(1, "a", 9), (2, "b", 9)], cols=("y", "x", "z")), two).ok  # due colonne scelte tra tre, nell'ordine giusto
+    assert not compare_projection(R([("a",), ("b",)], cols=("x",)), two).ok                 # colonne insufficienti
+    big = R([tuple(range(9))], cols=tuple("abcdefghi"))
+    assert not compare_projection(big, R([(0,)], cols=("a",))).ok                           # troppe colonne: non si prova
+    # la rilassata è sempre almeno permissiva quanto la rigida
+    assert compare_projection(two, two).ok and compare_results(two, two).ok

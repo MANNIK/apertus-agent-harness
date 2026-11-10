@@ -14,7 +14,7 @@ import re
 from dataclasses import dataclass
 from typing import Any, Callable
 
-from .sql_eval import compare_results
+from .sql_eval import compare_projection, compare_results
 from .tools import ToolBox
 from .types import Trajectory
 
@@ -38,13 +38,14 @@ def check(name: str) -> Callable[[CheckFn], CheckFn]:
 
 # --------------------------------------------------------------------------- numeri nel testo
 
-_NUM_RE = re.compile(r"-?\d[\d'’  .,]*\d|-?\d")
+# Prima alternativa: gruppi di migliaia separati da spazio, NBSP o apostrofo ("81 839", "1'056"), purché preceduti da 1–3 cifre e seguiti da esattamente 3.
+_NUM_RE = re.compile(r"(?<!\d)-?\d{1,3}(?:[ \u00a0\u202f'’]\d{3})+(?!\d)(?:[.,]\d+)?|-?\d[\d'’\u202f\u00a0.,]*\d|-?\d")
 
 
 def _interpretations(token: str) -> list[float]:
     """Tutte le letture plausibili di un numero scritto in stile svizzero/italiano/inglese:
     "1’056", "1.056,50", "1,056.50", "7,67", "1.056" (ambiguo: 1,056 oppure 1056)."""
-    s = re.sub(r"['’  ]", "", token)
+    s = re.sub(r"['’\u202f\u00a0 ]", "", token)
     vals: list[float] = []
     try:
         if "," in s and "." in s:
@@ -219,6 +220,18 @@ def _sql_result_match(spec, ctx):
     if box.last_result is None:
         return False, "nessuna query run_sql riuscita"
     m = compare_results(box.last_result, box.gold_result(spec["gold"]), order_matters=bool(spec.get("order_matters")))
+    return m.ok, m.reason
+
+
+@check("sql_result_projection")
+def _sql_result_projection(spec, ctx):
+    """Execution accuracy RILASSATA (colonne in più o in ordine diverso ammesse): misura secondaria, di solito `diagnostic: true`."""
+    box = ctx.box
+    if not hasattr(box, "gold_result"):
+        return False, "il task non ha un database SQL (manca il tool run_sql)"
+    if box.last_result is None:
+        return False, "nessuna query run_sql riuscita"
+    m = compare_projection(box.last_result, box.gold_result(spec["gold"]), order_matters=bool(spec.get("order_matters")))
     return m.ok, m.reason
 
 

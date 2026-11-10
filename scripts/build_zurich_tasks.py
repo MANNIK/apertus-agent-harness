@@ -118,10 +118,14 @@ def build(n_by_split: dict[str, int]) -> dict[str, dict[str, list[dict]]]:
             if len(picked) < n:
                 print(f"  ! {short}/{tpl.key}: solo {len(picked)} istanze su {n} richieste", file=sys.stderr)
             for i, (row, gold, res, lang, q) in enumerate(picked, 1):
-                checks: list[dict] = [{"type": "sql_result_match", "gold": gold, **({"order_matters": True} if tpl.order else {})}]
+                om = {"order_matters": True} if tpl.order else {}
+                # primario: execution accuracy rigida. Diagnostici (registrati ma non contano nel punteggio): execution accuracy rilassata
+                # (colonne in più ammesse) e correttezza del numero nella risposta finale.
+                checks: list[dict] = [{"type": "sql_result_match", "gold": gold, **om},
+                                      {"type": "sql_result_projection", "gold": gold, "diagnostic": True, **om}]
                 if len(res) == 1 and len(res[0]) == 1 and isinstance(res[0][0], (int, float)) and not isinstance(res[0][0], bool):
                     v = res[0][0]
-                    checks.append({"type": "final_number", "value": float(v), "tol": 0.06 if float(v) != int(v) else 0.0})
+                    checks.append({"type": "final_number", "value": float(v), "tol": 0.06 if float(v) != int(v) else 0.0, "diagnostic": True})
                 meta = {"language": lang, "schema_id": short, "dataset": file, "split": split, "group": group, "template": tpl.key}
                 if tpl.trap:
                     meta["trap"] = tpl.trap

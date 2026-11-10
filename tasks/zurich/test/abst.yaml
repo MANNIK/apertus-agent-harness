@@ -20,9 +20,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(DISTINCT Abstimmungs_Text) FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Eidgenossenschaft' AND Abstimmungs_Datum = '2014-02-09'
+  - type: sql_result_projection
+    gold: SELECT COUNT(DISTINCT Abstimmungs_Text) FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Eidgenossenschaft' AND Abstimmungs_Datum = '2014-02-09'
+    diagnostic: true
   - type: final_number
     value: 3.0
     tol: 0.0
+    diagnostic: true
 - id: abst_n_federal_2
   category: aggregation
   prompt: How many federal ballot items were voted on on 2009-05-17?
@@ -40,9 +44,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(DISTINCT Abstimmungs_Text) FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Eidgenossenschaft' AND Abstimmungs_Datum = '2009-05-17'
+  - type: sql_result_projection
+    gold: SELECT COUNT(DISTINCT Abstimmungs_Text) FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Eidgenossenschaft' AND Abstimmungs_Datum = '2009-05-17'
+    diagnostic: true
   - type: final_number
     value: 2.0
     tol: 0.0
+    diagnostic: true
 - id: abst_n_federal_3
   category: aggregation
   prompt: Über wie viele eidgenössische Vorlagen wurde am 28.09.2025 abgestimmt?
@@ -60,9 +68,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(DISTINCT Abstimmungs_Text) FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Eidgenossenschaft' AND Abstimmungs_Datum = '2025-09-28'
+  - type: sql_result_projection
+    gold: SELECT COUNT(DISTINCT Abstimmungs_Text) FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Eidgenossenschaft' AND Abstimmungs_Datum = '2025-09-28'
+    diagnostic: true
   - type: final_number
     value: 2.0
     tol: 0.0
+    diagnostic: true
 - id: abst_city_yes_1
   category: aggregation
   prompt: Combien de oui y a-t-il eu au total dans la ville de Zurich le 09.02.2025 pour l'unique objet fédéral de ce jour ?
@@ -80,9 +92,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT SUM(Ja_Absolut) FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Stadt Zürich' AND Abstimmungs_Datum = '2025-02-09'
+  - type: sql_result_projection
+    gold: SELECT SUM(Ja_Absolut) FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Stadt Zürich' AND Abstimmungs_Datum = '2025-02-09'
+    diagnostic: true
   - type: final_number
     value: 86642.0
     tol: 0.0
+    diagnostic: true
 - id: abst_city_yes_2
   category: aggregation
   prompt: Quanti sì ci sono stati in totale nella città di Zurigo il 10.02.2019 per l'unico oggetto federale di quel giorno?
@@ -100,9 +116,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT SUM(Ja_Absolut) FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Stadt Zürich' AND Abstimmungs_Datum = '2019-02-10'
+  - type: sql_result_projection
+    gold: SELECT SUM(Ja_Absolut) FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Stadt Zürich' AND Abstimmungs_Datum = '2019-02-10'
+    diagnostic: true
   - type: final_number
     value: 93109.0
     tol: 0.0
+    diagnostic: true
 - id: abst_city_yes_3
   category: aggregation
   prompt: How many yes votes were cast in total in the city of Zurich on 2011-02-13 on the only federal item of that day?
@@ -120,9 +140,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT SUM(Ja_Absolut) FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Stadt Zürich' AND Abstimmungs_Datum = '2011-02-13'
+  - type: sql_result_projection
+    gold: SELECT SUM(Ja_Absolut) FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Stadt Zürich' AND Abstimmungs_Datum = '2011-02-13'
+    diagnostic: true
   - type: final_number
     value: 138944.0
     tol: 0.0
+    diagnostic: true
 - id: abst_kreis_highest_yes_1
   category: argmax
   prompt: Welcher Wahlkreis der Stadt Zürich hatte am 28.02.2009 bei der einzigen eidgenössischen Vorlage den höchsten Ja-Anteil?
@@ -140,6 +164,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT Name_Wahlkreis_StZH FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Stadt Zürich' AND Abstimmungs_Datum = '2009-02-28' AND Name_Wahlkreis_StZH IS NOT NULL ORDER BY Ja_Prozent DESC, Name_Wahlkreis_StZH LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT Name_Wahlkreis_StZH FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Stadt Zürich' AND Abstimmungs_Datum = '2009-02-28' AND Name_Wahlkreis_StZH IS NOT NULL ORDER BY Ja_Prozent DESC, Name_Wahlkreis_StZH LIMIT 1
+    diagnostic: true
 - id: abst_kreis_highest_yes_2
   category: argmax
   prompt: Quel arrondissement électoral de la ville de Zurich a eu la plus forte part de oui le 25.11.2012 pour l'unique objet fédéral ?
@@ -157,6 +184,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT Name_Wahlkreis_StZH FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Stadt Zürich' AND Abstimmungs_Datum = '2012-11-25' AND Name_Wahlkreis_StZH IS NOT NULL ORDER BY Ja_Prozent DESC, Name_Wahlkreis_StZH LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT Name_Wahlkreis_StZH FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Stadt Zürich' AND Abstimmungs_Datum = '2012-11-25' AND Name_Wahlkreis_StZH IS NOT NULL ORDER BY Ja_Prozent DESC, Name_Wahlkreis_StZH LIMIT 1
+    diagnostic: true
 - id: abst_kreis_highest_yes_3
   category: argmax
   prompt: Quale circondario elettorale della città di Zurigo ha avuto la quota di sì più alta il 17.06.2007 per l'unico oggetto federale?
@@ -174,6 +204,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT Name_Wahlkreis_StZH FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Stadt Zürich' AND Abstimmungs_Datum = '2007-06-17' AND Name_Wahlkreis_StZH IS NOT NULL ORDER BY Ja_Prozent DESC, Name_Wahlkreis_StZH LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT Name_Wahlkreis_StZH FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Stadt Zürich' AND Abstimmungs_Datum = '2007-06-17' AND Name_Wahlkreis_StZH IS NOT NULL ORDER BY Ja_Prozent DESC, Name_Wahlkreis_StZH LIMIT 1
+    diagnostic: true
 - id: abst_city_items_year_1
   category: aggregation
   prompt: How many city-level items (City of Zurich) were voted on in 2016?
@@ -191,9 +224,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(DISTINCT Abstimmungs_Text) FROM abstimmungen WHERE Name_Politische_Ebene = 'Stadt Zürich' AND year(Abstimmungs_Datum) = 2016
+  - type: sql_result_projection
+    gold: SELECT COUNT(DISTINCT Abstimmungs_Text) FROM abstimmungen WHERE Name_Politische_Ebene = 'Stadt Zürich' AND year(Abstimmungs_Datum) = 2016
+    diagnostic: true
   - type: final_number
     value: 10.0
     tol: 0.0
+    diagnostic: true
 - id: abst_city_items_year_2
   category: aggregation
   prompt: Über wie viele Vorlagen auf Stadtebene (Stadt Zürich) wurde im Jahr 2025 abgestimmt?
@@ -211,9 +248,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(DISTINCT Abstimmungs_Text) FROM abstimmungen WHERE Name_Politische_Ebene = 'Stadt Zürich' AND year(Abstimmungs_Datum) = 2025
+  - type: sql_result_projection
+    gold: SELECT COUNT(DISTINCT Abstimmungs_Text) FROM abstimmungen WHERE Name_Politische_Ebene = 'Stadt Zürich' AND year(Abstimmungs_Datum) = 2025
+    diagnostic: true
   - type: final_number
     value: 17.0
     tol: 0.0
+    diagnostic: true
 - id: abst_city_items_year_3
   category: aggregation
   prompt: Sur combien d'objets au niveau communal (ville de Zurich) a-t-on voté en 2004 ?
@@ -231,9 +272,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(DISTINCT Abstimmungs_Text) FROM abstimmungen WHERE Name_Politische_Ebene = 'Stadt Zürich' AND year(Abstimmungs_Datum) = 2004
+  - type: sql_result_projection
+    gold: SELECT COUNT(DISTINCT Abstimmungs_Text) FROM abstimmungen WHERE Name_Politische_Ebene = 'Stadt Zürich' AND year(Abstimmungs_Datum) = 2004
+    diagnostic: true
   - type: final_number
     value: 7.0
     tol: 0.0
+    diagnostic: true
 - id: abst_busy_dates_1
   category: subquery
   prompt: In quante date di votazione nel 2026 si è votato su almeno 3 oggetti federali?
@@ -251,9 +296,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(*) FROM (SELECT Abstimmungs_Datum FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Eidgenossenschaft' AND year(Abstimmungs_Datum) = 2026 GROUP BY Abstimmungs_Datum HAVING COUNT(DISTINCT Abstimmungs_Text) >= 3)
+  - type: sql_result_projection
+    gold: SELECT COUNT(*) FROM (SELECT Abstimmungs_Datum FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Eidgenossenschaft' AND year(Abstimmungs_Datum) = 2026 GROUP BY Abstimmungs_Datum HAVING COUNT(DISTINCT Abstimmungs_Text) >= 3)
+    diagnostic: true
   - type: final_number
     value: 1.0
     tol: 0.0
+    diagnostic: true
 - id: abst_busy_dates_2
   category: subquery
   prompt: On how many voting dates in 2013 were at least 3 federal items voted on?
@@ -271,9 +320,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(*) FROM (SELECT Abstimmungs_Datum FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Eidgenossenschaft' AND year(Abstimmungs_Datum) = 2013 GROUP BY Abstimmungs_Datum HAVING COUNT(DISTINCT Abstimmungs_Text) >= 3)
+  - type: sql_result_projection
+    gold: SELECT COUNT(*) FROM (SELECT Abstimmungs_Datum FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Eidgenossenschaft' AND year(Abstimmungs_Datum) = 2013 GROUP BY Abstimmungs_Datum HAVING COUNT(DISTINCT Abstimmungs_Text) >= 3)
+    diagnostic: true
   - type: final_number
     value: 3.0
     tol: 0.0
+    diagnostic: true
 - id: abst_busy_dates_3
   category: subquery
   prompt: An wie vielen Abstimmungsterminen im Jahr 2024 wurde über mindestens 2 eidgenössische Vorlagen abgestimmt?
@@ -291,6 +344,10 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(*) FROM (SELECT Abstimmungs_Datum FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Eidgenossenschaft' AND year(Abstimmungs_Datum) = 2024 GROUP BY Abstimmungs_Datum HAVING COUNT(DISTINCT Abstimmungs_Text) >= 2)
+  - type: sql_result_projection
+    gold: SELECT COUNT(*) FROM (SELECT Abstimmungs_Datum FROM abstimmungen WHERE Name_Politische_Ebene = 'Eidgenossenschaft' AND Name_Resultat_Gebiet = 'Eidgenossenschaft' AND year(Abstimmungs_Datum) = 2024 GROUP BY Abstimmungs_Datum HAVING COUNT(DISTINCT Abstimmungs_Text) >= 2)
+    diagnostic: true
   - type: final_number
     value: 4.0
     tol: 0.0
+    diagnostic: true

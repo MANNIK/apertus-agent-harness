@@ -20,9 +20,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT AnzBestWir FROM bevoelkerung_konfession WHERE Kon2AggLang_noDM = 'Andere, ohne, unbekannt' AND StichtagDatJahr = 1991
+  - type: sql_result_projection
+    gold: SELECT AnzBestWir FROM bevoelkerung_konfession WHERE Kon2AggLang_noDM = 'Andere, ohne, unbekannt' AND StichtagDatJahr = 1991
+    diagnostic: true
   - type: final_number
     value: 81839.0
     tol: 0.0
+    diagnostic: true
 - id: bevc_members_2
   category: lookup
   prompt: Quante persone appartenevano alla confessione «Evangelisch-Reformiert» nel 1998?
@@ -40,9 +44,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT AnzBestWir FROM bevoelkerung_konfession WHERE Kon2AggLang_noDM = 'Evangelisch-Reformiert' AND StichtagDatJahr = 1998
+  - type: sql_result_projection
+    gold: SELECT AnzBestWir FROM bevoelkerung_konfession WHERE Kon2AggLang_noDM = 'Evangelisch-Reformiert' AND StichtagDatJahr = 1998
+    diagnostic: true
   - type: final_number
     value: 116352.0
     tol: 0.0
+    diagnostic: true
 - id: bevc_members_3
   category: lookup
   prompt: How many people belonged to the denomination "Römisch-Katholisch" in 2012?
@@ -60,9 +68,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT AnzBestWir FROM bevoelkerung_konfession WHERE Kon2AggLang_noDM = 'Römisch-Katholisch' AND StichtagDatJahr = 2012
+  - type: sql_result_projection
+    gold: SELECT AnzBestWir FROM bevoelkerung_konfession WHERE Kon2AggLang_noDM = 'Römisch-Katholisch' AND StichtagDatJahr = 2012
+    diagnostic: true
   - type: final_number
     value: 117095.0
     tol: 0.0
+    diagnostic: true
 - id: bevc_largest_1
   category: argmax
   prompt: Welche Konfession hatte im Jahr 2011 die meisten Mitglieder?
@@ -80,6 +92,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT Kon2AggLang_noDM FROM bevoelkerung_konfession WHERE StichtagDatJahr = 2011 ORDER BY AnzBestWir DESC, Kon2AggLang_noDM LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT Kon2AggLang_noDM FROM bevoelkerung_konfession WHERE StichtagDatJahr = 2011 ORDER BY AnzBestWir DESC, Kon2AggLang_noDM LIMIT 1
+    diagnostic: true
 - id: bevc_largest_2
   category: argmax
   prompt: Quelle confession comptait le plus de membres en 1999 ?
@@ -97,6 +112,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT Kon2AggLang_noDM FROM bevoelkerung_konfession WHERE StichtagDatJahr = 1999 ORDER BY AnzBestWir DESC, Kon2AggLang_noDM LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT Kon2AggLang_noDM FROM bevoelkerung_konfession WHERE StichtagDatJahr = 1999 ORDER BY AnzBestWir DESC, Kon2AggLang_noDM LIMIT 1
+    diagnostic: true
 - id: bevc_largest_3
   category: argmax
   prompt: Quale confessione aveva più membri nel 2001?
@@ -114,6 +132,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT Kon2AggLang_noDM FROM bevoelkerung_konfession WHERE StichtagDatJahr = 2001 ORDER BY AnzBestWir DESC, Kon2AggLang_noDM LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT Kon2AggLang_noDM FROM bevoelkerung_konfession WHERE StichtagDatJahr = 2001 ORDER BY AnzBestWir DESC, Kon2AggLang_noDM LIMIT 1
+    diagnostic: true
 - id: bevc_total_1
   category: aggregation
   prompt: How many people in total were recorded in the denomination statistics in 2018?
@@ -131,9 +152,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT SUM(AnzBestWir) FROM bevoelkerung_konfession WHERE StichtagDatJahr = 2018
+  - type: sql_result_projection
+    gold: SELECT SUM(AnzBestWir) FROM bevoelkerung_konfession WHERE StichtagDatJahr = 2018
+    diagnostic: true
   - type: final_number
     value: 428737.0
     tol: 0.0
+    diagnostic: true
 - id: bevc_total_2
   category: aggregation
   prompt: Wie viele Personen waren im Jahr 2019 insgesamt in der Konfessionsstatistik erfasst?
@@ -151,9 +176,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT SUM(AnzBestWir) FROM bevoelkerung_konfession WHERE StichtagDatJahr = 2019
+  - type: sql_result_projection
+    gold: SELECT SUM(AnzBestWir) FROM bevoelkerung_konfession WHERE StichtagDatJahr = 2019
+    diagnostic: true
   - type: final_number
     value: 434008.0
     tol: 0.0
+    diagnostic: true
 - id: bevc_total_3
   category: aggregation
   prompt: Combien de personnes au total figuraient dans la statistique des confessions en 2012 ?
@@ -171,9 +200,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT SUM(AnzBestWir) FROM bevoelkerung_konfession WHERE StichtagDatJahr = 2012
+  - type: sql_result_projection
+    gold: SELECT SUM(AnzBestWir) FROM bevoelkerung_konfession WHERE StichtagDatJahr = 2012
+    diagnostic: true
   - type: final_number
     value: 394012.0
     tol: 0.0
+    diagnostic: true
 - id: bevc_share_1
   category: arithmetic
   prompt: Qual era nel 2005 la quota della confessione «Römisch-Katholisch» sul totale dei registrati, in percentuale arrotondata a un decimale?
@@ -191,9 +224,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT ROUND(100.0 * SUM(CASE WHEN Kon2AggLang_noDM = 'Römisch-Katholisch' THEN AnzBestWir END) / SUM(AnzBestWir), 1) FROM bevoelkerung_konfession WHERE StichtagDatJahr = 2005
+  - type: sql_result_projection
+    gold: SELECT ROUND(100.0 * SUM(CASE WHEN Kon2AggLang_noDM = 'Römisch-Katholisch' THEN AnzBestWir END) / SUM(AnzBestWir), 1) FROM bevoelkerung_konfession WHERE StichtagDatJahr = 2005
+    diagnostic: true
   - type: final_number
     value: 32.7
     tol: 0.06
+    diagnostic: true
 - id: bevc_share_2
   category: arithmetic
   prompt: What was the share of the denomination "Andere, ohne, unbekannt" among all recorded people in 1995, as a percentage rounded to one decimal?
@@ -211,9 +248,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT ROUND(100.0 * SUM(CASE WHEN Kon2AggLang_noDM = 'Andere, ohne, unbekannt' THEN AnzBestWir END) / SUM(AnzBestWir), 1) FROM bevoelkerung_konfession WHERE StichtagDatJahr = 1995
+  - type: sql_result_projection
+    gold: SELECT ROUND(100.0 * SUM(CASE WHEN Kon2AggLang_noDM = 'Andere, ohne, unbekannt' THEN AnzBestWir END) / SUM(AnzBestWir), 1) FROM bevoelkerung_konfession WHERE StichtagDatJahr = 1995
+    diagnostic: true
   - type: final_number
     value: 29.3
     tol: 0.06
+    diagnostic: true
 - id: bevc_share_3
   category: arithmetic
   prompt: Wie hoch war im Jahr 2011 der Anteil der Konfession «Evangelisch-Reformiert» an allen Erfassten, in Prozent auf eine Dezimalstelle gerundet?
@@ -231,6 +272,10 @@
   checks:
   - type: sql_result_match
     gold: SELECT ROUND(100.0 * SUM(CASE WHEN Kon2AggLang_noDM = 'Evangelisch-Reformiert' THEN AnzBestWir END) / SUM(AnzBestWir), 1) FROM bevoelkerung_konfession WHERE StichtagDatJahr = 2011
+  - type: sql_result_projection
+    gold: SELECT ROUND(100.0 * SUM(CASE WHEN Kon2AggLang_noDM = 'Evangelisch-Reformiert' THEN AnzBestWir END) / SUM(AnzBestWir), 1) FROM bevoelkerung_konfession WHERE StichtagDatJahr = 2011
+    diagnostic: true
   - type: final_number
     value: 24.5
     tol: 0.06
+    diagnostic: true

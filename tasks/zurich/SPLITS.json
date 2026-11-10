@@ -34,13 +34,13 @@
       "text_numbers": 6
     },
     "files": {
-      "dev/bevc.yaml": "40e8131a795facbaac344ca7535f6d0ee0fe1bf6fe5f52960f1e0e04fa53ce41",
-      "dev/bevk.yaml": "e48fc053059146006d63b84e7b167b4c5321490d402c7bd67308259e13a9cb01",
-      "dev/bevq.yaml": "7e93ea6ae39c1a80c98e6603307f02f686858dd6ad38086274ab05e5766af5a0",
-      "dev/miet.yaml": "86f969aaa42be1088850e802220f4ecc9ba253065f6fffb1d10252effb533c08",
-      "dev/motg.yaml": "bf748a4203b5fa8476cfdee73086d67c5aaee77028d92741982809ebe43346c3",
-      "dev/sozh.yaml": "d302d11468afe95c41af1bc3291b01c33c895741e7ac74a0c917651ef9b4c7ac",
-      "dev/whgz.yaml": "b72ca9d87336234a2099bf9996d775768fb496448de467fb1ca71ee3c27aecb3"
+      "dev/bevc.yaml": "85ca4e48b5b3a09b6441adf9dbec661d600fa044e3ff98746f1fc483f1bf3e78",
+      "dev/bevk.yaml": "b2960abea31ec0e9c6c91a57ef9acea113d86886fb4f36b9198688de7bdfc062",
+      "dev/bevq.yaml": "13692363604f04da73e202406295457e6c7cfe146308f06b210140f9c9db4fa6",
+      "dev/miet.yaml": "5f9956acce71701cda7e01d8327b4c530b9ff02932e6d83596e15875be4ab539",
+      "dev/motg.yaml": "13d59ed60d70e8ff36dbefe4347ed094f2e46a00cc2f4463bfb1fd4aca0f913c",
+      "dev/sozh.yaml": "3d7bad4a502b76787678590ce3b4d4c4f5e260a74b3673331fba1b8917fa8a7e",
+      "dev/whgz.yaml": "7d55b67d1655de766cf134c115364898377576232979a4205cd107e65bb2e4af"
     },
     "data_sha256": {
       "bev_bestand_jahr_konfession_od3160": "2f874444ed86b2fe591702eee0c265ae66fb6a28ab27fc69a9d223f783ec21d7",
@@ -77,8 +77,8 @@
       "trailing_whitespace": 12
     },
     "files": {
-      "val/abfl.yaml": "4e9033a659d2f24af4122570df8acb1365997ea787eee4f625cbd350bed4cfb7",
-      "val/eink.yaml": "31531d898f0130b522c6747dac2341a2d7f51c6a2b6b2b8a9e00e53775875dc5"
+      "val/abfl.yaml": "9bff11d0662e2e27aae5ce703e5cf3e38a55e0cc84806b9f958ba445442d5e2e",
+      "val/eink.yaml": "910233734de4c1af63f147336e7232ae8e2425a1958d27ad8752fb92f578b5da"
     },
     "data_sha256": {
       "erz_sr_kennzahlen": "97c1fca26a5086f162a3d8f61c6cb9fdf83c46782351e4ccafedd4906cb7592b",
@@ -117,12 +117,12 @@
       "time_type": 3
     },
     "files": {
-      "test/abst.yaml": "ab18306d21e6ff4ad64c96f4c8d583ab6b2b69d958293b370717659f710726c5",
-      "test/feue.yaml": "4196070da12dcaa5ff6ade50417c152f2f2d225a52e05b47dfde98bbb9cbf117",
-      "test/kpi.yaml": "1f1fb982763c7c19a45929239cdf16e3027ba05c73b1216f4645e6ded3960464",
-      "test/luft.yaml": "132d11c630fb5f57bfb0a57865d5cac164591626157294d028c9ecb45910e04c",
-      "test/rett.yaml": "a92c00f79838bfcc52c790935d9d57716d3758a7ece9b7c57238fc3f0741d35a",
-      "test/wett.yaml": "6772136f70d8cdcde68d3ad5711b8f9b698d6c9e923bb380c03a65b38b6ee789"
+      "test/abst.yaml": "e5569963e6bce2ebdc7387f4b0c445395509df3c4577e1804b83b34e36a6cc87",
+      "test/feue.yaml": "aee1929ffa078ea15f74b29492ee3042d87fb48d7ce2d11e9c990bacfdadecc9",
+      "test/kpi.yaml": "cd97827d73fc8fd02c93a6d42f9772db26ce167b3f3b25bbb1ecb4d8db1eee58",
+      "test/luft.yaml": "5f1d76a38eeeaedf4cd156f16d9210686daa90c43634f71b5793285ac7d03e5f",
+      "test/rett.yaml": "7857de1cac7ad1ec123260f42375bb91fc52bafd057761cd3812045644b43376",
+      "test/wett.yaml": "80a8e2ab6ba709ceda1cfd2a9e7a61c356007c5b95ee9fac4913a08b3c079ffd"
     },
     "data_sha256": {
       "politik_abstimmungen_seit1933": "7d81ce20686b9aa0c14be9b9357066a291b2a5c9e4db5a9cd5c9d139a3d37988",

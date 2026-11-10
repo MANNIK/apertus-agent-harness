@@ -21,9 +21,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT Indexstand_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2010 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2015 AND month(Datum_noDM) = 5
+  - type: sql_result_projection
+    gold: SELECT Indexstand_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2010 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2015 AND month(Datum_noDM) = 5
+    diagnostic: true
   - type: final_number
     value: 98.7295
     tol: 0.06
+    diagnostic: true
 - id: kpi_index_value_2
   category: lookup
   prompt: What was the total Zurich consumer price index in October 2014, with December 2010 = 100?
@@ -42,9 +46,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT Indexstand_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2010 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2014 AND month(Datum_noDM) = 10
+  - type: sql_result_projection
+    gold: SELECT Indexstand_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2010 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2014 AND month(Datum_noDM) = 10
+    diagnostic: true
   - type: final_number
     value: 99.2271
     tol: 0.06
+    diagnostic: true
 - id: kpi_index_value_3
   category: lookup
   prompt: Wie hoch war der Totalindex der Zürcher Konsumentenpreise April 2022, wenn der Dezember 2010 = 100 gesetzt wird?
@@ -63,9 +71,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT Indexstand_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2010 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2022 AND month(Datum_noDM) = 4
+  - type: sql_result_projection
+    gold: SELECT Indexstand_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2010 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2022 AND month(Datum_noDM) = 4
+    diagnostic: true
   - type: final_number
     value: 101.033777081264
     tol: 0.06
+    diagnostic: true
 - id: kpi_inflation_1
   category: arithmetic
   prompt: De combien de pour cent l'indice total (base décembre 2015 = 100) a-t-il augmenté entre décembre 2022 et décembre 2025, arrondi à une décimale ?
@@ -84,9 +96,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT ROUND(100.0 * ((SELECT Indexstand_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2015 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2025 AND month(Datum_noDM) = 12) / (SELECT Indexstand_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2015 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2022 AND month(Datum_noDM) = 12) - 1), 1)
+  - type: sql_result_projection
+    gold: SELECT ROUND(100.0 * ((SELECT Indexstand_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2015 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2025 AND month(Datum_noDM) = 12) / (SELECT Indexstand_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2015 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2022 AND month(Datum_noDM) = 12) - 1), 1)
+    diagnostic: true
   - type: final_number
     value: 2.4
     tol: 0.06
+    diagnostic: true
 - id: kpi_inflation_2
   category: arithmetic
   prompt: Di quanti punti percentuali è aumentato l'indice totale (base dicembre 2010 = 100) tra dicembre 2021 e dicembre 2024, arrotondato a un decimale?
@@ -105,9 +121,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT ROUND(100.0 * ((SELECT Indexstand_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2010 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2024 AND month(Datum_noDM) = 12) / (SELECT Indexstand_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2010 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2021 AND month(Datum_noDM) = 12) - 1), 1)
+  - type: sql_result_projection
+    gold: SELECT ROUND(100.0 * ((SELECT Indexstand_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2010 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2024 AND month(Datum_noDM) = 12) / (SELECT Indexstand_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2010 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2021 AND month(Datum_noDM) = 12) - 1), 1)
+    diagnostic: true
   - type: final_number
     value: 4.7
     tol: 0.06
+    diagnostic: true
 - id: kpi_inflation_3
   category: arithmetic
   prompt: By what percentage did the total index (base December 2005 = 100) rise between December 2017 and December 2020, rounded to one decimal?
@@ -126,9 +146,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT ROUND(100.0 * ((SELECT Indexstand_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2005 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2020 AND month(Datum_noDM) = 12) / (SELECT Indexstand_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2005 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2017 AND month(Datum_noDM) = 12) - 1), 1)
+  - type: sql_result_projection
+    gold: SELECT ROUND(100.0 * ((SELECT Indexstand_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2005 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2020 AND month(Datum_noDM) = 12) / (SELECT Indexstand_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2005 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2017 AND month(Datum_noDM) = 12) - 1), 1)
+    diagnostic: true
   - type: final_number
     value: -0.2
     tol: 0.06
+    diagnostic: true
 - id: kpi_peak_month_1
   category: argmax
   prompt: In welchem Monat des Jahres 2023 war der Totalindex (Basis Dezember 2010 = 100) am höchsten? Gib das Monatsende-Datum an.
@@ -147,6 +171,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT Datum_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2010 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2023 ORDER BY Indexstand_noDM DESC, Datum_noDM LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT Datum_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2010 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2023 ORDER BY Indexstand_noDM DESC, Datum_noDM LIMIT 1
+    diagnostic: true
 - id: kpi_peak_month_2
   category: argmax
   prompt: Quel mois de 2024 l'indice total (base décembre 2015 = 100) a-t-il été le plus élevé ? Indique la date de fin de mois.
@@ -165,6 +192,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT Datum_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2015 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2024 ORDER BY Indexstand_noDM DESC, Datum_noDM LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT Datum_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2015 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2024 ORDER BY Indexstand_noDM DESC, Datum_noDM LIMIT 1
+    diagnostic: true
 - id: kpi_peak_month_3
   category: argmax
   prompt: In quale mese del 2011 l'indice totale (base dicembre 2010 = 100) è stato il più alto? Indica la data di fine mese.
@@ -183,6 +213,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT Datum_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2010 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2011 ORDER BY Indexstand_noDM DESC, Datum_noDM LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT Datum_noDM FROM konsumentenpreise WHERE year(Basis_noDM) = 2010 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2011 ORDER BY Indexstand_noDM DESC, Datum_noDM LIMIT 1
+    diagnostic: true
 - id: kpi_year_avg_1
   category: aggregation
   prompt: What was the average of the twelve monthly values of the total index in 2011 (base December 2010 = 100), rounded to one decimal?
@@ -201,9 +234,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT ROUND(AVG(Indexstand_noDM), 1) FROM konsumentenpreise WHERE year(Basis_noDM) = 2010 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2011
+  - type: sql_result_projection
+    gold: SELECT ROUND(AVG(Indexstand_noDM), 1) FROM konsumentenpreise WHERE year(Basis_noDM) = 2010 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2011
+    diagnostic: true
   - type: final_number
     value: 99.7
     tol: 0.06
+    diagnostic: true
 - id: kpi_year_avg_2
   category: aggregation
   prompt: Wie hoch war der Durchschnitt der zwölf Monatswerte des Totalindex im Jahr 2010 (Basis Dezember 2005 = 100), auf eine Dezimalstelle gerundet?
@@ -222,9 +259,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT ROUND(AVG(Indexstand_noDM), 1) FROM konsumentenpreise WHERE year(Basis_noDM) = 2005 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2010
+  - type: sql_result_projection
+    gold: SELECT ROUND(AVG(Indexstand_noDM), 1) FROM konsumentenpreise WHERE year(Basis_noDM) = 2005 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2010
+    diagnostic: true
   - type: final_number
     value: 103.6
     tol: 0.06
+    diagnostic: true
 - id: kpi_year_avg_3
   category: aggregation
   prompt: Quelle était la moyenne des douze valeurs mensuelles de l'indice total en 2012 (base décembre 2010 = 100), arrondie à une décimale ?
@@ -243,6 +284,10 @@
   checks:
   - type: sql_result_match
     gold: SELECT ROUND(AVG(Indexstand_noDM), 1) FROM konsumentenpreise WHERE year(Basis_noDM) = 2010 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2012
+  - type: sql_result_projection
+    gold: SELECT ROUND(AVG(Indexstand_noDM), 1) FROM konsumentenpreise WHERE year(Basis_noDM) = 2010 AND month(Basis_noDM) = 12 AND year(Datum_noDM) = 2012
+    diagnostic: true
   - type: final_number
     value: 99.2
     tol: 0.06
+    diagnostic: true

@@ -44,7 +44,8 @@ precision, system prompt, schema serialisation, `run_sql` tool limits (read-only
 **Primary:** execution accuracy on test = share of tasks whose query result matches the gold query result under the comparison rules of W03 (row order only when the question needs it, column names/order, NULL, duplicates, numeric types and tolerance). The rules are written **before** any model result is seen and apply to all conditions.
 
 **Secondary (reported, not used to declare success):**
-- answer correctness of the final natural-language answer (values only, deterministic matching);
+- **relaxed execution accuracy** (`sql_result_projection`, `sql_eval.compare_projection`): like the primary but extra columns and any column order are accepted (the gold must be an ordered projection of the model's result). It separates "wrong query" from "added a useful column"; it is never stricter than the primary and is **not** a substitute for it;
+- answer correctness of the final natural-language answer (values only, deterministic matching; `final_number`, recorded as a diagnostic check, not part of the primary score);
 - accuracy by question language, by schema-language pair and by trap category;
 - share of executable queries (syntax/execution errors);
 - **regression rate** on capabilities not optimised (task W13): items the original gets right and the modified model gets wrong, and the reverse. **Set and scoring: [OPEN]**;
@@ -116,7 +117,8 @@ Swiss public data may not represent enterprise databases; weight changes are des
 Nothing here has been measured yet: no WSP, LoRA or baseline numbers exist.
 
 ## 13. Decisions log
-*(empty — one dated line per closed [OPEN] item: reasoning mode, k repeats, regression set and limits, acceptance rule, trial budget, matched-budget rule, LoRA protocol, gate thresholds, test size)*
+- **2026-11-10 (before any baseline or modified-weights result existed):** (a) primary score = strict execution accuracy only (`sql_result_match`); relaxed execution accuracy and final-number correctness are diagnostic checks (recorded, not scored); (b) the number extractor now merges space/NBSP-separated thousands groups ("81 839"): found in the first 6 tasks of an aborted baseline run (`runs/ABANDONED-20261110-dev-r1-partial-scorer-bug`, discarded, not analysed beyond this bug). Tasks regenerated; no result of the original, WSP or LoRA conditions had been recorded.
+*(still open, one dated line each when closed: reasoning mode, k repeats, regression set and limits, acceptance rule, trial budget, matched-budget rule, LoRA protocol, gate thresholds, test size)*
 
 ## 14. Deviations
 *(empty — started 2026-11-10; any change after the first modified-weights run goes here with date and reason)*

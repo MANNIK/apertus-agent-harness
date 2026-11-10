@@ -21,9 +21,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT SH_Beziehende FROM sozialhilfequote WHERE Raum = 'Hard' AND Jahr = 2004
+  - type: sql_result_projection
+    gold: SELECT SH_Beziehende FROM sozialhilfequote WHERE Raum = 'Hard' AND Jahr = 2004
+    diagnostic: true
   - type: final_number
     value: 1134.0
     tol: 0.0
+    diagnostic: true
 - id: sozh_recipients_2
   category: lookup
   prompt: Quante persone hanno ricevuto l'aiuto sociale nel 2017 nel quartiere Werd?
@@ -42,9 +46,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT SH_Beziehende FROM sozialhilfequote WHERE Raum = 'Werd' AND Jahr = 2017
+  - type: sql_result_projection
+    gold: SELECT SH_Beziehende FROM sozialhilfequote WHERE Raum = 'Werd' AND Jahr = 2017
+    diagnostic: true
   - type: final_number
     value: 219.0
     tol: 0.0
+    diagnostic: true
 - id: sozh_recipients_3
   category: lookup
   prompt: How many people received social assistance in the Alt-Wiedikon district in 2024?
@@ -63,9 +71,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT SH_Beziehende FROM sozialhilfequote WHERE Raum = 'Alt-Wiedikon' AND Jahr = 2024
+  - type: sql_result_projection
+    gold: SELECT SH_Beziehende FROM sozialhilfequote WHERE Raum = 'Alt-Wiedikon' AND Jahr = 2024
+    diagnostic: true
   - type: final_number
     value: 332.0
     tol: 0.0
+    diagnostic: true
 - id: sozh_total_recipients_1
   category: aggregation
   prompt: Wie viele Sozialhilfebeziehende gab es im Jahr 2010 in der ganzen Stadt Zürich (alle Räume zusammen)?
@@ -83,9 +95,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT SUM(SH_Beziehende) FROM sozialhilfequote WHERE Jahr = 2010
+  - type: sql_result_projection
+    gold: SELECT SUM(SH_Beziehende) FROM sozialhilfequote WHERE Jahr = 2010
+    diagnostic: true
   - type: final_number
     value: 18392.0
     tol: 0.0
+    diagnostic: true
 - id: sozh_total_recipients_2
   category: aggregation
   prompt: Combien de bénéficiaires de l'aide sociale y avait-il en 2018 dans toute la ville de Zurich (tous les espaces réunis) ?
@@ -103,9 +119,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT SUM(SH_Beziehende) FROM sozialhilfequote WHERE Jahr = 2018
+  - type: sql_result_projection
+    gold: SELECT SUM(SH_Beziehende) FROM sozialhilfequote WHERE Jahr = 2018
+    diagnostic: true
   - type: final_number
     value: 22108.0
     tol: 0.0
+    diagnostic: true
 - id: sozh_total_recipients_3
   category: aggregation
   prompt: Quanti beneficiari dell'aiuto sociale c'erano nel 2008 in tutta la città di Zurigo (tutti gli spazi insieme)?
@@ -123,9 +143,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT SUM(SH_Beziehende) FROM sozialhilfequote WHERE Jahr = 2008
+  - type: sql_result_projection
+    gold: SELECT SUM(SH_Beziehende) FROM sozialhilfequote WHERE Jahr = 2008
+    diagnostic: true
   - type: final_number
     value: 19648.0
     tol: 0.0
+    diagnostic: true
 - id: sozh_highest_rate_1
   category: argmax
   prompt: In which district was the social-assistance rate highest in 2004?
@@ -144,6 +168,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT Raum FROM sozialhilfequote WHERE Jahr = 2004 AND TRY_CAST(SH_Quote AS DOUBLE) IS NOT NULL ORDER BY TRY_CAST(SH_Quote AS DOUBLE) DESC, Raum LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT Raum FROM sozialhilfequote WHERE Jahr = 2004 AND TRY_CAST(SH_Quote AS DOUBLE) IS NOT NULL ORDER BY TRY_CAST(SH_Quote AS DOUBLE) DESC, Raum LIMIT 1
+    diagnostic: true
 - id: sozh_highest_rate_2
   category: argmax
   prompt: In welchem Quartier war die Sozialhilfequote im Jahr 2000 am höchsten?
@@ -162,6 +189,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT Raum FROM sozialhilfequote WHERE Jahr = 2000 AND TRY_CAST(SH_Quote AS DOUBLE) IS NOT NULL ORDER BY TRY_CAST(SH_Quote AS DOUBLE) DESC, Raum LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT Raum FROM sozialhilfequote WHERE Jahr = 2000 AND TRY_CAST(SH_Quote AS DOUBLE) IS NOT NULL ORDER BY TRY_CAST(SH_Quote AS DOUBLE) DESC, Raum LIMIT 1
+    diagnostic: true
 - id: sozh_highest_rate_3
   category: argmax
   prompt: Dans quel quartier le taux d'aide sociale était-il le plus élevé en 2018 ?
@@ -180,6 +210,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT Raum FROM sozialhilfequote WHERE Jahr = 2018 AND TRY_CAST(SH_Quote AS DOUBLE) IS NOT NULL ORDER BY TRY_CAST(SH_Quote AS DOUBLE) DESC, Raum LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT Raum FROM sozialhilfequote WHERE Jahr = 2018 AND TRY_CAST(SH_Quote AS DOUBLE) IS NOT NULL ORDER BY TRY_CAST(SH_Quote AS DOUBLE) DESC, Raum LIMIT 1
+    diagnostic: true
 - id: sozh_missing_quote_1
   category: filter_count
   prompt: Per quanti quartieri manca nel 2025 il tasso di aiuto sociale (valore «.»)?
@@ -198,9 +231,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(*) FROM sozialhilfequote WHERE Jahr = 2025 AND SH_Quote = '.'
+  - type: sql_result_projection
+    gold: SELECT COUNT(*) FROM sozialhilfequote WHERE Jahr = 2025 AND SH_Quote = '.'
+    diagnostic: true
   - type: final_number
     value: 1.0
     tol: 0.0
+    diagnostic: true
 - id: sozh_missing_quote_2
   category: filter_count
   prompt: For how many districts is the social-assistance rate missing in 2020 (value ".")?
@@ -219,9 +256,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(*) FROM sozialhilfequote WHERE Jahr = 2020 AND SH_Quote = '.'
+  - type: sql_result_projection
+    gold: SELECT COUNT(*) FROM sozialhilfequote WHERE Jahr = 2020 AND SH_Quote = '.'
+    diagnostic: true
   - type: final_number
     value: 1.0
     tol: 0.0
+    diagnostic: true
 - id: sozh_missing_quote_3
   category: filter_count
   prompt: Für wie viele Quartiere fehlt im Jahr 2021 die Sozialhilfequote (Wert «.»)?
@@ -240,9 +281,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(*) FROM sozialhilfequote WHERE Jahr = 2021 AND SH_Quote = '.'
+  - type: sql_result_projection
+    gold: SELECT COUNT(*) FROM sozialhilfequote WHERE Jahr = 2021 AND SH_Quote = '.'
+    diagnostic: true
   - type: final_number
     value: 1.0
     tol: 0.0
+    diagnostic: true
 - id: sozh_count_rate_above_1
   category: filter_count
   prompt: Dans combien de quartiers le taux d'aide sociale dépassait-il 3 % en 2004 ?
@@ -261,9 +306,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(*) FROM sozialhilfequote WHERE Jahr = 2004 AND TRY_CAST(SH_Quote AS DOUBLE) > 3
+  - type: sql_result_projection
+    gold: SELECT COUNT(*) FROM sozialhilfequote WHERE Jahr = 2004 AND TRY_CAST(SH_Quote AS DOUBLE) > 3
+    diagnostic: true
   - type: final_number
     value: 24.0
     tol: 0.0
+    diagnostic: true
 - id: sozh_count_rate_above_2
   category: filter_count
   prompt: In quanti quartieri il tasso di aiuto sociale superava il 8 % nel 2001?
@@ -282,9 +331,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(*) FROM sozialhilfequote WHERE Jahr = 2001 AND TRY_CAST(SH_Quote AS DOUBLE) > 8
+  - type: sql_result_projection
+    gold: SELECT COUNT(*) FROM sozialhilfequote WHERE Jahr = 2001 AND TRY_CAST(SH_Quote AS DOUBLE) > 8
+    diagnostic: true
   - type: final_number
     value: 3.0
     tol: 0.0
+    diagnostic: true
 - id: sozh_count_rate_above_3
   category: filter_count
   prompt: In how many districts was the social-assistance rate above 5 percent in 2015?
@@ -303,6 +356,10 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(*) FROM sozialhilfequote WHERE Jahr = 2015 AND TRY_CAST(SH_Quote AS DOUBLE) > 5
+  - type: sql_result_projection
+    gold: SELECT COUNT(*) FROM sozialhilfequote WHERE Jahr = 2015 AND TRY_CAST(SH_Quote AS DOUBLE) > 5
+    diagnostic: true
   - type: final_number
     value: 11.0
     tol: 0.0
+    diagnostic: true

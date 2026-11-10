@@ -21,9 +21,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT qu50 FROM mietpreise WHERE GliederungLang = 'Kreis 3' AND StichtagDatJahr = 2024 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto'
+  - type: sql_result_projection
+    gold: SELECT qu50 FROM mietpreise WHERE GliederungLang = 'Kreis 3' AND StichtagDatJahr = 2024 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto'
+    diagnostic: true
   - type: final_number
     value: 1760.0
     tol: 0.0
+    diagnostic: true
 - id: miet_median_rent_2
   category: lookup
   prompt: Qual era nel 2024 l'affitto netto mediano (per appartamento) degli alloggi di 3 locali non di utilità pubblica a «Kreis 5»?
@@ -42,9 +46,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT qu50 FROM mietpreise WHERE GliederungLang = 'Kreis 5' AND StichtagDatJahr = 2024 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto'
+  - type: sql_result_projection
+    gold: SELECT qu50 FROM mietpreise WHERE GliederungLang = 'Kreis 5' AND StichtagDatJahr = 2024 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto'
+    diagnostic: true
   - type: final_number
     value: 2206.0
     tol: 0.0
+    diagnostic: true
 - id: miet_median_rent_3
   category: lookup
   prompt: What was the median net rent (per apartment) for non-subsidised 3-room apartments in "Bestand Mietverträge 11-20 Jahre" in 2026?
@@ -63,9 +71,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT qu50 FROM mietpreise WHERE GliederungLang = 'Bestand Mietverträge 11-20 Jahre' AND StichtagDatJahr = 2026 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto'
+  - type: sql_result_projection
+    gold: SELECT qu50 FROM mietpreise WHERE GliederungLang = 'Bestand Mietverträge 11-20 Jahre' AND StichtagDatJahr = 2026 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto'
+    diagnostic: true
   - type: final_number
     value: 1699.0
     tol: 0.0
+    diagnostic: true
 - id: miet_most_expensive_kreis_1
   category: argmax
   prompt: Welcher Stadtkreis hatte im Jahr 2026 den höchsten Median der Netto-Mieten für nicht gemeinnützige 3-Zimmer-Wohnungen (pro Wohnung)?
@@ -84,6 +96,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT GliederungLang FROM mietpreise WHERE RaumeinheitLang = 'Stadtkreise' AND StichtagDatJahr = 2026 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto' ORDER BY qu50 DESC, GliederungLang LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT GliederungLang FROM mietpreise WHERE RaumeinheitLang = 'Stadtkreise' AND StichtagDatJahr = 2026 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto' ORDER BY qu50 DESC, GliederungLang LIMIT 1
+    diagnostic: true
 - id: miet_most_expensive_kreis_2
   category: argmax
   prompt: Quel arrondissement avait en 2024 le loyer net médian le plus élevé pour les appartements de 3 pièces non d'utilité publique (par logement) ?
@@ -102,6 +117,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT GliederungLang FROM mietpreise WHERE RaumeinheitLang = 'Stadtkreise' AND StichtagDatJahr = 2024 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto' ORDER BY qu50 DESC, GliederungLang LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT GliederungLang FROM mietpreise WHERE RaumeinheitLang = 'Stadtkreise' AND StichtagDatJahr = 2024 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto' ORDER BY qu50 DESC, GliederungLang LIMIT 1
+    diagnostic: true
 - id: miet_most_expensive_kreis_3
   category: argmax
   prompt: Quale distretto aveva nel 2022 l'affitto netto mediano più alto per gli alloggi di 3 locali non di utilità pubblica (per appartamento)?
@@ -120,6 +138,9 @@
   checks:
   - type: sql_result_match
     gold: SELECT GliederungLang FROM mietpreise WHERE RaumeinheitLang = 'Stadtkreise' AND StichtagDatJahr = 2022 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto' ORDER BY qu50 DESC, GliederungLang LIMIT 1
+  - type: sql_result_projection
+    gold: SELECT GliederungLang FROM mietpreise WHERE RaumeinheitLang = 'Stadtkreise' AND StichtagDatJahr = 2022 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto' ORDER BY qu50 DESC, GliederungLang LIMIT 1
+    diagnostic: true
 - id: miet_subsidised_gap_1
   category: arithmetic
   prompt: By how much was the median net rent (per apartment, 3 Zimmer) of non-subsidised apartments higher than that of subsidised ones in the whole city in 2022?
@@ -138,9 +159,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT (SELECT qu50 FROM mietpreise WHERE RaumeinheitLang = 'Ganze Stadt' AND GliederungLang = 'Ganze Stadt' AND StichtagDatJahr = 2022 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto') - (SELECT qu50 FROM mietpreise WHERE RaumeinheitLang = 'Ganze Stadt' AND GliederungLang = 'Ganze Stadt' AND StichtagDatJahr = 2022 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto')
+  - type: sql_result_projection
+    gold: SELECT (SELECT qu50 FROM mietpreise WHERE RaumeinheitLang = 'Ganze Stadt' AND GliederungLang = 'Ganze Stadt' AND StichtagDatJahr = 2022 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto') - (SELECT qu50 FROM mietpreise WHERE RaumeinheitLang = 'Ganze Stadt' AND GliederungLang = 'Ganze Stadt' AND StichtagDatJahr = 2022 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto')
+    diagnostic: true
   - type: final_number
     value: 749.0
     tol: 0.0
+    diagnostic: true
 - id: miet_subsidised_gap_2
   category: arithmetic
   prompt: Um wie viel höher war im Jahr 2026 in der ganzen Stadt der Median der Netto-Miete (pro Wohnung, 3 Zimmer) bei nicht gemeinnützigen im Vergleich zu gemeinnützigen Wohnungen?
@@ -159,9 +184,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT (SELECT qu50 FROM mietpreise WHERE RaumeinheitLang = 'Ganze Stadt' AND GliederungLang = 'Ganze Stadt' AND StichtagDatJahr = 2026 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto') - (SELECT qu50 FROM mietpreise WHERE RaumeinheitLang = 'Ganze Stadt' AND GliederungLang = 'Ganze Stadt' AND StichtagDatJahr = 2026 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto')
+  - type: sql_result_projection
+    gold: SELECT (SELECT qu50 FROM mietpreise WHERE RaumeinheitLang = 'Ganze Stadt' AND GliederungLang = 'Ganze Stadt' AND StichtagDatJahr = 2026 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto') - (SELECT qu50 FROM mietpreise WHERE RaumeinheitLang = 'Ganze Stadt' AND GliederungLang = 'Ganze Stadt' AND StichtagDatJahr = 2026 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto')
+    diagnostic: true
   - type: final_number
     value: 884.0
     tol: 0.0
+    diagnostic: true
 - id: miet_subsidised_gap_3
   category: arithmetic
   prompt: De combien le loyer net médian (par logement, 4 Zimmer) des logements non d'utilité publique dépassait-il celui des logements d'utilité publique dans toute la ville en 2024 ?
@@ -180,9 +209,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT (SELECT qu50 FROM mietpreise WHERE RaumeinheitLang = 'Ganze Stadt' AND GliederungLang = 'Ganze Stadt' AND StichtagDatJahr = 2024 AND ZimmerLang = '4 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto') - (SELECT qu50 FROM mietpreise WHERE RaumeinheitLang = 'Ganze Stadt' AND GliederungLang = 'Ganze Stadt' AND StichtagDatJahr = 2024 AND ZimmerLang = '4 Zimmer' AND GemeinnuetzigLang = 'Gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto')
+  - type: sql_result_projection
+    gold: SELECT (SELECT qu50 FROM mietpreise WHERE RaumeinheitLang = 'Ganze Stadt' AND GliederungLang = 'Ganze Stadt' AND StichtagDatJahr = 2024 AND ZimmerLang = '4 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto') - (SELECT qu50 FROM mietpreise WHERE RaumeinheitLang = 'Ganze Stadt' AND GliederungLang = 'Ganze Stadt' AND StichtagDatJahr = 2024 AND ZimmerLang = '4 Zimmer' AND GemeinnuetzigLang = 'Gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto')
+    diagnostic: true
   - type: final_number
     value: 897.0
     tol: 0.0
+    diagnostic: true
 - id: miet_count_quartiere_above_1
   category: filter_count
   prompt: In quanti quartieri della città l'affitto netto mediano degli alloggi di 3 locali non di utilità pubblica (per appartamento) superava 1800 franchi nel 2026?
@@ -201,9 +234,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(*) FROM mietpreise WHERE RaumeinheitLang = 'Stadtquartiere' AND StichtagDatJahr = 2026 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto' AND qu50 > 1800
+  - type: sql_result_projection
+    gold: SELECT COUNT(*) FROM mietpreise WHERE RaumeinheitLang = 'Stadtquartiere' AND StichtagDatJahr = 2026 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto' AND qu50 > 1800
+    diagnostic: true
   - type: final_number
     value: 18.0
     tol: 0.0
+    diagnostic: true
 - id: miet_count_quartiere_above_2
   category: filter_count
   prompt: In how many city quarters (Stadtquartiere) was the median net rent for non-subsidised 3-room apartments (per apartment) above 1500 francs in 2022?
@@ -222,9 +259,13 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(*) FROM mietpreise WHERE RaumeinheitLang = 'Stadtquartiere' AND StichtagDatJahr = 2022 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto' AND qu50 > 1500
+  - type: sql_result_projection
+    gold: SELECT COUNT(*) FROM mietpreise WHERE RaumeinheitLang = 'Stadtquartiere' AND StichtagDatJahr = 2022 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto' AND qu50 > 1500
+    diagnostic: true
   - type: final_number
     value: 20.0
     tol: 0.0
+    diagnostic: true
 - id: miet_count_quartiere_above_3
   category: filter_count
   prompt: In wie vielen Stadtquartieren lag im Jahr 2024 der Median der Netto-Miete für nicht gemeinnützige 3-Zimmer-Wohnungen (pro Wohnung) über 1800 Franken?
@@ -243,6 +284,10 @@
   checks:
   - type: sql_result_match
     gold: SELECT COUNT(*) FROM mietpreise WHERE RaumeinheitLang = 'Stadtquartiere' AND StichtagDatJahr = 2024 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto' AND qu50 > 1800
+  - type: sql_result_projection
+    gold: SELECT COUNT(*) FROM mietpreise WHERE RaumeinheitLang = 'Stadtquartiere' AND StichtagDatJahr = 2024 AND ZimmerLang = '3 Zimmer' AND GemeinnuetzigLang = 'Nicht gemeinnützig' AND EinheitLang = 'Wohnung' AND PreisartLang = 'netto' AND qu50 > 1800
+    diagnostic: true
   - type: final_number
     value: 16.0
     tol: 0.0
+    diagnostic: true
