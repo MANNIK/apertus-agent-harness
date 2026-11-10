@@ -25,7 +25,7 @@ Il lavoro attivo è la **serie W**. La **serie T** è lo storico del progetto pr
 | W07 | Ciclo Weight-Space Programming | alta | **bloccato**: scheda dei metodi scritta, metodo da scegliere | W04, W05, W06 |
 | W08 | Baseline LoRA con protocollo comparabile | alta | **bloccato**: protocollo e budget proposti, nessun LoRA | W02, W04 |
 | W09 | Valutazione a tre condizioni, regressioni e costi | alta | **bloccato** | W05, W07, W08 |
-| W10 | Applicazione dimostrativa di data analysis self-hosted | media-alta | **prima versione** (solo con modello finto) | W03, un checkpoint servibile |
+| W10 | Applicazione dimostrativa di data analysis self-hosted | media-alta | **prima versione** (provata con Apertus reale via HTTP; browser no) | W03, un checkpoint servibile |
 | W11 | Architettura di deployment e conformità | alta | **parziale**: opzioni documentate, architettura da scegliere (Nikola) | scelta di Nikola |
 | W12 | Rapporto tecnico (inglese) | alta | **bozza riscritta** (risultati TBD) | — |
 | W13 | Misura di regressione su capacità non ottimizzate | media | **proposto** (36 item), da confermare | scelta del set |
